@@ -12,6 +12,67 @@ export interface NewsItem {
 
 export const ALL_NEWS: NewsItem[] = [
     {
+        id: "purbaya-korupsi-respon-2026",
+        title: "Purbaya Santai Hadapi Isu ‘Dijebak Korupsi’: Gue Enggak Terima Duit, Gaji Gue Cukup",
+        excerpt: "Menepis isu miring yang beredar, Purbaya Yudhi Sadewa menegaskan integritasnya di tengah rumor upaya penjebakan terkait kasus korupsi.",
+        content: `
+            <p>Ketua Dewan Komisioner Lembaga Penjamin Simpanan (LPS), Purbaya Yudhi Sadewa, menanggapi dengan santai berbagai spekulasi dan isu yang menyebut dirinya sedang menjadi target 'penjebakan' dalam kasus korupsi.</p>
+            
+            <p>Dalam sebuah pertemuan informal, Purbaya menekankan bahwa dirinya tidak merasa takut atau tertekan dengan narasi yang beredar. Menurutnya, selama seseorang menjalankan tugas dengan jujur dan sesuai aturan, segala bentuk upaya kriminalisasi tidak akan mempan.</p>
+
+            <p>"Gue santai saja. Kenapa harus takut kalau memang tidak melakukan? Gue enggak terima duit apa pun di luar hak gue. Gaji gue sudah cukup untuk hidup layak," ujar Purbaya dengan gaya bicaranya yang ceplas-ceplos.</p>
+
+            <p>Purbaya juga menambahkan bahwa fokus utamanya saat ini tetap pada tugas menjaga stabilitas sistem perbankan nasional. Ia meminta masyarakat tidak mudah terprovokasi oleh berita-berita yang belum jelas sumbernya dan bertujuan untuk menjatuhkan kredibilitas pejabat publik yang sedang melakukan reformasi.</p>
+
+            <p>Langkah Purbaya yang dikenal tegas dan tanpa kompromi dalam membenahi birokrasi memang sering kali mengusik pihak-pihak tertentu, namun ia menyatakan hal itu sebagai risiko jabatan yang harus dihadapi demi kebaikan negara.</p>
+        `,
+        image: "https://tse4.mm.bing.net/th?id=OIF.6XLB7uQHE89vvdyDC4Lv%2bA&pid=Api&P=0&h=180",
+        date: "27 Jan 2026",
+        author: "Tim Redaksi",
+        category: "NEWS",
+        tags: ["Purbaya", "LPS", "Isu Korupsi", "Integritas", "Hukum"],
+    },
+    {
+        id: "prabowo-sawit-papua-2025",
+        title: "Sederet Respons soal Keinginan Prabowo Tanam Sawit di Papua",
+        excerpt: "Presiden Prabowo mendorong penanaman kelapa sawit di Papua untuk swasembada energi, namun menuai berbagai respons kritis dari aktivis lingkungan dan masyarakat adat.",
+        content: `
+            <p>PRESIDEN Prabowo Subianto baru-baru ini mendorong agar wilayah Papua ditanami kelapa sawit agar dapat menghasilkan bahan bakar minyak. Arahan itu ia sampaikan saat memberi pembekalan kepada enam gubernur dan 42 bupati di wilayah Papua, bersama jajaran kabinetnya pada Selasa, 16 Desember 2025.</p>
+            
+            <p>Prabowo mengklaim Indonesia dapat menghemat pengeluaran untuk impor bahan bakar minyak hingga Rp 250 triliun tiap tahun bila mengembangkan bahan bakar minyak dari sumber alternatif seperti kelapa sawit, singkong, dan tebu.</p>
+
+            <h3 className="text-xl font-bold mt-6 mb-2">1. Dewan Perwakilan Daerah (DPD)</h3>
+            <p>Ketua DPD Sultan Bachtiar Najamudin mewanti-wanti agar rencana pengembangan ini tak boleh mengabaikan kepentingan ekologis. "Jangan sampai konvensi lahan menggeser ruang hidup masyarakat adat dan satwa endemik Papua," ujarnya.</p>
+
+            <h3 className="text-xl font-bold mt-6 mb-2">2. Greenpeace Indonesia</h3>
+            <p>Juru Kampanye Hutan Greenpeace Indonesia, Asep Komarudin menilai ambisi ini berpotensi membawa bencana ekologis dan membabat jutaan hektar hutan alam. Menurutnya, pendekatan ini bersifat <i>top-down</i> yang mengabaikan hak masyarakat adat menentukan nasib sendiri.</p>
+
+            <h3 className="text-xl font-bold mt-6 mb-2">3. Yayasan Pusaka Bentala Rakyat</h3>
+            <p>Staf Advokasi Tigor Hutapea mengungkapkan saat ini sudah ada 94 perusahaan sawit di Papua dengan luas 1,3 juta hektare. Ia mengkritik proyek swasembada yang sering berjalan tanpa persetujuan masyarakat adat dan perizinan yang memadai.</p>
+        `,
+        image: "https://tse4.mm.bing.net/th/id/OIP.VHIVgs0f3gZ4d_iVAoW4xAHaHa?pid=Api&P=0&h=180",
+        date: "27 Jan 2026",
+        author: "Tim Redaksi",
+        category: "NEWS",
+        tags: ["Prabowo", "Papua", "Sawit", "Lingkungan", "Energi"],
+    },
+    {
+        id: "purbaya-bea-cukai-2026",
+        title: "Purbaya Obrak-abrik Bea Cukai, 5 Pejabat di 5 Pelabuhan Bakal Dirumahkan!",
+        excerpt: "Langkah tegas diambil untuk membersihkan birokrasi di sektor kepabeanan, menyusul temuan ketidakberesan di sejumlah pelabuhan utama.",
+        content: `
+      <p>Purbaya Yudhi Sadewa kembali melakukan langkah mengejutkan dengan melakukan pembersihan besar-besaran di tubuh Bea Cukai. Berdasarkan instruksi terbaru, setidaknya 5 pejabat tinggi di 5 pelabuhan strategis Indonesia akan segera dibebastugaskan atau dirumahkan.</p>
+      <p>Langkah ini diambil setelah adanya audit mendalam yang menemukan indikasi penyalahgunaan wewenang dan hambatan dalam proses logistik nasional. "Kami tidak main-main dengan reformasi birokrasi. Siapa pun yang menghambat efisiensi di pelabuhan harus menanggung konsekuensinya," tegas Purbaya dalam konferensi pers mendadak.</p>
+      <p>5 pelabuhan yang terdampak meliputi pelabuhan utama di Jawa dan Sumatera. Keputusan ini diharapkan dapat memperlancar arus barang dan menekan biaya logistik yang selama ini dikeluhkan oleh para pelaku usaha.</p>
+      <p>Masyarakat memberikan respon positif atas tindakan tegas ini, berharap birokrasi kepabeanan Indonesia menjadi lebih transparan dan bersih dari praktik pungutan liar.</p>
+    `,
+        image: "https://akcdn.detik.net.id/community/media/visual/2025/12/31/purbaya-tak-bisa-tidur-jelang-tutup-buku-apbn-2025-1767186785962_169.jpeg?w=700&q=90",
+        date: "27 Jan 2026",
+        author: "Tim Redaksi",
+        category: "EKONOMI",
+        tags: ["Bea Cukai", "Purbaya", "Reformasi", "Ekonomi"],
+    },
+    {
         id: "remaja-sukses-rolls-royce-2026",
         title: "Viral! Remaja 17 Tahun Ini Sukses Bangun Bisnis Hingga Mampu Beli Rolls Royce",
         excerpt: "Kisah inspiratif seorang pemuda yang berhasil meraih kesuksesan finansial luar biasa di usia muda berkat ketekunannya membangun imperium bisnis digital.",
@@ -73,20 +134,6 @@ export const ALL_NEWS: NewsItem[] = [
         author: "Aditya Pratama",
         category: "EKONOMI",
         tags: ["Investasi", "Energi Hijau", "Ekonomi"],
-    },
-    {
-        id: "h2",
-        title: "Teknologi AI Terbaru Kini Mampu Memprediksi Cuaca dengan Akurasi 99%",
-        excerpt: "Sebuah terobosan besar di dunia meteorologi menggunakan model deep learning terbaru yang dikembangkan startup lokal.",
-        content: `
-      <p>Para ilmuwan komputer telah meluncurkan model kecerdasan buatan (AI) teranyar yang diklaim mampu memprediksi kondisi cuaca ekstrem hingga 7 hari ke depan dengan tingkat akurasi mencapai 99%.</p>
-      <p>Berbeda dengan sistem konvensional yang mengandalkan superkomputer fisik, AI ini belajar dari miliaran data historis cuaca global untuk mengenali pola-pola mikro yang seringkali terlewatkan.</p>
-    `,
-        image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=1000",
-        date: "26 Jan 2026",
-        author: "Rina Wijaya",
-        category: "TEKNO",
-        tags: ["AI", "Cuaca", "Teknologi"],
     },
     {
         id: "h3",

@@ -8,11 +8,11 @@ interface TrendingItem {
 }
 
 const TRENDING: TrendingItem[] = [
-    { id: "1", title: "Investasi Hijau", count: 1, newsId: "h1" },
-    { id: "2", title: "Prediksi Cuaca AI", count: 2, newsId: "h2" },
-    { id: "3", title: "Misi Mars", count: 3, newsId: "h3" },
-    { id: "4", title: "Review Land Cruiser", count: 4, newsId: "l3" },
-    { id: "5", title: "Green Hydrogen", count: 5, newsId: "l1" },
+    { id: "1", title: "Purbaya Soal Isu Korupsi", count: 1, newsId: "purbaya-korupsi-respon-2026" },
+    { id: "2", title: "Respons Prabowo Sawit Papua", count: 2, newsId: "prabowo-sawit-papua-2025" },
+    { id: "3", title: "Purbaya Obrak-abrik Bea Cukai", count: 3, newsId: "purbaya-bea-cukai-2026" },
+    { id: "4", title: "Remaja Sukses Rolls Royce", count: 4, newsId: "remaja-sukses-rolls-royce-2026" },
+    { id: "5", title: "Prestasi Mahasiswa Sumsel", count: 5, newsId: "prestasi-mahasiswa-sumsel-2026" },
 ];
 
 export default function NewsSidebar() {

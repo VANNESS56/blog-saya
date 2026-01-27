@@ -11,6 +11,14 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'i.ibb.co.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'akcdn.detik.net.id',
+      },
+      {
+        protocol: 'https',
+        hostname: 'tse4.mm.bing.net',
+      },
     ],
   },
 };
