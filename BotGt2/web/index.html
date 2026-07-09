@@ -1432,51 +1432,94 @@
                     <div class="page-header d-flex justify-content-between align-items-center mb-4">
                         <div>
                             <h1>Developer Center — Products</h1>
-                            <p>Kelola daftar produk pricing premium lisensi.</p>
+                            <p>Kelola daftar produk pricing premium lisensi bot.</p>
                         </div>
                         <span class="badge bg-danger px-3 py-2 rounded-3"><i class="bi bi-shield-lock-fill me-1"></i>Developer Mode</span>
                     </div>
 
-                    <!-- Content Pricing Tab (Manage Pricing) -->
-                    <div class="ws-config-card p-4">
+                    <!-- ===== FORM TAMBAH/EDIT PRODUK (Inline, bukan modal) ===== -->
+                    <div class="ws-config-card p-4 mb-4" id="dev-product-form-card">
                         <div class="d-flex justify-content-between align-items-center mb-3">
-                            <h3 class="fs-6 fw-bold mb-0">Kelola Produk & Harga Lisensi</h3>
-                            <button class="btn btn-sm btn-success rounded-3" onclick="showAddProductModal()"><i class="bi bi-plus-circle me-1"></i>Tambah Produk</button>
+                            <h3 class="fs-6 fw-bold mb-0" id="dev-product-form-title"><i class="bi bi-plus-circle text-success me-2"></i>Tambah Produk Baru</h3>
+                            <button class="btn btn-sm btn-outline-secondary rounded-3 d-none" id="dev-product-form-cancel-btn" onclick="cancelProductForm()"><i class="bi bi-x-lg me-1"></i>Batal</button>
                         </div>
-                        <div class="table-responsive">
-                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
-                                <thead>
-                                    <tr>
-                                        <th>Nama Produk</th>
-                                        <th>Tipe & Durasi</th>
-                                        <th>Fitur / Deskripsi (Tanda Centang)</th>
-                                        <th>Harga</th>
-                                        <th>Status</th>
-                                        <th class="text-end">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dev-products-table-body">
-                                    <tr>
-                                        <td><strong>Downloader Menu Premium</strong></td>
-                                        <td>
-                                            <span class="badge bg-light text-dark border">Sekali Bayar</span>
-                                            <div class="small text-muted mt-1">Masa Aktif: Selamanya</div>
-                                        </td>
-                                        <td>
-                                            <ul class="mb-0 ps-3 small text-muted">
-                                                <li><i class="bi bi-patch-check-fill text-success me-1"></i>Akses download YouTube & TikTok</li>
-                                                <li><i class="bi bi-patch-check-fill text-success me-1"></i>Tanpa batas limit kuota harian</li>
-                                            </ul>
-                                        </td>
-                                        <td class="fw-bold text-primary">Rp 10.000</td>
-                                        <td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>
-                                        <td class="text-end">
-                                            <button class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-3" onclick="editProductMock()" style="font-size:0.75rem;"><i class="bi bi-pencil me-1"></i>Edit</button>
-                                            <button class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-3 ms-1" onclick="deleteProductMock()" style="font-size:0.75rem;"><i class="bi bi-trash me-1"></i>Hapus</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <form id="dev-add-product-form" class="row g-3">
+                            <!-- Nama Produk -->
+                            <div class="col-md-6">
+                                <label class="form-label small text-muted fw-semibold">Nama Produk</label>
+                                <input type="text" class="form-control" id="dev-product-name" placeholder="Contoh: Downloader Menu Premium" required>
+                            </div>
+                            <!-- Tipe / Durasi -->
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted fw-semibold">Tipe Durasi</label>
+                                <select class="form-select" id="dev-product-duration">
+                                    <option value="selamanya">Sekali Bayar (Selamanya)</option>
+                                    <option value="30hari">Berlangganan Bulanan (30 Hari)</option>
+                                    <option value="90hari">Berlangganan 3 Bulan (90 Hari)</option>
+                                    <option value="365hari">Berlangganan Tahunan (365 Hari)</option>
+                                    <option value="custom">Custom (Isi Manual)</option>
+                                </select>
+                            </div>
+                            <!-- Durasi Custom (Opsional) -->
+                            <div class="col-md-3 d-none" id="dev-product-custom-duration-wrap">
+                                <label class="form-label small text-muted fw-semibold">Durasi Custom (Hari)</label>
+                                <input type="number" class="form-control" id="dev-product-custom-duration" placeholder="Contoh: 7" min="1">
+                            </div>
+                            <!-- Harga -->
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted fw-semibold">Harga (Rp)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text" style="font-size:0.85rem;">Rp</span>
+                                    <input type="number" class="form-control" id="dev-product-price" placeholder="10000" min="0" required>
+                                </div>
+                            </div>
+                            <!-- Status Produk -->
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted fw-semibold">Status Produk</label>
+                                <select class="form-select" id="dev-product-status">
+                                    <option value="aktif" selected>✅ Aktif (Tersedia)</option>
+                                    <option value="nonaktif">⛔ Nonaktif (Disembunyikan)</option>
+                                    <option value="segera">🕐 Segera Hadir</option>
+                                </select>
+                            </div>
+                            <!-- Deskripsi Singkat -->
+                            <div class="col-12">
+                                <label class="form-label small text-muted fw-semibold">Deskripsi Singkat Produk</label>
+                                <input type="text" class="form-control" id="dev-product-desc" placeholder="Contoh: Akses fitur download video tanpa batas dari berbagai platform.">
+                            </div>
+                            <!-- Daftar Fitur Dinamis dengan Tanda Centang ✅ -->
+                            <div class="col-12">
+                                <label class="form-label small text-muted fw-semibold d-flex align-items-center">
+                                    <i class="bi bi-patch-check-fill text-success me-1"></i>Daftar Fitur Produk (Tanda Centang)
+                                </label>
+                                <div id="dev-product-features-list">
+                                    <!-- Fitur item akan di-render secara dinamis -->
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-primary rounded-3 mt-2" onclick="addProductFeatureRow()">
+                                    <i class="bi bi-plus-lg me-1"></i>Tambah Fitur
+                                </button>
+                            </div>
+                            <!-- Tombol Submit -->
+                            <div class="col-12 text-end mt-3 pt-2 border-top">
+                                <button type="submit" class="btn btn-primary px-4 rounded-3" id="dev-product-submit-btn">
+                                    <i class="bi bi-check-circle me-1"></i>Simpan Produk
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- ===== DAFTAR PRODUK TERDAFTAR ===== -->
+                    <div class="ws-config-card p-4">
+                        <div class="card-section-header mb-3">
+                            <h3 class="fs-6 fw-bold mb-1"><i class="bi bi-box-seam text-primary me-2"></i>Daftar Produk Terdaftar</h3>
+                            <p class="text-muted small">Semua produk lisensi premium yang tersedia untuk daftar pembelian client.</p>
+                        </div>
+                        <div id="dev-products-grid" class="row g-3">
+                            <!-- Product cards will be rendered here dynamically -->
+                            <div class="col-12 text-center py-4 text-muted" id="dev-products-empty">
+                                <i class="bi bi-inbox fs-1 d-block mb-2 opacity-50"></i>
+                                <span class="small">Belum ada produk. Tambahkan produk pertamamu di form di atas.</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -3610,124 +3653,196 @@
         }
 
         // Mock functions for Pricing Product Management
-        window.showAddProductModal = function() {
-            window.Swal.fire({
-                title: "Tambah Produk Lisensi",
-                html: 
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Nama Produk</label></div>' +
-                    '<input id="swal-prod-name" class="swal2-input mt-0 mb-3" placeholder="Contoh: Downloader Menu Premium">' +
-                    
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Durasi Produk / Masa Aktif</label></div>' +
-                    '<select id="swal-prod-duration" class="swal2-select w-100 m-0 mb-3" style="height: 50px; font-size: 1rem; border-radius: 5px;">' +
-                        '<option value="selamanya">Sekali Bayar (Selamanya)</option>' +
-                        '<option value="30hari">Berlangganan Bulanan (30 Hari)</option>' +
-                        '<option value="365hari">Berlangganan Tahunan (365 Hari)</option>' +
-                    '</select>' +
-                    
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Harga Produk (Nominal Rp)</label></div>' +
-                    '<input id="swal-prod-price" class="swal2-input mt-0 mb-3" type="number" placeholder="Contoh: 10000">' +
-                    
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Deskripsi Fitur (Tulis satu poin per baris)</label></div>' +
-                    '<textarea id="swal-prod-features" class="swal2-textarea m-0 w-100" rows="3" placeholder="Akses download YouTube & TikTok&#10;Tanpa batas limit kuota harian" style="border-radius: 5px;"></textarea>',
-                focusConfirm: false,
-                confirmButtonText: "Simpan Produk",
-                confirmButtonColor: "#4f46e5",
-                preConfirm: function() {
-                    return {
-                        name: document.getElementById('swal-prod-name').value,
-                        duration: document.getElementById('swal-prod-duration').value,
-                        price: document.getElementById('swal-prod-price').value,
-                        features: document.getElementById('swal-prod-features').value
-                    };
-                }
-            }).then(function(result) {
-                if (result.isConfirmed && result.value.name) {
-                    var featuresHtml = "";
-                    if (result.value.features) {
-                        var lines = result.value.features.split('\n');
-                        featuresHtml += '<ul class="mb-0 ps-3 small text-muted">';
-                        lines.forEach(function(line) {
-                            if (line.trim()) {
-                                featuresHtml += '<li><i class="bi bi-patch-check-fill text-success me-1"></i>' + line.trim() + '</li>';
-                            }
-                        });
-                        featuresHtml += '</ul>';
-                    } else {
-                        featuresHtml = '<span class="text-muted small">-</span>';
-                    }
+        // ===== Product Form Logic (Inline, bukan modal SweetAlert2) =====
+        var _devProductList = [];
+        var _devEditingProductIdx = -1;
 
-                    var durationBadge = "Sekali Bayar";
-                    var durationDesc = "Masa Aktif: Selamanya";
-                    if (result.value.duration === "30hari") {
-                        durationBadge = "Bulanan";
-                        durationDesc = "Masa Aktif: 30 Hari";
-                    } else if (result.value.duration === "365hari") {
-                        durationBadge = "Tahunan";
-                        durationDesc = "Masa Aktif: 365 Hari";
-                    }
+        // Toggle durasi custom saat select berubah
+        document.getElementById("dev-product-duration").addEventListener("change", function() {
+            var wrap = document.getElementById("dev-product-custom-duration-wrap");
+            if (this.value === "custom") { wrap.classList.remove("d-none"); } else { wrap.classList.add("d-none"); }
+        });
 
-                    var tr = document.createElement("tr");
-                    tr.innerHTML = 
-                        '<td><strong>' + result.value.name + '</strong></td>' +
-                        '<td>' +
-                            '<span class="badge bg-light text-dark border">' + durationBadge + '</span>' +
-                            '<div class="small text-muted mt-1">' + durationDesc + '</div>' +
-                        '</td>' +
-                        '<td>' + featuresHtml + '</td>' +
-                        '<td class="fw-bold text-primary">Rp ' + parseInt(result.value.price).toLocaleString('id-ID') + '</td>' +
-                        '<td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>' +
-                        '<td class="text-end">' +
-                            '<button class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-3" onclick="editProductMock()" style="font-size:0.75rem;"><i class="bi bi-pencil me-1"></i>Edit</button>' +
-                            '<button class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-3 ms-1" onclick="deleteProductMock()" style="font-size:0.75rem;"><i class="bi bi-trash me-1"></i>Hapus</button>' +
-                        '</td>';
-                    document.getElementById("dev-products-table-body").appendChild(tr);
-                    showToast("Produk pricing baru berhasil ditambahkan!");
-                }
-            });
+        // Tambah satu baris input fitur (dinamis)
+        window.addProductFeatureRow = function(value) {
+            var list = document.getElementById("dev-product-features-list");
+            var row = document.createElement("div");
+            row.className = "input-group mb-2";
+            row.innerHTML =
+                '<span class="input-group-text bg-success-subtle border-success-subtle" style="font-size:0.85rem;">' +
+                    '<i class="bi bi-patch-check-fill text-success"></i>' +
+                '</span>' +
+                '<input type="text" class="form-control dev-product-feature-input" placeholder="Contoh: Akses download YouTube & TikTok" value="' + (value || '') + '">' +
+                '<button type="button" class="btn btn-outline-danger btn-sm px-2" onclick="this.parentElement.remove()" title="Hapus fitur">' +
+                    '<i class="bi bi-x-lg"></i>' +
+                '</button>';
+            list.appendChild(row);
         };
 
-        window.editProductMock = function() {
-            window.Swal.fire({
-                title: "Edit Produk Lisensi",
-                html: 
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Nama Produk</label></div>' +
-                    '<input id="swal-edit-name" class="swal2-input mt-0 mb-3" value="Downloader Menu Premium" placeholder="Nama Produk">' +
-                    
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Durasi Produk / Masa Aktif</label></div>' +
-                    '<select id="swal-edit-duration" class="swal2-select w-100 m-0 mb-3" style="height: 50px; font-size: 1rem; border-radius: 5px;">' +
-                        '<option value="selamanya" selected>Sekali Bayar (Selamanya)</option>' +
-                        '<option value="30hari">Berlangganan Bulanan (30 Hari)</option>' +
-                        '<option value="365hari">Berlangganan Tahunan (365 Hari)</option>' +
-                    '</select>' +
-                    
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Harga Produk (Nominal Rp)</label></div>' +
-                    '<input id="swal-edit-price" class="swal2-input mt-0 mb-3" type="number" value="10000" placeholder="Harga (Nominal)">' +
-                    
-                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Deskripsi Fitur (Tulis satu poin per baris)</label></div>' +
-                    '<textarea id="swal-edit-features" class="swal2-textarea m-0 w-100" rows="3" style="border-radius: 5px;">Akses download YouTube & TikTok&#10;Tanpa batas limit kuota harian</textarea>',
-                confirmButtonText: "Update Produk",
-                confirmButtonColor: "#4f46e5"
-            }).then(function(result) {
-                if (result.isConfirmed) {
-                    showToast("Data produk berhasil diperbarui!");
-                }
-            });
+        // Reset form ke mode tambah baru
+        window.cancelProductForm = function() {
+            _devEditingProductIdx = -1;
+            document.getElementById("dev-add-product-form").reset();
+            document.getElementById("dev-product-features-list").innerHTML = "";
+            document.getElementById("dev-product-form-title").innerHTML = '<i class="bi bi-plus-circle text-success me-2"></i>Tambah Produk Baru';
+            document.getElementById("dev-product-submit-btn").innerHTML = '<i class="bi bi-check-circle me-1"></i>Simpan Produk';
+            document.getElementById("dev-product-form-cancel-btn").classList.add("d-none");
+            document.getElementById("dev-product-custom-duration-wrap").classList.add("d-none");
         };
 
-        window.deleteProductMock = function() {
+        // Render ulang seluruh product cards ke grid
+        function renderProductCards() {
+            var grid = document.getElementById("dev-products-grid");
+            var emptyEl = document.getElementById("dev-products-empty");
+            // Bersihkan dulu kecuali empty state
+            grid.querySelectorAll(".dev-product-card-col").forEach(function(el) { el.remove(); });
+
+            if (_devProductList.length === 0) {
+                emptyEl.classList.remove("d-none");
+                return;
+            }
+            emptyEl.classList.add("d-none");
+
+            _devProductList.forEach(function(prod, idx) {
+                var durLabel = "Sekali Bayar";
+                var durDesc = "Selamanya";
+                if (prod.duration === "30hari") { durLabel = "Bulanan"; durDesc = "30 Hari"; }
+                else if (prod.duration === "90hari") { durLabel = "3 Bulan"; durDesc = "90 Hari"; }
+                else if (prod.duration === "365hari") { durLabel = "Tahunan"; durDesc = "365 Hari"; }
+                else if (prod.duration === "custom") { durLabel = "Custom"; durDesc = (prod.customDuration || '?') + " Hari"; }
+
+                var statusBadge = '<span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">✅ Aktif</span>';
+                if (prod.status === "nonaktif") statusBadge = '<span class="badge bg-secondary-subtle text-secondary border border-secondary-subtle px-2 py-1">⛔ Nonaktif</span>';
+                else if (prod.status === "segera") statusBadge = '<span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1">🕐 Segera Hadir</span>';
+
+                var featuresHtml = "";
+                if (prod.features && prod.features.length > 0) {
+                    featuresHtml = '<ul class="mb-0 ps-0 mt-2" style="list-style:none;">';
+                    prod.features.forEach(function(f) {
+                        featuresHtml += '<li class="d-flex align-items-start mb-1 small text-body-secondary">' +
+                            '<i class="bi bi-patch-check-fill text-success me-2 mt-1 flex-shrink-0"></i>' +
+                            '<span>' + f + '</span></li>';
+                    });
+                    featuresHtml += '</ul>';
+                }
+
+                var col = document.createElement("div");
+                col.className = "col-md-6 dev-product-card-col";
+                col.innerHTML =
+                    '<div class="border rounded-3 p-3 h-100 position-relative" style="background: var(--bs-body-bg);">' +
+                        '<div class="d-flex justify-content-between align-items-start mb-2">' +
+                            '<div>' +
+                                '<h5 class="fw-bold mb-1 fs-6">' + prod.name + '</h5>' +
+                                (prod.desc ? '<p class="small text-muted mb-0">' + prod.desc + '</p>' : '') +
+                            '</div>' +
+                            statusBadge +
+                        '</div>' +
+                        '<div class="d-flex gap-2 flex-wrap mb-2">' +
+                            '<span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size:0.75rem;">' +
+                                '<i class="bi bi-clock me-1"></i>' + durLabel + ' — ' + durDesc +
+                            '</span>' +
+                            '<span class="badge bg-info-subtle text-info border border-info-subtle px-2 py-1 fw-bold" style="font-size:0.8rem;">' +
+                                'Rp ' + parseInt(prod.price).toLocaleString('id-ID') +
+                            '</span>' +
+                        '</div>' +
+                        featuresHtml +
+                        '<div class="mt-3 pt-2 border-top d-flex gap-2">' +
+                            '<button class="btn btn-sm btn-outline-secondary rounded-3" onclick="editProduct(' + idx + ')" style="font-size:0.75rem;">' +
+                                '<i class="bi bi-pencil me-1"></i>Edit' +
+                            '</button>' +
+                            '<button class="btn btn-sm btn-outline-danger rounded-3" onclick="deleteProduct(' + idx + ')" style="font-size:0.75rem;">' +
+                                '<i class="bi bi-trash me-1"></i>Hapus' +
+                            '</button>' +
+                        '</div>' +
+                    '</div>';
+                grid.appendChild(col);
+            });
+        }
+
+        // Submit form (tambah atau update produk)
+        document.getElementById("dev-add-product-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var name = document.getElementById("dev-product-name").value.trim();
+            var duration = document.getElementById("dev-product-duration").value;
+            var customDuration = document.getElementById("dev-product-custom-duration").value;
+            var price = document.getElementById("dev-product-price").value;
+            var status = document.getElementById("dev-product-status").value;
+            var desc = document.getElementById("dev-product-desc").value.trim();
+            var featureInputs = document.querySelectorAll(".dev-product-feature-input");
+            var features = [];
+            featureInputs.forEach(function(inp) { if (inp.value.trim()) features.push(inp.value.trim()); });
+
+            if (!name || !price) { showToast("Nama dan harga wajib diisi!", "warning"); return; }
+
+            var prodObj = { name: name, duration: duration, customDuration: customDuration, price: price, status: status, desc: desc, features: features };
+
+            if (_devEditingProductIdx >= 0) {
+                _devProductList[_devEditingProductIdx] = prodObj;
+                showToast("Produk berhasil diperbarui!");
+            } else {
+                _devProductList.push(prodObj);
+                showToast("Produk baru berhasil ditambahkan!");
+            }
+            cancelProductForm();
+            renderProductCards();
+        });
+
+        // Edit produk: isi form dengan data produk
+        window.editProduct = function(idx) {
+            var prod = _devProductList[idx];
+            if (!prod) return;
+            _devEditingProductIdx = idx;
+            document.getElementById("dev-product-name").value = prod.name;
+            document.getElementById("dev-product-duration").value = prod.duration;
+            if (prod.duration === "custom") {
+                document.getElementById("dev-product-custom-duration-wrap").classList.remove("d-none");
+                document.getElementById("dev-product-custom-duration").value = prod.customDuration;
+            } else {
+                document.getElementById("dev-product-custom-duration-wrap").classList.add("d-none");
+            }
+            document.getElementById("dev-product-price").value = prod.price;
+            document.getElementById("dev-product-status").value = prod.status;
+            document.getElementById("dev-product-desc").value = prod.desc || "";
+            document.getElementById("dev-product-features-list").innerHTML = "";
+            (prod.features || []).forEach(function(f) { addProductFeatureRow(f); });
+
+            document.getElementById("dev-product-form-title").innerHTML = '<i class="bi bi-pencil text-warning me-2"></i>Edit Produk: ' + prod.name;
+            document.getElementById("dev-product-submit-btn").innerHTML = '<i class="bi bi-arrow-repeat me-1"></i>Update Produk';
+            document.getElementById("dev-product-form-cancel-btn").classList.remove("d-none");
+            document.getElementById("dev-product-form-card").scrollIntoView({ behavior: "smooth" });
+        };
+
+        // Hapus produk
+        window.deleteProduct = function(idx) {
+            var prod = _devProductList[idx];
+            if (!prod) return;
             window.Swal.fire({
                 title: "Hapus Produk?",
-                text: "Menghapus produk ini akan menonaktifkannya di daftar pembelian client.",
+                text: 'Menghapus produk "' + prod.name + '" dari daftar.',
                 icon: "warning",
                 showCancelButton: true,
                 confirmButtonText: "Ya, Hapus",
                 confirmButtonColor: "#dc3545"
             }).then(function(result) {
                 if (result.isConfirmed) {
+                    _devProductList.splice(idx, 1);
+                    renderProductCards();
                     showToast("Produk berhasil dihapus!");
                 }
             });
         };
+
+        // Inisialisasi: masukkan produk default
+        _devProductList.push({
+            name: "Downloader Menu Premium",
+            duration: "selamanya",
+            customDuration: "",
+            price: "10000",
+            status: "aktif",
+            desc: "Akses fitur download video tanpa batas dari berbagai platform.",
+            features: ["Akses download YouTube & TikTok", "Tanpa batas limit kuota harian"]
+        });
+        renderProductCards();
 
         // Bind Developer Section Click to fetch its data (Changelog, Product, Feature sub links)
         var devSidebarMenu = document.getElementById("sidebar-developer-menu");
