@@ -864,180 +864,124 @@
                     </div>
 
                 </div>
-                </div>
             </section>
             <!-- ========== PRICING (Maker Menu Activation) ========== -->
             <section id="pricing-section" class="d-none">
                 <div class="ws-config-page">
 
-                    <!-- Hero Header with Gradient -->
-                    <div style="background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 50%, #a855f7 100%); border-radius: var(--radius); padding: 2.5rem 2rem; margin-bottom: 2rem; position:relative; overflow:hidden;">
-                        <!-- Decorative circles -->
-                        <div style="position:absolute; top:-40px; right:-40px; width:160px; height:160px; border-radius:50%; background:rgba(255,255,255,0.06);"></div>
-                        <div style="position:absolute; bottom:-30px; left:-20px; width:120px; height:120px; border-radius:50%; background:rgba(255,255,255,0.04);"></div>
-                        <div style="position:absolute; top:50%; right:15%; width:60px; height:60px; border-radius:50%; background:rgba(255,255,255,0.03);"></div>
-                        
-                        <div style="position:relative; z-index:1;">
-                            <span style="display:inline-block; background:rgba(255,255,255,0.15); color:#fff; font-size:0.72rem; font-weight:700; padding:5px 14px; border-radius:100px; margin-bottom:1rem; letter-spacing:0.5px; backdrop-filter:blur(4px);">
-                                <i class="bi bi-stars me-1"></i>FITUR PREMIUM
-                            </span>
-                            <h1 style="color:#fff; font-size:1.75rem; font-weight:800; margin-bottom:0.5rem; line-height:1.3;">Upgrade Bot Anda</h1>
-                            <p style="color:rgba(255,255,255,0.75); font-size:0.92rem; margin-bottom:0; max-width:500px; line-height:1.6;">
-                                Buka fitur premium Kucai Bot untuk memaksimalkan performa dan kustomisasi bisnis WhatsApp Anda.
-                            </p>
-                        </div>
+                    <!-- Page Header — konsisten dengan halaman lain -->
+                    <div class="page-header">
+                        <h1>Fitur Premium</h1>
+                        <p>Buka fitur premium untuk memaksimalkan performa bisnis WhatsApp Anda.</p>
                     </div>
 
                     <!-- Status Lisensi -->
-                    <div class="ws-config-card mb-4" style="border-left: 4px solid var(--primary);">
-                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
-                            <div class="d-flex align-items-center gap-3">
-                                <div style="width:44px; height:44px; border-radius:12px; background:linear-gradient(135deg, rgba(79,70,229,0.1), rgba(139,92,246,0.08)); display:flex; align-items:center; justify-content:center; flex-shrink:0;">
-                                    <i class="bi bi-shield-lock-fill" style="font-size:1.2rem; color:var(--primary);"></i>
-                                </div>
+                    <div class="ws-config-card" style="margin-bottom:1.5rem; border-left: 4px solid var(--primary);">
+                        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem;">
+                            <div style="display:flex; align-items:center; gap:0.75rem;">
+                                <i class="bi bi-shield-lock-fill" style="font-size:1.3rem; color:var(--primary);"></i>
                                 <div>
-                                    <h4 class="fw-bold mb-0" style="font-size:1rem; color:var(--text);">Status Lisensi</h4>
-                                    <p class="text-muted small mb-0">Kepemilikan lisensi fitur premium saat ini.</p>
+                                    <div style="font-weight:700; font-size:0.95rem; color:var(--text);">Status Lisensi</div>
+                                    <div class="text-muted" style="font-size:0.8rem;">Kepemilikan lisensi fitur premium saat ini.</div>
                                 </div>
                             </div>
-                            <span class="badge px-4 py-2 rounded-pill" id="pricing-license-badge" style="font-size:0.82rem; background: rgba(220,38,38,0.1); color: #dc2626; border: 1px solid rgba(220,38,38,0.2);">
-                                <i class="bi bi-x-circle-fill me-1"></i>Belum Aktif
+                            <span id="pricing-license-badge" style="display:inline-flex; align-items:center; gap:6px; padding:6px 16px; border-radius:100px; font-size:0.82rem; font-weight:600; background:rgba(220,38,38,0.08); color:#dc2626; border:1px solid rgba(220,38,38,0.15);">
+                                <i class="bi bi-x-circle-fill"></i>Belum Aktif
                             </span>
                         </div>
                     </div>
 
-                    <!-- Pricing Cards Grid -->
-                    <div class="row g-4" style="max-width:960px;">
+                    <!-- Pricing Cards — 2 columns full width -->
+                    <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:1.5rem; margin-bottom:2rem;">
+
                         <!-- Card: MAKER MENU -->
-                        <div class="col-lg-5 col-md-6">
-                            <div class="ws-pricing-card">
-                                <!-- Ribbon -->
-                                <div class="ws-pricing-ribbon">POPULER</div>
-                                
-                                <div class="ws-pricing-card-body">
-                                    <div class="mb-3">
-                                        <span style="display:inline-flex; align-items:center; gap:6px; background:linear-gradient(135deg, rgba(79,70,229,0.1), rgba(139,92,246,0.06)); color:var(--primary); font-size:0.72rem; font-weight:700; padding:5px 14px; border-radius:100px; border:1px solid rgba(79,70,229,0.15);">
-                                            <i class="bi bi-lightning-charge-fill"></i>Sekali Bayar
-                                        </span>
-                                    </div>
-
-                                    <h3 style="font-size:1.3rem; font-weight:800; color:var(--text); margin-bottom:0.4rem;">MAKER MENU</h3>
-                                    <p class="text-muted" style="font-size:0.85rem; margin-bottom:1.5rem; line-height:1.5;">Kustomisasi template menu bot utama secara penuh, selamanya.</p>
-
-                                    <!-- Price -->
-                                    <div style="margin-bottom:1.75rem;">
-                                        <span style="font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:800; color:var(--text); line-height:1;">Rp10.000</span>
-                                        <span class="text-muted" style="font-size:0.82rem; margin-left:4px;">/ selamanya</span>
-                                    </div>
-
-                                    <!-- Features -->
-                                    <div style="display:flex; flex-direction:column; gap:0.85rem; margin-bottom:2rem;">
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div>
-                                            <span>Buka perintah <code>menu</code> & <code>help</code></span>
-                                        </div>
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div>
-                                            <span>Akses penuh Menu Editor di Dashboard</span>
-                                        </div>
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div>
-                                            <span>Gunakan variable dinamis kustom</span>
-                                        </div>
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div>
-                                            <span>Tanpa masa tenggang — Aktif Selamanya</span>
-                                        </div>
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div>
-                                            <span>Dukungan teknis prioritas</span>
-                                        </div>
-                                    </div>
+                        <div class="ws-config-card" style="position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; border:1.5px solid var(--primary); padding:0;">
+                            
+                            <!-- Top accent bar -->
+                            <div style="height:4px; background:linear-gradient(90deg, #4f46e5, #7c3aed, #a855f7);"></div>
+                            
+                            <div style="padding:1.75rem 1.75rem 0;">
+                                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:1.25rem;">
+                                    <span style="display:inline-flex; align-items:center; gap:5px; background:rgba(79,70,229,0.08); color:var(--primary); font-size:0.72rem; font-weight:700; padding:4px 12px; border-radius:6px;">
+                                        <i class="bi bi-lightning-charge-fill"></i>Sekali Bayar
+                                    </span>
+                                    <span style="background:var(--primary); color:#fff; font-size:0.68rem; font-weight:700; padding:3px 10px; border-radius:6px; text-transform:uppercase; letter-spacing:0.5px;">Populer</span>
                                 </div>
 
-                                <!-- CTA -->
-                                <div style="padding: 0 1.5rem 1.5rem;">
-                                    <button class="ws-btn-primary w-100" id="btn-buy-maker-menu" style="border-radius:12px; padding:0.85rem 0; font-size:0.95rem; font-weight:700; letter-spacing:0.2px;">
-                                        <i class="bi bi-bag-check-fill me-2"></i>Beli Sekarang
-                                    </button>
+                                <h3 style="font-size:1.25rem; font-weight:800; color:var(--text); margin-bottom:0.25rem;">Maker Menu</h3>
+                                <p class="text-muted" style="font-size:0.85rem; margin-bottom:1.5rem; line-height:1.5;">Kustomisasi template menu bot utama secara penuh, selamanya.</p>
+
+                                <div style="margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border);">
+                                    <span style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--text); line-height:1;">Rp10.000</span>
+                                    <span class="text-muted" style="font-size:0.8rem; margin-left:4px;">/ selamanya</span>
                                 </div>
+
+                                <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.75rem;">
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div><span>Buka perintah <code>menu</code> & <code>help</code></span></div>
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div><span>Akses penuh Menu Editor di Dashboard</span></div>
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div><span>Gunakan variable dinamis kustom</span></div>
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div><span>Tanpa masa tenggang — Aktif Selamanya</span></div>
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon"><i class="bi bi-check-lg"></i></div><span>Dukungan teknis prioritas</span></div>
+                                </div>
+                            </div>
+
+                            <div style="padding:0 1.75rem 1.75rem;">
+                                <button class="ws-btn-primary w-100" id="btn-buy-maker-menu" style="border-radius:10px; padding:0.8rem 0; font-size:0.9rem; font-weight:700;">
+                                    Beli Sekarang
+                                </button>
                             </div>
                         </div>
 
-                        <!-- Card: Coming Soon placeholder -->
-                        <div class="col-lg-5 col-md-6">
-                            <div class="ws-pricing-card ws-pricing-card-muted">
-                                <div class="ws-pricing-card-body">
-                                    <div class="mb-3">
-                                        <span style="display:inline-flex; align-items:center; gap:6px; background:rgba(100,116,139,0.08); color:var(--text-muted); font-size:0.72rem; font-weight:700; padding:5px 14px; border-radius:100px; border:1px solid rgba(100,116,139,0.12);">
-                                            <i class="bi bi-clock-history"></i>Segera Hadir
-                                        </span>
-                                    </div>
-
-                                    <h3 style="font-size:1.3rem; font-weight:800; color:var(--text-muted); margin-bottom:0.4rem;">AUTO RESPONDER</h3>
-                                    <p style="font-size:0.85rem; margin-bottom:1.5rem; line-height:1.5; color:var(--text-muted); opacity:0.7;">Sistem balasan otomatis berbasis AI yang cerdas untuk meningkatkan penjualan.</p>
-
-                                    <div style="margin-bottom:1.75rem;">
-                                        <span style="font-family:'Outfit',sans-serif; font-size:2.2rem; font-weight:800; color:var(--text-muted); opacity:0.5; line-height:1;">—</span>
-                                    </div>
-
-                                    <div style="display:flex; flex-direction:column; gap:0.85rem; margin-bottom:2rem; opacity:0.4;">
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon" style="background:rgba(100,116,139,0.08); color:var(--text-muted);"><i class="bi bi-check-lg"></i></div>
-                                            <span style="color:var(--text-muted);">AI-powered auto-reply</span>
-                                        </div>
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon" style="background:rgba(100,116,139,0.08); color:var(--text-muted);"><i class="bi bi-check-lg"></i></div>
-                                            <span style="color:var(--text-muted);">Smart FAQ detection</span>
-                                        </div>
-                                        <div class="ws-pricing-feature">
-                                            <div class="ws-pricing-feature-icon" style="background:rgba(100,116,139,0.08); color:var(--text-muted);"><i class="bi bi-check-lg"></i></div>
-                                            <span style="color:var(--text-muted);">Multi-language support</span>
-                                        </div>
-                                    </div>
+                        <!-- Card: Coming Soon -->
+                        <div class="ws-config-card" style="position:relative; overflow:hidden; display:flex; flex-direction:column; justify-content:space-between; border-style:dashed; opacity:0.6; padding:0;">
+                            
+                            <div style="height:4px; background:var(--border);"></div>
+                            
+                            <div style="padding:1.75rem 1.75rem 0;">
+                                <div style="margin-bottom:1.25rem;">
+                                    <span style="display:inline-flex; align-items:center; gap:5px; background:rgba(100,116,139,0.06); color:var(--text-muted); font-size:0.72rem; font-weight:700; padding:4px 12px; border-radius:6px;">
+                                        <i class="bi bi-clock-history"></i>Segera Hadir
+                                    </span>
                                 </div>
-                                <div style="padding: 0 1.5rem 1.5rem;">
-                                    <button class="btn w-100 disabled" style="border-radius:12px; padding:0.85rem 0; font-size:0.95rem; font-weight:700; background:var(--border); color:var(--text-muted); cursor:not-allowed;">
-                                        <i class="bi bi-hourglass-split me-2"></i>Segera Hadir
-                                    </button>
+
+                                <h3 style="font-size:1.25rem; font-weight:800; color:var(--text-muted); margin-bottom:0.25rem;">Auto Responder</h3>
+                                <p style="font-size:0.85rem; margin-bottom:1.5rem; line-height:1.5; color:var(--text-muted);">Sistem balasan otomatis berbasis AI untuk meningkatkan penjualan.</p>
+
+                                <div style="margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid var(--border);">
+                                    <span style="font-family:'Outfit',sans-serif; font-size:2rem; font-weight:800; color:var(--text-muted); opacity:0.4; line-height:1;">—</span>
                                 </div>
+
+                                <div style="display:flex; flex-direction:column; gap:0.75rem; margin-bottom:1.75rem; opacity:0.5;">
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon" style="background:rgba(100,116,139,0.06); color:var(--text-muted);"><i class="bi bi-check-lg"></i></div><span style="color:var(--text-muted);">AI-powered auto-reply</span></div>
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon" style="background:rgba(100,116,139,0.06); color:var(--text-muted);"><i class="bi bi-check-lg"></i></div><span style="color:var(--text-muted);">Smart FAQ detection</span></div>
+                                    <div class="ws-pricing-feature"><div class="ws-pricing-feature-icon" style="background:rgba(100,116,139,0.06); color:var(--text-muted);"><i class="bi bi-check-lg"></i></div><span style="color:var(--text-muted);">Multi-language support</span></div>
+                                </div>
+                            </div>
+
+                            <div style="padding:0 1.75rem 1.75rem;">
+                                <button class="btn w-100 disabled" style="border-radius:10px; padding:0.8rem 0; font-size:0.9rem; font-weight:700; background:var(--border); color:var(--text-muted); cursor:not-allowed;">
+                                    Segera Hadir
+                                </button>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Trust Section -->
-                    <div style="margin-top:2.5rem; max-width:960px;">
-                        <h3 style="font-size:1rem; font-weight:700; color:var(--text); margin-bottom:1.25rem;">
-                            <i class="bi bi-patch-check-fill text-primary me-2"></i>Kenapa Harus Upgrade?
-                        </h3>
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="ws-config-card h-100" style="text-align:center; padding:1.5rem 1.25rem;">
-                                    <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, rgba(16,185,129,0.1), rgba(5,150,105,0.05)); display:inline-flex; align-items:center; justify-content:center; margin-bottom:0.75rem;">
-                                        <i class="bi bi-lightning-charge-fill" style="font-size:1.2rem; color:#10b981;"></i>
-                                    </div>
-                                    <h5 style="font-size:0.9rem; font-weight:700; margin-bottom:0.35rem; color:var(--text);">Aktivasi Instan</h5>
-                                    <p class="text-muted mb-0" style="font-size:0.8rem; line-height:1.5;">Fitur langsung aktif setelah pembayaran dikonfirmasi secara otomatis.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="ws-config-card h-100" style="text-align:center; padding:1.5rem 1.25rem;">
-                                    <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, rgba(79,70,229,0.1), rgba(139,92,246,0.05)); display:inline-flex; align-items:center; justify-content:center; margin-bottom:0.75rem;">
-                                        <i class="bi bi-infinity" style="font-size:1.2rem; color:var(--primary);"></i>
-                                    </div>
-                                    <h5 style="font-size:0.9rem; font-weight:700; margin-bottom:0.35rem; color:var(--text);">Selamanya</h5>
-                                    <p class="text-muted mb-0" style="font-size:0.8rem; line-height:1.5;">Satu kali bayar, tanpa biaya bulanan. Lisensi Anda berlaku seumur hidup.</p>
-                                </div>
-                            </div>
-                            <div class="col-md-4">
-                                <div class="ws-config-card h-100" style="text-align:center; padding:1.5rem 1.25rem;">
-                                    <div style="width:48px; height:48px; border-radius:14px; background:linear-gradient(135deg, rgba(245,158,11,0.1), rgba(217,119,6,0.05)); display:inline-flex; align-items:center; justify-content:center; margin-bottom:0.75rem;">
-                                        <i class="bi bi-qr-code-scan" style="font-size:1.2rem; color:#f59e0b;"></i>
-                                    </div>
-                                    <h5 style="font-size:0.9rem; font-weight:700; margin-bottom:0.35rem; color:var(--text);">Bayar via QRIS</h5>
-                                    <p class="text-muted mb-0" style="font-size:0.8rem; line-height:1.5;">Scan QRIS dan bayar dari e-wallet atau mobile banking manapun.</p>
-                                </div>
-                            </div>
+                    <!-- Info section -->
+                    <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:1rem;">
+                        <div class="ws-config-card" style="text-align:center; padding:1.25rem;">
+                            <i class="bi bi-lightning-charge-fill" style="font-size:1.3rem; color:#10b981; margin-bottom:0.5rem; display:block;"></i>
+                            <div style="font-weight:700; font-size:0.85rem; color:var(--text); margin-bottom:0.25rem;">Aktivasi Instan</div>
+                            <div class="text-muted" style="font-size:0.78rem; line-height:1.5;">Fitur langsung aktif setelah pembayaran dikonfirmasi.</div>
+                        </div>
+                        <div class="ws-config-card" style="text-align:center; padding:1.25rem;">
+                            <i class="bi bi-infinity" style="font-size:1.3rem; color:var(--primary); margin-bottom:0.5rem; display:block;"></i>
+                            <div style="font-weight:700; font-size:0.85rem; color:var(--text); margin-bottom:0.25rem;">Selamanya</div>
+                            <div class="text-muted" style="font-size:0.78rem; line-height:1.5;">Sekali bayar, tanpa biaya bulanan. Berlaku seumur hidup.</div>
+                        </div>
+                        <div class="ws-config-card" style="text-align:center; padding:1.25rem;">
+                            <i class="bi bi-qr-code-scan" style="font-size:1.3rem; color:#f59e0b; margin-bottom:0.5rem; display:block;"></i>
+                            <div style="font-weight:700; font-size:0.85rem; color:var(--text); margin-bottom:0.25rem;">Bayar via QRIS</div>
+                            <div class="text-muted" style="font-size:0.78rem; line-height:1.5;">Scan & bayar dari e-wallet atau mobile banking manapun.</div>
                         </div>
                     </div>
 
