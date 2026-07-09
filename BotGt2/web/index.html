@@ -2871,6 +2871,7 @@
                 } else {
                     loginOverlay.classList.add("d-none");
                     loginOverlay.style.display = "none";
+                    if (typeof initSidebarProfile === "function") initSidebarProfile();
                     fetchData();
                     initPairing();
                     handleInitialRoute(); // Load segment from URL
@@ -2915,6 +2916,7 @@
                     document.getElementById("login-overlay").style.display = "none";
                     
                     showToast("Berhasil masuk ke panel!");
+                    if (typeof initSidebarProfile === "function") initSidebarProfile();
                     fetchData();
                     initPairing();
                     handleInitialRoute(); // Load segment from URL
