@@ -377,16 +377,18 @@ app.post('/api/payment/create', async (req, res) => {
         });
 
         const resData = response.data;
+        const qrisString = (resData && resData.payment) ? resData.payment.payment_number : null;
+
         // Simpan transaksi di DB lokal
         await query.run(
             "INSERT INTO transactions (order_id, amount, status, payment_url, qris_data) VALUES (?, ?, 'pending', ?, ?)",
-            [orderId, 10000, resData.payment_url || null, resData.qr_string || resData.qris_data || null]
+            [orderId, 10000, null, qrisString]
         );
 
         res.json({
             success: true,
             order_id: orderId,
-            qris_data: resData.qr_string || resData.qris_data || null,
+            qris_data: qrisString,
             amount: 10000
         });
     } catch (err) {
