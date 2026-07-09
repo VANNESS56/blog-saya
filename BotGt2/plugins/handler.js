@@ -672,12 +672,12 @@ module.exports = async (conn, m) => {
 
                 case 'menu':
                 case 'help': {
-                    // Pengecekan lisensi Maker Menu
+                    // Pengecekan lisensi Downloader Menu
                     if (!config.maker_menu_active && !isOwner) {
                         return await sendReply(
-                            `❌ *FITUR MAKER MENU TERKUNCI*\n\n` +
-                            `Mohon maaf, fitur menu bot saat ini dinonaktifkan karena belum diaktivasi oleh pemilik.\n\n` +
-                            `Silakan lakukan aktivasi lisensi menu secara instan melalui Dashboard Pricing Kucai Bot.`
+                            `❌ *FITUR DOWNLOADER MENU TERKUNCI*\n\n` +
+                            `Mohon maaf, fitur downloader bot saat ini dinonaktifkan karena belum diaktivasi oleh pemilik.\n\n` +
+                            `Silakan lakukan aktivasi lisensi downloader secara instan melalui Dashboard Pricing Kucai Bot.`
                         );
                     }
 

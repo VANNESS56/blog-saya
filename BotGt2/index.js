@@ -432,7 +432,7 @@ app.post('/api/payment/webhook', async (req, res) => {
             // Update transaksi lokal
             await query.run("UPDATE transactions SET status = 'success' WHERE order_id = ?", [order_id]);
             
-            // Enable MAKER MENU
+            // Enable DOWNLOADER MENU
             await query.run("UPDATE bot_settings SET maker_menu_active = 1 WHERE id = 1");
             await syncJsonData();
             
@@ -459,7 +459,7 @@ app.post('/api/payment/webhook', async (req, res) => {
                 maker_menu_active: true
             };
             broadcastUpdate('bot-settings-update', mappedSettings);
-            console.log(chalk.bold.green(`[SUCCESS] Fitur MAKER MENU telah berhasil di-aktifkan!`));
+            console.log(chalk.bold.green(`[SUCCESS] Fitur DOWNLOADER MENU telah berhasil di-aktifkan!`));
         }
         res.json({ success: true });
     } catch (err) {
