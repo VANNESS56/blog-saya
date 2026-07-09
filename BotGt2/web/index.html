@@ -58,43 +58,43 @@
             <span style="font-weight: 800; font-family: 'Poppins', sans-serif;"><span style="color: var(--text);">kucai</span><span style="color: var(--primary);">bot.</span></span>
         </div>
         <nav class="sidebar-nav" id="sidebar-menu">
-            <a class="sidebar-link active" data-target="dashboard-section">
+            <a class="sidebar-link active" data-target="dashboard-section" data-path="/dashboard">
                 <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
             </a>
-            <a class="sidebar-link" data-target="pricing-section">
+            <a class="sidebar-link" data-target="pricing-section" data-path="/pricing">
                 <i class="bi bi-currency-dollar"></i><span>Pricing</span>
             </a>
-            <a class="sidebar-link" data-target="faq-section">
+            <a class="sidebar-link" data-target="faq-section" data-path="/faq">
                 <i class="bi bi-bookmark-fill"></i><span>FAQ's</span>
             </a>
-            <a class="sidebar-link" data-target="changelog-section">
+            <a class="sidebar-link" data-target="changelog-section" data-path="/changelog">
                 <i class="bi bi-activity"></i><span>Changelog</span>
             </a>
 
             <div class="sidebar-category">BOT</div>
             
-            <a class="sidebar-link" data-target="bot-settings-section">
+            <a class="sidebar-link" data-target="bot-settings-section" data-path="/config">
                 <i class="bi bi-sliders"></i><span>Config</span>
             </a>
-            <a class="sidebar-link" data-target="mass-section">
+            <a class="sidebar-link" data-target="mass-section" data-path="/mass">
                 <i class="bi bi-send-fill"></i><span>Mass</span>
             </a>
-            <a class="sidebar-link" data-target="triggers-section">
+            <a class="sidebar-link" data-target="triggers-section" data-path="/triggers">
                 <i class="bi bi-chat-left-quote-fill"></i><span>Command</span>
             </a>
-            <a class="sidebar-link" data-target="filter-command-section">
+            <a class="sidebar-link" data-target="filter-command-section" data-path="/filter-command">
                 <i class="bi bi-funnel-fill"></i><span>Filter Command</span>
             </a>
-            <a class="sidebar-link" data-target="script-section">
+            <a class="sidebar-link" data-target="script-section" data-path="/script">
                 <i class="bi bi-code-slash"></i><span>Script</span>
             </a>
-            <a class="sidebar-link" data-target="galeri-script-section">
+            <a class="sidebar-link" data-target="galeri-script-section" data-path="/galeri-script">
                 <i class="bi bi-globe2"></i><span>Galeri Script</span>
             </a>
-            <a class="sidebar-link" data-target="menu-section">
+            <a class="sidebar-link" data-target="menu-section" data-path="/menu">
                 <i class="bi bi-list-ul"></i><span>Menu</span>
             </a>
-            <a class="sidebar-link" data-target="statistik-section">
+            <a class="sidebar-link" data-target="statistik-section" data-path="/statistik">
                 <i class="bi bi-bar-chart-fill"></i><span>Statistik</span>
             </a>
 
@@ -982,35 +982,71 @@
             sidebar.classList.remove("open");
         });
 
-        // ===== SPA Navigation =====
+        // ===== SPA Navigation (Pretty URL Router) =====
         var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link");
         var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section"];
+
+        function showSectionByTarget(target, path) {
+            // Update active state di sidebar
+            menuLinks.forEach(function(l) {
+                l.classList.toggle("active", l.getAttribute("data-target") === target);
+            });
+
+            // Show/hide section HTML
+            allSections.forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) {
+                    if (id === target) {
+                        el.classList.remove("d-none");
+                    } else {
+                        el.classList.add("d-none");
+                    }
+                }
+            });
+
+            // Update Browser URL bar
+            if (path && window.location.pathname !== path) {
+                window.history.pushState({ target: target, path: path }, "", path);
+            }
+        }
 
         menuLinks.forEach(function(link) {
             link.addEventListener("click", function() {
                 var target = link.getAttribute("data-target");
-
-                // Update active state
-                menuLinks.forEach(function(l) { l.classList.remove("active"); });
-                link.classList.add("active");
-
-                // Show/hide sections
-                allSections.forEach(function(id) {
-                    var el = document.getElementById(id);
-                    if (el) {
-                        if (id === target) {
-                            el.classList.remove("d-none");
-                        } else {
-                            el.classList.add("d-none");
-                        }
-                    }
-                });
+                var path = link.getAttribute("data-path");
+                if (target) {
+                    showSectionByTarget(target, path);
+                }
 
                 // Close sidebar on mobile
                 if (window.innerWidth < 768) {
                     sidebar.classList.remove("open");
                 }
             });
+        });
+
+        // Deteksi Route Awal saat page load
+        function handleInitialRoute() {
+            var currentPath = window.location.pathname;
+            var matchedLink = Array.from(menuLinks).find(function(l) {
+                return l.getAttribute("data-path") === currentPath;
+            });
+            if (matchedLink) {
+                var target = matchedLink.getAttribute("data-target");
+                showSectionByTarget(target, currentPath);
+            } else {
+                // Fallback ke dashboard jika url root "/"
+                showSectionByTarget("dashboard-section", "/dashboard");
+            }
+        }
+
+        // Handle Back/Forward Browser Buttons
+        window.addEventListener("popstate", function(event) {
+            if (event.state && event.state.target) {
+                showSectionByTarget(event.state.target, event.state.path);
+            } else {
+                handleInitialRoute();
+            }
         });
 
         // ===== Theme Toggle =====
@@ -1887,6 +1923,7 @@
                     loginOverlay.style.display = "none";
                     fetchData();
                     initPairing();
+                    handleInitialRoute(); // Load segment from URL
                 }
             }).catch(function() {
                 // Offline/Error koneksi sementara
@@ -1894,6 +1931,7 @@
                 loginOverlay.style.display = "none";
                 fetchData();
                 initPairing();
+                handleInitialRoute(); // Load segment from URL
             });
         }
 
@@ -1929,6 +1967,7 @@
                     showToast("Berhasil masuk ke panel!");
                     fetchData();
                     initPairing();
+                    handleInitialRoute(); // Load segment from URL
                 }
             }).catch(function(err) {
                 showToast("Error verifikasi: " + err.message, "error");

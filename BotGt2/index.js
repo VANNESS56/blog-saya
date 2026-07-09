@@ -74,6 +74,17 @@ app.use(express.json());
 // Serve static web dashboard files
 app.use(express.static(path.join(__dirname, 'web')));
 
+// Clean Pretty URLs for Dashboard Sections
+const serveIndex = (req, res) => {
+    res.sendFile(path.join(__dirname, 'web', 'index.html'));
+};
+
+app.get('/dashboard', serveIndex);
+app.get('/menu', serveIndex);
+app.get('/config', serveIndex);
+app.get('/triggers', serveIndex);
+app.get('/pairing', serveIndex);
+
 // Broadcast helper for Socket.io
 function broadcastUpdate(channel, data) {
     io.emit(channel, data);
