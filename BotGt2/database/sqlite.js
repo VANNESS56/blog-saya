@@ -100,6 +100,10 @@ function initTables() {
                         'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'
                     )
                 `);
+            } else {
+                // Ensure columns exist on older DB creations
+                db.run("ALTER TABLE bot_settings ADD COLUMN menu_title TEXT DEFAULT 'BOT KUCAI AKUN'", () => {});
+                db.run("ALTER TABLE bot_settings ADD COLUMN menu_body TEXT DEFAULT 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'", () => {});
             }
         });
 
