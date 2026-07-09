@@ -1543,10 +1543,10 @@
                 fetch('https://api.ipify.org?format=json')
                     .then(function(r) { return r.json(); })
                     .then(function(data) {
-                        ipEl.textContent = data.ip;
+                        if (ipEl && data) ipEl.textContent = data.ip;
                     })
                     .catch(function() {
-                        ipEl.textContent = "Gagal memuat";
+                        if (ipEl) ipEl.textContent = "Gagal memuat";
                     });
             }
         }
