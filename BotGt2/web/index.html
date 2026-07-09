@@ -3103,12 +3103,13 @@
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
                     tableBody.innerHTML = "";
-                    if (!data || data.length === 0) {
+                    var list = Array.isArray(data) ? data : (data && Array.isArray(data.invoices) ? data.invoices : []);
+                    if (list.length === 0) {
                         tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted"><i class="bi bi-receipt-cutoff me-1"></i>Belum ada riwayat transaksi pembelian.</td></tr>';
                         return;
                     }
 
-                    data.forEach(function(tx) {
+                    list.forEach(function(tx) {
                         var tr = document.createElement("tr");
                         
                         // Formatting date
