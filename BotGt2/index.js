@@ -84,6 +84,7 @@ app.get('/menu', serveIndex);
 app.get('/config', serveIndex);
 app.get('/triggers', serveIndex);
 app.get('/pairing', serveIndex);
+app.get('/changelog', serveIndex);
 
 // Broadcast helper for Socket.io
 function broadcastUpdate(channel, data) {
