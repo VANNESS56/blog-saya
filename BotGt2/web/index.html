@@ -1420,10 +1420,11 @@
                         </div>
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
-                                <thead class="table-light">
+                                <thead>
                                     <tr>
                                         <th>Nama Produk</th>
-                                        <th>Tipe</th>
+                                        <th>Tipe & Durasi</th>
+                                        <th>Fitur / Deskripsi (Tanda Centang)</th>
                                         <th>Harga</th>
                                         <th>Status</th>
                                         <th class="text-end">Aksi</th>
@@ -1432,7 +1433,16 @@
                                 <tbody id="dev-products-table-body">
                                     <tr>
                                         <td><strong>Downloader Menu Premium</strong></td>
-                                        <td><span class="badge bg-light text-dark border">Sekali Bayar</span></td>
+                                        <td>
+                                            <span class="badge bg-light text-dark border">Sekali Bayar</span>
+                                            <div class="small text-muted mt-1">Masa Aktif: Selamanya</div>
+                                        </td>
+                                        <td>
+                                            <ul class="mb-0 ps-3 small text-muted">
+                                                <li><i class="bi bi-patch-check-fill text-success me-1"></i>Akses download YouTube & TikTok</li>
+                                                <li><i class="bi bi-patch-check-fill text-success me-1"></i>Tanpa batas limit kuota harian</li>
+                                            </ul>
+                                        </td>
                                         <td class="fw-bold text-primary">Rp 10.000</td>
                                         <td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>
                                         <td class="text-end">
@@ -3578,23 +3588,67 @@
         window.showAddProductModal = function() {
             window.Swal.fire({
                 title: "Tambah Produk Lisensi",
-                html: '<input id="swal-prod-name" class="swal2-input" placeholder="Nama Produk">' +
-                      '<input id="swal-prod-price" class="swal2-input" type="number" placeholder="Harga (Nominal)">',
+                html: 
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Nama Produk</label></div>' +
+                    '<input id="swal-prod-name" class="swal2-input mt-0 mb-3" placeholder="Contoh: Downloader Menu Premium">' +
+                    
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Durasi Produk / Masa Aktif</label></div>' +
+                    '<select id="swal-prod-duration" class="swal2-select w-100 m-0 mb-3" style="height: 50px; font-size: 1rem; border-radius: 5px;">' +
+                        '<option value="selamanya">Sekali Bayar (Selamanya)</option>' +
+                        '<option value="30hari">Berlangganan Bulanan (30 Hari)</option>' +
+                        '<option value="365hari">Berlangganan Tahunan (365 Hari)</option>' +
+                    '</select>' +
+                    
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Harga Produk (Nominal Rp)</label></div>' +
+                    '<input id="swal-prod-price" class="swal2-input mt-0 mb-3" type="number" placeholder="Contoh: 10000">' +
+                    
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Deskripsi Fitur (Tulis satu poin per baris)</label></div>' +
+                    '<textarea id="swal-prod-features" class="swal2-textarea m-0 w-100" rows="3" placeholder="Akses download YouTube & TikTok&#10;Tanpa batas limit kuota harian" style="border-radius: 5px;"></textarea>',
                 focusConfirm: false,
                 confirmButtonText: "Simpan Produk",
                 confirmButtonColor: "#4f46e5",
                 preConfirm: function() {
                     return {
                         name: document.getElementById('swal-prod-name').value,
-                        price: document.getElementById('swal-prod-price').value
+                        duration: document.getElementById('swal-prod-duration').value,
+                        price: document.getElementById('swal-prod-price').value,
+                        features: document.getElementById('swal-prod-features').value
                     };
                 }
             }).then(function(result) {
                 if (result.isConfirmed && result.value.name) {
+                    var featuresHtml = "";
+                    if (result.value.features) {
+                        var lines = result.value.features.split('\n');
+                        featuresHtml += '<ul class="mb-0 ps-3 small text-muted">';
+                        lines.forEach(function(line) {
+                            if (line.trim()) {
+                                featuresHtml += '<li><i class="bi bi-patch-check-fill text-success me-1"></i>' + line.trim() + '</li>';
+                            }
+                        });
+                        featuresHtml += '</ul>';
+                    } else {
+                        featuresHtml = '<span class="text-muted small">-</span>';
+                    }
+
+                    var durationBadge = "Sekali Bayar";
+                    var durationDesc = "Masa Aktif: Selamanya";
+                    if (result.value.duration === "30hari") {
+                        durationBadge = "Bulanan";
+                        durationDesc = "Masa Aktif: 30 Hari";
+                    } else if (result.value.duration === "365hari") {
+                        durationBadge = "Tahunan";
+                        durationDesc = "Masa Aktif: 365 Hari";
+                    }
+
                     var tr = document.createElement("tr");
                     tr.innerHTML = 
                         '<td><strong>' + result.value.name + '</strong></td>' +
-                        '<td><span class="badge bg-light text-dark border">Sekali Bayar</span></td>' +
+                        '<td>' +
+                            '<span class="badge bg-light text-dark border">' + durationBadge + '</span>' +
+                            '<div class="small text-muted mt-1">' + durationDesc + '</div>' +
+                        '</td>' +
+                        '<td>' + featuresHtml + '</td>' +
                         '<td class="fw-bold text-primary">Rp ' + parseInt(result.value.price).toLocaleString('id-ID') + '</td>' +
                         '<td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>' +
                         '<td class="text-end">' +
@@ -3610,8 +3664,22 @@
         window.editProductMock = function() {
             window.Swal.fire({
                 title: "Edit Produk Lisensi",
-                html: '<input id="swal-edit-name" class="swal2-input" value="Downloader Menu Premium" placeholder="Nama Produk">' +
-                      '<input id="swal-edit-price" class="swal2-input" type="number" value="10000" placeholder="Harga (Nominal)">',
+                html: 
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Nama Produk</label></div>' +
+                    '<input id="swal-edit-name" class="swal2-input mt-0 mb-3" value="Downloader Menu Premium" placeholder="Nama Produk">' +
+                    
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Durasi Produk / Masa Aktif</label></div>' +
+                    '<select id="swal-edit-duration" class="swal2-select w-100 m-0 mb-3" style="height: 50px; font-size: 1rem; border-radius: 5px;">' +
+                        '<option value="selamanya" selected>Sekali Bayar (Selamanya)</option>' +
+                        '<option value="30hari">Berlangganan Bulanan (30 Hari)</option>' +
+                        '<option value="365hari">Berlangganan Tahunan (365 Hari)</option>' +
+                    '</select>' +
+                    
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Harga Produk (Nominal Rp)</label></div>' +
+                    '<input id="swal-edit-price" class="swal2-input mt-0 mb-3" type="number" value="10000" placeholder="Harga (Nominal)">' +
+                    
+                    '<div class="text-start mb-2"><label class="small text-muted fw-bold">Deskripsi Fitur (Tulis satu poin per baris)</label></div>' +
+                    '<textarea id="swal-edit-features" class="swal2-textarea m-0 w-100" rows="3" style="border-radius: 5px;">Akses download YouTube & TikTok&#10;Tanpa batas limit kuota harian</textarea>',
                 confirmButtonText: "Update Produk",
                 confirmButtonColor: "#4f46e5"
             }).then(function(result) {
