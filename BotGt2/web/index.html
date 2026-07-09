@@ -1082,6 +1082,8 @@
 
         // ===== Fetch All Data =====
         function fetchData() {
+            var dbStatus = document.getElementById("db-status");
+            var dbIcon = document.getElementById("db-icon");
             if (dbStatus) {
                 dbStatus.textContent = "Menghubungkan...";
                 dbStatus.className = "stat-value text-primary";
