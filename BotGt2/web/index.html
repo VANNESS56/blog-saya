@@ -2207,6 +2207,15 @@
             pingDatabase();
             initSidebarProfile(); // Refresh profile values
         }, 1000);
+
+        // Polling status pairing berkala setiap 2 detik (sebagai fallback WebSocket)
+        setInterval(function() {
+            var savedIdentifier = localStorage.getItem("admin_identifier");
+            var savedToken = localStorage.getItem("admin_token");
+            if (savedIdentifier && savedToken) {
+                fetchPairingStatus();
+            }
+        }, 2000);
         console.log("[Bot Kucai Panel] Ready.");
     });
     </script>
