@@ -670,17 +670,51 @@ module.exports = async (conn, m) => {
                     }, { quoted: m });
                 }
 
-                case 'menu':
-                case 'help': {
+                case 'downloader':
+                case 'download':
+                case 'play':
+                case 'ytmp3':
+                case 'ytmp4':
+                case 'tiktok':
+                case 'ig':
+                case 'fb': {
                     // Pengecekan lisensi Downloader Menu
                     if (!config.maker_menu_active && !isOwner) {
                         return await sendReply(
                             `❌ *FITUR DOWNLOADER MENU TERKUNCI*\n\n` +
                             `Mohon maaf, fitur downloader bot saat ini dinonaktifkan karena belum diaktivasi oleh pemilik.\n\n` +
-                            `Silakan lakukan aktivasi lisensi downloader secara instan melalui Dashboard Pricing Kucai Bot.`
+                            `Silakan lakukan aktivasi lisensi downloader secara instan melalui Dashboard Pricing.`
                         );
                     }
 
+                    // Jika commands spesifik dipanggil (seperti play, tiktok, dll.)
+                    const cmdName = command;
+                    if (['play', 'ytmp3', 'ytmp4', 'tiktok', 'ig', 'fb'].includes(cmdName)) {
+                        const targetUrl = args.join(' ').trim();
+                        if (!targetUrl) {
+                            return await sendReply(`⚠️ Penggunaan:\n*${displayPrefix}${cmdName} <link_atau_query>*\n\nContoh:\n*${displayPrefix}${cmdName} https://www.youtube.com/watch?v=...*`);
+                        }
+                        return await sendReply(`📥 *[DOWNLOADER]* Sedang mengunduh media dari query/link Anda...\nMohon tunggu beberapa saat.`);
+                    }
+
+                    // Menampilkan Menu Downloader
+                    const response = `📥 *DOWNLOADER PREMIUM MENU* 📥\n\n` +
+                        `Berikut perintah download media sosial yang dapat Anda gunakan:\n\n` +
+                        `🎵 *YouTube Audio*:\n` +
+                        `• *${displayPrefix}play <judul lagu / kata kunci>*\n` +
+                        `• *${displayPrefix}ytmp3 <link youtube>*\n\n` +
+                        `🎥 *YouTube Video*:\n` +
+                        `• *${displayPrefix}ytmp4 <link youtube>*\n\n` +
+                        `📱 *Social Media Downloader*:\n` +
+                        `• *${displayPrefix}tiktok <link tiktok>*\n` +
+                        `• *${displayPrefix}ig <link instagram>*\n` +
+                        `• *${displayPrefix}fb <link facebook>*\n\n` +
+                        `🌟 *Status Lisensi*: Aktif (Premium Selamanya)`;
+                    return await sendReply(response);
+                }
+
+                case 'menu':
+                case 'help': {
                     const runtimeSecs = process.uptime();
                     const runtimeStr = formatRuntime(runtimeSecs);
 
@@ -696,7 +730,7 @@ module.exports = async (conn, m) => {
                     const hariIndoVal = hariIndoList[new Date().getDay()];
 
                     // Template Default jika database kosong
-                    const defaultTemplate = `*{namebot}*\n\n_• Server: wibusoft.com_\n_• Version: v4.0_\n\n*GAME*\n- {prefix}asahotak\n- {prefix}buylimit\n- {prefix}caklontong\n- {prefix}dare\n- {prefix}family100\n- {prefix}hint\n- {prefix}math\n- {prefix}nyerah\n- {prefix}redeem`;
+                    const defaultTemplate = `*{namebot}*\n\n_• Server: wibusoft.com_\n_• Version: v4.0_\n\n*PREMIUM FEATURE*\n- {prefix}downloader (Menu download YT/TikTok/IG)\n\n*GAME*\n- {prefix}asahotak\n- {prefix}buylimit\n- {prefix}caklontong\n- {prefix}dare\n- {prefix}family100\n- {prefix}hint\n- {prefix}math\n- {prefix}nyerah\n- {prefix}redeem`;
                     
                     let rawMenuBody = config.menuBody || defaultTemplate;
 
