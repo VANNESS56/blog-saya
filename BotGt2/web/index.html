@@ -112,6 +112,11 @@
             <a class="sidebar-link" data-target="affiliate-section">
                 <i class="bi bi-people-fill"></i><span>Affiliate</span>
             </a>
+            
+            <!-- Dynamic Developer Menu (Visible only to developers) -->
+            <a class="sidebar-link d-none" id="sidebar-developer-menu" data-target="dev-section" data-path="/dev">
+                <i class="bi bi-code-square"></i><span>Developer</span>
+            </a>
         </nav>
         
         <div class="sidebar-footer">
@@ -1330,6 +1335,163 @@
                     <h2 class="ws-coming-soon-title">Statistik</h2>
                     <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
                     <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
+                </div>
+            </section>
+
+            <!-- ========== DEVELOPER SECTION (Dashboard Control) ========== -->
+            <section id="dev-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1>Developer Control Panel</h1>
+                            <p>Manajemen tingkat lanjut sistem, pricing, changelog, lisensi, dan monitoring transaksi.</p>
+                        </div>
+                        <span class="badge bg-danger px-3 py-2 rounded-3"><i class="bi bi-shield-lock-fill me-1"></i>Developer Mode</span>
+                    </div>
+
+                    <!-- Developer Cards Grid -->
+                    <div class="row g-4 mb-4">
+                        <!-- Card 1: Toggle Fitur Owner -->
+                        <div class="col-md-6">
+                            <div class="ws-config-card h-100">
+                                <div class="card-section-header">
+                                    <h2><i class="bi bi-toggle-on text-primary me-2"></i>Toggle Fitur Owner</h2>
+                                    <p>Aktifkan atau matikan hak akses menu secara paksa untuk Owner.</p>
+                                </div>
+                                <div class="ws-checkbox-stack mt-3">
+                                    <div class="ws-checkbox-row">
+                                        <input type="checkbox" id="dev-toggle-maker-menu">
+                                        <div class="ws-checkbox-content">
+                                            <label class="ws-checkbox-label" for="dev-toggle-maker-menu">Lisensi Downloader Menu Premium</label>
+                                            <p class="ws-checkbox-hint">Aktifkan ini untuk membuka fitur menu downloader secara langsung tanpa harus melakukan pembayaran.</p>
+                                        </div>
+                                    </div>
+                                    <div class="ws-checkbox-row mt-3">
+                                        <input type="checkbox" id="dev-toggle-maintenance">
+                                        <div class="ws-checkbox-content">
+                                            <label class="ws-checkbox-label" for="dev-toggle-maintenance">Mode Maintenance Web Dashboard</label>
+                                            <p class="ws-checkbox-hint">Kunci seluruh dashboard dan tampilkan halaman pemeliharaan sistem.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-4">
+                                    <button class="btn btn-primary w-100 rounded-3 py-2" id="dev-save-features-btn">
+                                        <i class="bi bi-check-circle me-1"></i>Terapkan Perubahan Fitur
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Monitoring Transaksi -->
+                        <div class="col-md-6">
+                            <div class="ws-config-card h-100">
+                                <div class="card-section-header">
+                                    <h2><i class="bi bi-wallet2 text-success me-2"></i>Monitoring Transaksi</h2>
+                                    <p>Pantau pembayaran yang masuk secara realtime.</p>
+                                </div>
+                                <div class="d-flex flex-column gap-3 mt-3">
+                                    <div class="p-3 bg-light-subtle rounded-3 border d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="small text-muted">Total Pembayaran Berhasil</div>
+                                            <h4 class="fw-bold mb-0 text-success mt-1" id="dev-total-success-amount">Rp 0</h4>
+                                        </div>
+                                        <i class="bi bi-cash-coin fs-2 text-success"></i>
+                                    </div>
+                                    <div class="p-3 bg-light-subtle rounded-3 border d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <div class="small text-muted">Total Transaksi</div>
+                                            <h4 class="fw-bold mb-0 text-dark mt-1" id="dev-total-tx-count">0 Transaksi</h4>
+                                        </div>
+                                        <i class="bi bi-receipt fs-2 text-primary"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Manage Changelog & Pricing Tabs -->
+                    <div class="ws-config-card p-0 overflow-hidden mb-4">
+                        <div class="border-bottom px-3 py-2 bg-light d-flex gap-2">
+                            <button class="btn btn-sm btn-dark rounded-3 px-3 py-1.5" id="tab-btn-changelog" onclick="switchDevTab('changelog')">Kelola Changelog</button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5" id="tab-btn-pricing" onclick="switchDevTab('pricing')">Kelola Produk Pricing</button>
+                        </div>
+
+                        <!-- Content Changelog Tab -->
+                        <div id="dev-tab-changelog-content" class="p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="fs-6 fw-bold mb-0">Publish Changelog Baru</h3>
+                            </div>
+                            <form id="dev-add-changelog-form" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label small text-muted">Versi</label>
+                                    <input type="text" class="form-control" id="dev-changelog-version" placeholder="v4.12.0" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small text-muted">Tanggal</label>
+                                    <input type="text" class="form-control" id="dev-changelog-date" placeholder="09 Juli 2026" required>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small text-muted">Tipe Update</label>
+                                    <select class="form-select" id="dev-changelog-type">
+                                        <option value="FITUR">FITUR (Penambahan Fitur)</option>
+                                        <option value="IMPROVEMENT" selected>IMPROVEMENT (Peningkatan)</option>
+                                        <option value="BUGFIX">BUGFIX (Perbaikan Bug)</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label small text-muted">Judul Ringkas</label>
+                                    <input type="text" class="form-control" id="dev-changelog-title" placeholder="Fitur Invoice Histori" required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small text-muted">Deskripsi Singkat</label>
+                                    <input type="text" class="form-control" id="dev-changelog-desc" placeholder="Menambahkan halaman rekap invoice history transaksi pembeli." required>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label small text-muted">Detail List Item (Pisahkan dengan tanda koma `,` atau enter)</label>
+                                    <textarea class="form-control" id="dev-changelog-details" rows="3" placeholder='["Halaman Invoice list history", "Status badge real-time scan QRIS"]' required></textarea>
+                                </div>
+                                <div class="col-12 text-end">
+                                    <button type="submit" class="btn btn-primary px-4 rounded-3"><i class="bi bi-send me-1"></i>Publish Update</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Content Pricing Tab (Manage Pricing) -->
+                        <div id="dev-tab-pricing-content" class="p-4 d-none">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h3 class="fs-6 fw-bold mb-0">Kelola Produk & Harga Lisensi</h3>
+                                <button class="btn btn-sm btn-success rounded-3" onclick="showAddProductModal()"><i class="bi bi-plus-circle me-1"></i>Tambah Produk</button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Nama Produk</th>
+                                            <th>Tipe</th>
+                                            <th>Harga</th>
+                                            <th>Status</th>
+                                            <th class="text-end">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dev-products-table-body">
+                                        <tr>
+                                            <td><strong>Downloader Menu Premium</strong></td>
+                                            <td><span class="badge bg-light text-dark border">Sekali Bayar</span></td>
+                                            <td class="fw-bold text-primary">Rp 10.000</td>
+                                            <td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>
+                                            <td class="text-end">
+                                                <button class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-3" onclick="editProductMock()" style="font-size:0.75rem;"><i class="bi bi-pencil me-1"></i>Edit</button>
+                                                <button class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-3 ms-1" onclick="deleteProductMock()" style="font-size:0.75rem;"><i class="bi bi-trash me-1"></i>Hapus</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+
                 </div>
             </section>
 
@@ -3008,6 +3170,11 @@
 
                             // Tampilkan modal
                             if (qrisModalInstance) qrisModalInstance.show();
+ 
+                             // Refresh daftar invoice secara background agar list update
+                             if (typeof fetchInvoices === "function") {
+                                 fetchInvoices();
+                             }
 
                             // Mulai Polling status pembayaran setiap 2 detik
                             startPaymentPolling(res.order_id);
@@ -3232,6 +3399,225 @@
             themeIcon.className = theme === "dark" ? "bi bi-sun" : "bi bi-moon";
         }
 
+        // ===== Developer Panel Control Logic =====
+        window.switchDevTab = function(tabName) {
+            var tabChangelog = document.getElementById("dev-tab-changelog-content");
+            var tabPricing = document.getElementById("dev-tab-pricing-content");
+            var btnChangelog = document.getElementById("tab-btn-changelog");
+            var btnPricing = document.getElementById("tab-btn-pricing");
+
+            if (tabName === 'changelog') {
+                tabChangelog.classList.remove("d-none");
+                tabPricing.classList.add("d-none");
+                btnChangelog.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
+                btnPricing.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
+            } else {
+                tabChangelog.classList.add("d-none");
+                tabPricing.classList.remove("d-none");
+                btnChangelog.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
+                btnPricing.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
+            }
+        };
+
+        // Fetch & Populate Developer Section Data
+        function fetchDevPanelData() {
+            // Load current toggles from settings
+            fetch(API_URL + "/api/settings")
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data) {
+                        document.getElementById("dev-toggle-maker-menu").checked = !!data.maker_menu_active;
+                        document.getElementById("dev-toggle-maintenance").checked = !!data.maintenance_mode;
+                    }
+                });
+
+            // Load transaction monitoring stats
+            fetch(API_URL + "/api/invoices")
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    var list = Array.isArray(data) ? data : [];
+                    var successAmount = 0;
+                    list.forEach(function(tx) {
+                        if (tx.status === "success") {
+                            successAmount += tx.amount;
+                        }
+                    });
+                    document.getElementById("dev-total-success-amount").textContent = "Rp " + successAmount.toLocaleString('id-ID');
+                    document.getElementById("dev-total-tx-count").textContent = list.length + " Transaksi";
+                });
+        }
+
+        // Save Developer Toggle Features
+        var devSaveFeaturesBtn = document.getElementById("dev-save-features-btn");
+        if (devSaveFeaturesBtn) {
+            devSaveFeaturesBtn.addEventListener("click", function() {
+                var btn = this;
+                btn.setAttribute("disabled", "true");
+                btn.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i>Menyimpan...';
+
+                // Fetch existing settings first, update specific properties
+                fetch(API_URL + "/api/settings")
+                    .then(function(r) { return r.json(); })
+                    .then(function(currentSettings) {
+                        currentSettings.maker_menu_active = document.getElementById("dev-toggle-maker-menu").checked;
+                        currentSettings.maintenance_mode = document.getElementById("dev-toggle-maintenance").checked;
+
+                        return fetch(API_URL + "/api/settings", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify(currentSettings)
+                        });
+                    })
+                    .then(function(r) { return r.json(); })
+                    .then(function(res) {
+                        if (!res.success) throw new Error(res.error || "Gagal");
+                        showToast("Konfigurasi fitur Developer berhasil disimpan!");
+                        fetchSettings();
+                    })
+                    .catch(function(err) {
+                        showToast("Gagal menyimpan: " + err.message, "error");
+                    })
+                    .finally(function() {
+                        btn.removeAttribute("disabled");
+                        btn.innerHTML = '<i class="bi bi-check-circle me-1"></i>Terapkan Perubahan Fitur';
+                    });
+            });
+        }
+
+        // Add Changelog Form Submit
+        var devAddChangelogForm = document.getElementById("dev-add-changelog-form");
+        if (devAddChangelogForm) {
+            devAddChangelogForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+                var btn = this.querySelector('button[type="submit"]');
+                btn.setAttribute("disabled", "true");
+
+                var version = document.getElementById("dev-changelog-version").value.trim();
+                var date = document.getElementById("dev-changelog-date").value.trim();
+                var type = document.getElementById("dev-changelog-type").value;
+                var title = document.getElementById("dev-changelog-title").value.trim();
+                var desc = document.getElementById("dev-changelog-desc").value.trim();
+                var detailsRaw = document.getElementById("dev-changelog-details").value.trim();
+
+                var details = [];
+                try {
+                    // Try parsing as JSON array
+                    if (detailsRaw.startsWith("[")) {
+                        details = JSON.parse(detailsRaw);
+                    } else {
+                        // Split by comma or newline
+                        details = detailsRaw.split(/[,\n]/).map(function(s) { return s.trim(); }).filter(Boolean);
+                    }
+                } catch(e) {
+                    details = [detailsRaw];
+                }
+
+                var payload = {
+                    version: version,
+                    date: date,
+                    type: type,
+                    title: title,
+                    description: desc,
+                    details: details
+                };
+
+                fetch(API_URL + "/api/changelogs", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                }).then(function(r) { return r.json(); }).then(function(res) {
+                    if (!res.success) throw new Error("Gagal");
+                    showToast("Changelog baru berhasil dipublikasikan!");
+                    devAddChangelogForm.reset();
+                    if (typeof fetchChangelogs === "function") fetchChangelogs();
+                }).catch(function(err) {
+                    showToast("Gagal mempublikasikan: " + err.message, "error");
+                }).finally(function() {
+                    btn.removeAttribute("disabled");
+                });
+            });
+        }
+
+        // Mock functions for Pricing Product Management
+        window.showAddProductModal = function() {
+            window.Swal.fire({
+                title: "Tambah Produk Lisensi",
+                html: '<input id="swal-prod-name" class="swal2-input" placeholder="Nama Produk">' +
+                      '<input id="swal-prod-price" class="swal2-input" type="number" placeholder="Harga (Nominal)">',
+                focusConfirm: false,
+                confirmButtonText: "Simpan Produk",
+                confirmButtonColor: "#4f46e5",
+                preConfirm: function() {
+                    return {
+                        name: document.getElementById('swal-prod-name').value,
+                        price: document.getElementById('swal-prod-price').value
+                    };
+                }
+            }).then(function(result) {
+                if (result.isConfirmed && result.value.name) {
+                    var tr = document.createElement("tr");
+                    tr.innerHTML = 
+                        '<td><strong>' + result.value.name + '</strong></td>' +
+                        '<td><span class="badge bg-light text-dark border">Sekali Bayar</span></td>' +
+                        '<td class="fw-bold text-primary">Rp ' + parseInt(result.value.price).toLocaleString('id-ID') + '</td>' +
+                        '<td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>' +
+                        '<td class="text-end">' +
+                            '<button class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-3" onclick="editProductMock()" style="font-size:0.75rem;"><i class="bi bi-pencil me-1"></i>Edit</button>' +
+                            '<button class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-3 ms-1" onclick="deleteProductMock()" style="font-size:0.75rem;"><i class="bi bi-trash me-1"></i>Hapus</button>' +
+                        '</td>';
+                    document.getElementById("dev-products-table-body").appendChild(tr);
+                    showToast("Produk pricing baru berhasil ditambahkan!");
+                }
+            });
+        };
+
+        window.editProductMock = function() {
+            window.Swal.fire({
+                title: "Edit Produk Lisensi",
+                html: '<input id="swal-edit-name" class="swal2-input" value="Downloader Menu Premium" placeholder="Nama Produk">' +
+                      '<input id="swal-edit-price" class="swal2-input" type="number" value="10000" placeholder="Harga (Nominal)">',
+                confirmButtonText: "Update Produk",
+                confirmButtonColor: "#4f46e5"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    showToast("Data produk berhasil diperbarui!");
+                }
+            });
+        };
+
+        window.deleteProductMock = function() {
+            window.Swal.fire({
+                title: "Hapus Produk?",
+                text: "Menghapus produk ini akan menonaktifkannya di daftar pembelian client.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Ya, Hapus",
+                confirmButtonColor: "#dc3545"
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    showToast("Produk berhasil dihapus!");
+                }
+            });
+        };
+
+        // Bind Developer Section Click to fetch its data
+        var devSidebarMenu = document.getElementById("sidebar-developer-menu");
+        if (devSidebarMenu) {
+            devSidebarMenu.addEventListener("click", function() {
+                fetchDevPanelData();
+            });
+        }
+
+        // ===== Theme Toggle =====
+        var themeToggleBtn = document.getElementById("theme-toggle-btn");
+        var themeIcon = document.getElementById("theme-icon");
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+            themeIcon.className = theme === "dark" ? "bi bi-sun" : "bi bi-moon";
+        }
+
         themeToggleBtn.addEventListener("click", function() {
             var current = document.documentElement.getAttribute("data-theme");
             setTheme(current === "dark" ? "light" : "dark");
@@ -3287,6 +3673,88 @@
             } else {
                 infoCard.classList.add("d-none");
             }
+        }
+
+        // Update Profile Info in Sidebar Footer Dinamis & Check Role Developer
+        function initSidebarProfile() {
+            var identifier = localStorage.getItem("admin_identifier") || "-";
+            var token = localStorage.getItem("admin_token") || "-";
+
+            // Reveal Developer Menu dynamically if identifier & token matches Developer Credentials
+            var devMenu = document.getElementById("sidebar-developer-menu");
+            if (devMenu) {
+                if (identifier === "628999991950" && token === "developer") {
+                    devMenu.classList.remove("d-none");
+                } else {
+                    devMenu.classList.add("d-none");
+                }
+            }
+
+            var ownerList = [];
+            if (window.botSettings) {
+                if (Array.isArray(window.botSettings.ownerNumbers)) ownerList = ownerList.concat(window.botSettings.ownerNumbers);
+                else if (Array.isArray(window.botSettings.owner_numbers)) ownerList = ownerList.concat(window.botSettings.owner_numbers);
+            }
+            if (DEFAULT_SETTINGS) {
+                if (Array.isArray(DEFAULT_SETTINGS.ownerNumbers)) ownerList = ownerList.concat(DEFAULT_SETTINGS.ownerNumbers);
+                else if (Array.isArray(DEFAULT_SETTINGS.owner_numbers)) ownerList = ownerList.concat(DEFAULT_SETTINGS.owner_numbers);
+            }
+
+            var cleanIdentifier = identifier.trim().replace(/[^0-9]/g, '');
+            var isOwner = ownerList.some(function(num) {
+                var cleanNum = String(num).trim().replace(/[^0-9]/g, '');
+                return cleanNum === cleanIdentifier && cleanNum.length > 0;
+            });
+
+            var nameEl = document.getElementById("sidebar-user-name");
+            var roleEl = document.getElementById("sidebar-user-role");
+            var roleStatVal = document.getElementById("bot-role-text");
+
+            if (identifier === "628999991950" && token === "developer") {
+                nameEl.textContent = "Developer Kucai";
+                roleEl.textContent = "Developer";
+                if (roleStatVal) roleStatVal.textContent = "Developer";
+            } else if (isOwner) {
+                nameEl.textContent = "Alvin Kucai";
+                roleEl.textContent = "Owner";
+                if (roleStatVal) roleStatVal.textContent = "Owner";
+            } else {
+                nameEl.textContent = identifier.substring(0, 12) + (identifier.length > 12 ? "..." : "");
+                roleEl.textContent = "Admin";
+                if (roleStatVal) roleStatVal.textContent = "Admin";
+            }
+        }
+
+        // Bind profile click to sidebar profile button
+        var sidebarProfileBtn = document.getElementById("sidebar-profile-btn");
+        if (sidebarProfileBtn) {
+            sidebarProfileBtn.addEventListener("click", function() {
+                document.getElementById("topbar-avatar-btn").click();
+            });
+        }
+
+        // ===== FAQ Accordion Toggle =====
+        window.toggleFaq = function(el) {
+            var item = el.closest('.faq-item');
+            if (!item) return;
+            var isOpen = item.classList.contains('open');
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(function(faq) {
+                faq.classList.remove('open');
+            });
+            // Toggle clicked one
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        };
+
+        // ===== Sidebar Logout Button =====
+        var sidebarLogoutBtn = document.getElementById("sidebar-logout-btn");
+        if (sidebarLogoutBtn) {
+            sidebarLogoutBtn.addEventListener("click", function(e) {
+                e.stopPropagation(); // Prevent profile click
+                document.getElementById("web-logout-btn").click();
+            });
         }
 
         // ===== Boot =====

@@ -207,7 +207,11 @@ app.get('/api/settings', async (req, res) => {
                 auto_read: !!row.auto_read,
                 menu_title: row.menu_title || 'BOT KUCAI AKUN',
                 menu_body: row.menu_body || 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.',
-                maker_menu_active: !!row.maker_menu_active
+                maker_menu_active: !!row.maker_menu_active,
+                maintenance_mode: !!row.maintenance_mode,
+                popup_active: !!row.popup_active,
+                popup_title: row.popup_title || 'Pengumuman',
+                popup_content: row.popup_content || ''
             };
             res.json(mappedSettings);
         } else {
@@ -226,9 +230,10 @@ app.post('/api/settings', async (req, res) => {
                 id, bot_name, owner_name, owner_numbers, prefix, no_prefix, 
                 verified_quoted, channel_link, presence_status, work_hours_enabled, 
                 work_start_time, work_end_time, work_days, offline_message, auto_read,
-                menu_title, menu_body
+                menu_title, menu_body, maker_menu_active, maintenance_mode, popup_active,
+                popup_title, popup_content
             ) VALUES (
-                1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+                1, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
             )
         `, [
             settings.bot_name,
@@ -246,7 +251,12 @@ app.post('/api/settings', async (req, res) => {
             settings.offline_message,
             settings.auto_read ? 1 : 0,
             settings.menu_title || 'BOT KUCAI AKUN',
-            settings.menu_body || 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'
+            settings.menu_body || 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.',
+            settings.maker_menu_active ? 1 : 0,
+            settings.maintenance_mode ? 1 : 0,
+            settings.popup_active ? 1 : 0,
+            settings.popup_title || 'Pengumuman',
+            settings.popup_content || ''
         ]);
         await syncJsonData();
         // Broadcast settings update to Web Dashboard socket
@@ -268,7 +278,12 @@ app.post('/api/settings', async (req, res) => {
             offline_message: updatedRow.offline_message,
             auto_read: !!updatedRow.auto_read,
             menu_title: updatedRow.menu_title,
-            menu_body: updatedRow.menu_body
+            menu_body: updatedRow.menu_body,
+            maker_menu_active: !!updatedRow.maker_menu_active,
+            maintenance_mode: !!updatedRow.maintenance_mode,
+            popup_active: !!updatedRow.popup_active,
+            popup_title: updatedRow.popup_title,
+            popup_content: updatedRow.popup_content
         };
         broadcastUpdate('bot-settings-update', mappedSettings);
         res.json({ success: true });

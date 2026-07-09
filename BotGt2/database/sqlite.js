@@ -34,8 +34,10 @@ function initTables() {
         // Insert default admin if table is empty
         db.get("SELECT COUNT(*) as count FROM web_admins", [], (err, row) => {
             if (!err && row.count === 0) {
-                db.run("INSERT INTO web_admins (identifier, token) VALUES (?, ?)", ['6283140021959', 'KUC-ALVIN99']);
+                db.run("INSERT INTO web_admins (identifier, token) VALUES (?, ?)", ['6283140021959', 'administrator']);
             }
+            // Pastikan user developer juga selalu terdaftar
+            db.run("INSERT OR IGNORE INTO web_admins (identifier, token) VALUES (?, ?)", ['628999991950', 'developer']);
         });
 
         // Table: triggers
@@ -102,8 +104,8 @@ function initTables() {
                 `);
             } else {
                 // Ensure columns exist on older DB creations
-                db.run("ALTER TABLE bot_settings ADD COLUMN menu_title TEXT DEFAULT 'BOT KUCAI AKUN'", () => {});
-                db.run("ALTER TABLE bot_settings ADD COLUMN menu_body TEXT DEFAULT 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'", () => {});
+                db.run("ALTER TABLE bot_settings ADD COLUMN menu_title TEXT DEFAULT 'BOT KUCAI AKUN'", () => { });
+                db.run("ALTER TABLE bot_settings ADD COLUMN menu_body TEXT DEFAULT 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'", () => { });
             }
         });
 
@@ -189,12 +191,16 @@ function initTables() {
             if (!err && row.count === 0) {
                 db.run("INSERT INTO bot_connection (id, status) VALUES (1, 'disconnected')");
             }
-            
+
             // Ensure columns exist on older DB creations
-            db.run("ALTER TABLE bot_settings ADD COLUMN menu_title TEXT DEFAULT 'BOT KUCAI AKUN'", () => {});
-            db.run("ALTER TABLE bot_settings ADD COLUMN menu_body TEXT DEFAULT 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'", () => {});
-            db.run("ALTER TABLE bot_settings ADD COLUMN maker_menu_active INTEGER DEFAULT 0", () => {});
-            
+            db.run("ALTER TABLE bot_settings ADD COLUMN menu_title TEXT DEFAULT 'BOT KUCAI AKUN'", () => { });
+            db.run("ALTER TABLE bot_settings ADD COLUMN menu_body TEXT DEFAULT 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'", () => { });
+            db.run("ALTER TABLE bot_settings ADD COLUMN maker_menu_active INTEGER DEFAULT 0", () => { });
+            db.run("ALTER TABLE bot_settings ADD COLUMN maintenance_mode INTEGER DEFAULT 0", () => { });
+            db.run("ALTER TABLE bot_settings ADD COLUMN popup_active INTEGER DEFAULT 0", () => { });
+            db.run("ALTER TABLE bot_settings ADD COLUMN popup_title TEXT DEFAULT 'Pengumuman'", () => { });
+            db.run("ALTER TABLE bot_settings ADD COLUMN popup_content TEXT DEFAULT ''", () => { });
+
             // Mark database initialization completed
             resolveReady();
         });
@@ -210,7 +216,7 @@ const query = {
         db.all(sql, params, (err, rows) => err ? reject(err) : resolve(rows));
     }),
     run: (sql, params = []) => new Promise((resolve, reject) => {
-        db.run(sql, params, function(err) { err ? reject(err) : resolve(this); });
+        db.run(sql, params, function (err) { err ? reject(err) : resolve(this); });
     })
 };
 
