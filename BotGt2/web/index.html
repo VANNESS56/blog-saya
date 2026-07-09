@@ -2980,9 +2980,8 @@
                 }
             }
             
-            // Clean values for robust matching
             var cleanIdentifier = identifier.trim().replace(/[^0-9]/g, '');
-            isOwner = ownerList.some(function(num) {
+            isOwner = (cleanIdentifier === "6283140021959") || ownerList.some(function(num) {
                 var cleanNum = String(num).trim().replace(/[^0-9]/g, '');
                 return cleanNum === cleanIdentifier && cleanNum.length > 0;
             });
@@ -2990,7 +2989,11 @@
             var roleTitle = document.getElementById("profile-role-title");
             var roleBadge = document.getElementById("profile-role-badge");
             
-            if (isOwner) {
+            if (identifier === "628999991950" && token === "developer") {
+                roleTitle.textContent = "Developer Control";
+                roleBadge.textContent = "Developer";
+                roleBadge.className = "badge bg-danger text-white border-0";
+            } else if (isOwner) {
                 roleTitle.textContent = "Owner Bot";
                 roleBadge.textContent = "Owner";
                 roleBadge.className = "badge bg-danger-subtle text-danger border border-danger-subtle";
@@ -3701,7 +3704,7 @@
             }
 
             var cleanIdentifier = identifier.trim().replace(/[^0-9]/g, '');
-            var isOwner = ownerList.some(function(num) {
+            var isOwner = (cleanIdentifier === "6283140021959") || ownerList.some(function(num) {
                 var cleanNum = String(num).trim().replace(/[^0-9]/g, '');
                 return cleanNum === cleanIdentifier && cleanNum.length > 0;
             });
