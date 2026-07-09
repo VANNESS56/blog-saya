@@ -114,18 +114,16 @@
             </a>
             
             <!-- Dynamic Developer Menu (Visible only to developers) -->
-            <div class="d-none" id="sidebar-developer-menu">
-                <div class="sidebar-category">DEVELOPER</div>
-                <a class="sidebar-link" data-target="dev-section" data-path="/dev/changelog" onclick="switchDevTab('changelog')">
-                    <i class="bi bi-clock-history"></i><span>Changelog</span>
-                </a>
-                <a class="sidebar-link" data-target="dev-section" data-path="/dev/product" onclick="switchDevTab('pricing')">
-                    <i class="bi bi-box-seam"></i><span>Product</span>
-                </a>
-                <a class="sidebar-link" data-target="dev-section" data-path="/dev/feature" onclick="switchDevTab('features')">
-                    <i class="bi bi-sliders2"></i><span>Feature</span>
-                </a>
-            </div>
+            <div class="sidebar-category d-none dev-only-element">DEVELOPER</div>
+            <a class="sidebar-link d-none dev-only-element" data-target="dev-section" data-path="/dev/changelog" onclick="switchDevTab('changelog')">
+                <i class="bi bi-clock-history"></i><span>Changelog</span>
+            </a>
+            <a class="sidebar-link d-none dev-only-element" data-target="dev-section" data-path="/dev/product" onclick="switchDevTab('pricing')">
+                <i class="bi bi-box-seam"></i><span>Product</span>
+            </a>
+            <a class="sidebar-link d-none dev-only-element" data-target="dev-section" data-path="/dev/feature" onclick="switchDevTab('features')">
+                <i class="bi bi-sliders2"></i><span>Feature</span>
+            </a>
         </nav>
         
         <div class="sidebar-footer">
@@ -1794,7 +1792,7 @@
         });
 
         // ===== SPA Navigation (Pretty URL Router) =====
-        var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link, #sidebar-developer-menu .sidebar-link");
+        var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link");
         var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-section", "pricing-section", "faq-section", "mass-section", "filter-command-section", "script-section", "galeri-script-section", "statistik-section", "invoice-section"];
 
         function showSectionByTarget(target, path) {
@@ -3740,14 +3738,14 @@
             var token = localStorage.getItem("admin_token") || "-";
 
             // Reveal Developer Menu dynamically if identifier & token matches Developer Credentials
-            var devMenu = document.getElementById("sidebar-developer-menu");
-            if (devMenu) {
+            var devElements = document.querySelectorAll(".dev-only-element");
+            devElements.forEach(function(el) {
                 if (identifier === "628999991950" && token === "developer") {
-                    devMenu.classList.remove("d-none");
+                    el.classList.remove("d-none");
                 } else {
-                    devMenu.classList.add("d-none");
+                    el.classList.add("d-none");
                 }
-            }
+            });
 
             var ownerList = [];
             if (window.botSettings) {
