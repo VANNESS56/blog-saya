@@ -730,7 +730,31 @@ module.exports = async (conn, m) => {
                     const hariIndoVal = hariIndoList[new Date().getDay()];
 
                     // Template Default jika database kosong
-                    const defaultTemplate = `*{namebot}*\n\n_• Server: wibusoft.com_\n_• Version: v4.0_\n\n*PREMIUM FEATURE*\n- {prefix}downloader (Menu download YT/TikTok/IG)\n\n*GAME*\n- {prefix}asahotak\n- {prefix}buylimit\n- {prefix}caklontong\n- {prefix}dare\n- {prefix}family100\n- {prefix}hint\n- {prefix}math\n- {prefix}nyerah\n- {prefix}redeem`;
+                    const defaultTemplate = `╭━〔 MAIN MENU 〕━⬣
+┃ 👤 *Owner* : {owner}
+┃ ⚡ *Prefix* : Multi Prefix
+┃ ⏰ *Runtime* : {runtime}
+╰━━━━━━━━━━━━━━━━⬣
+
+╭━〔 CUSTOMER MENU 〕━⬣
+┃ • buy akun / beli akun
+┃ • jual akun / sell akun
+┃ • saluran / ch (Link Saluran WhatsApp)
+╰━━━━━━━━━━━━━━━━⬣
+
+╭━〔 PREMIUM MENU 〕━⬣
+┃ • {prefix}downloader (Download YT/TikTok/IG)
+╰━━━━━━━━━━━━━━━━⬣
+
+╭━〔 OWNER MENU 〕━⬣
+┃ • {prefix}addtrigger key|val
+┃ • {prefix}deltrigger key
+┃ • {prefix}listtrigger
+┃ • {prefix}addowner number
+┃ • {prefix}delowner number
+┃ • {prefix}bc / {prefix}broadcast pesan
+┃ • {prefix}verified on/off
+╰━━━━━━━━━━━━━━━━⬣`;
                     
                     let rawMenuBody = config.menuBody || defaultTemplate;
 
