@@ -3714,16 +3714,16 @@
             var roleStatVal = document.getElementById("bot-role-text");
 
             if (identifier === "628999991950" && token === "developer") {
-                nameEl.textContent = "Developer Kucai";
-                roleEl.textContent = "Developer";
+                if (nameEl) nameEl.textContent = "Developer Kucai";
+                if (roleEl) roleEl.textContent = "Developer";
                 if (roleStatVal) roleStatVal.textContent = "Developer";
             } else if (isOwner) {
-                nameEl.textContent = "Alvin Kucai";
-                roleEl.textContent = "Owner";
+                if (nameEl) nameEl.textContent = "Alvin Kucai";
+                if (roleEl) roleEl.textContent = "Owner";
                 if (roleStatVal) roleStatVal.textContent = "Owner";
             } else {
-                nameEl.textContent = identifier.substring(0, 12) + (identifier.length > 12 ? "..." : "");
-                roleEl.textContent = "Admin";
+                if (nameEl) nameEl.textContent = identifier.substring(0, 12) + (identifier.length > 12 ? "..." : "");
+                if (roleEl) roleEl.textContent = "Admin";
                 if (roleStatVal) roleStatVal.textContent = "Admin";
             }
         }
