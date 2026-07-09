@@ -1,0 +1,1991 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - BOT KUCAI AKUN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- Maintenance Overlay -->
+    <div id="maintenance-overlay" class="d-none" style="position: fixed; inset: 0; background: var(--bg); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; text-align: center;">
+        <i class="bi bi-cone-striped text-warning" style="font-size: 5rem; margin-bottom: 1rem;"></i>
+        <h2 class="fw-bold text-dark">Website Under Maintenance</h2>
+        <p class="text-muted mt-2">Kami sedang melakukan pembaruan sistem.<br>Silakan kembali lagi nanti.</p>
+    </div>
+
+    <!-- Login Overlay -->
+    <div id="login-overlay" style="position: fixed; inset: 0; background: var(--bg); z-index: 9990; display: flex; align-items: center; justify-content: center; padding: 1.5rem;">
+        <div class="content-card" style="width: 100%; max-width: 420px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-radius: 16px;">
+            <div class="text-center mb-4">
+                <img src="avatar.png" alt="Logo" class="rounded-circle mb-3" style="width: 72px; height: 72px; object-fit: cover; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);">
+                <h4 class="fw-bold mb-1">Bot Kucai Panel</h4>
+                <p class="text-muted small">Masukkan kredensial Anda untuk melanjutkan</p>
+            </div>
+            
+            <form id="login-form">
+                <div class="mb-3">
+                    <label class="form-label small text-muted fw-bold">Nomor WA / Email</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-person text-muted"></i></span>
+                        <input type="text" class="form-control border-start-0 bg-light" id="login-identifier" placeholder="contoh: 628999991950" required>
+                    </div>
+                </div>
+                <div class="mb-4">
+                    <label class="form-label small text-muted fw-bold">Token Login (16 Karakter)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0"><i class="bi bi-key text-muted"></i></span>
+                        <input type="password" class="form-control border-start-0 bg-light" id="login-token" placeholder="Masukkan token pendaftaran" required>
+                    </div>
+                    <div class="form-text small mt-1">Dapatkan token dengan ketik <b>.regist &lt;no_hp/email&gt;</b> di WhatsApp Bot.</div>
+                </div>
+                
+                <button type="submit" class="btn btn-primary w-100 py-2.5 fw-bold" id="btn-login-submit">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Masuk Ke Dashboard
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <i class="bi bi-robot fs-4 me-2"></i>
+            <span style="font-weight: 800; font-family: 'Poppins', sans-serif;"><span style="color: var(--text);">kucai</span><span style="color: var(--primary);">bot.</span></span>
+        </div>
+        <nav class="sidebar-nav" id="sidebar-menu">
+            <a class="sidebar-link active" data-target="dashboard-section">
+                <i class="bi bi-grid-1x2-fill"></i><span>Dashboard</span>
+            </a>
+            <a class="sidebar-link" data-target="pricing-section">
+                <i class="bi bi-currency-dollar"></i><span>Pricing</span>
+            </a>
+            <a class="sidebar-link" data-target="faq-section">
+                <i class="bi bi-bookmark-fill"></i><span>FAQ's</span>
+            </a>
+            <a class="sidebar-link" data-target="changelog-section">
+                <i class="bi bi-activity"></i><span>Changelog</span>
+            </a>
+
+            <div class="sidebar-category">BOT</div>
+            
+            <a class="sidebar-link" data-target="bot-settings-section">
+                <i class="bi bi-sliders"></i><span>Config</span>
+            </a>
+            <a class="sidebar-link" data-target="mass-section">
+                <i class="bi bi-send-fill"></i><span>Mass</span>
+            </a>
+            <a class="sidebar-link" data-target="triggers-section">
+                <i class="bi bi-chat-left-quote-fill"></i><span>Command</span>
+            </a>
+            <a class="sidebar-link" data-target="filter-command-section">
+                <i class="bi bi-funnel-fill"></i><span>Filter Command</span>
+            </a>
+            <a class="sidebar-link" data-target="script-section">
+                <i class="bi bi-code-slash"></i><span>Script</span>
+            </a>
+            <a class="sidebar-link" data-target="galeri-script-section">
+                <i class="bi bi-globe2"></i><span>Galeri Script</span>
+            </a>
+            <a class="sidebar-link" data-target="menu-section">
+                <i class="bi bi-list-ul"></i><span>Menu</span>
+            </a>
+            <a class="sidebar-link" data-target="statistik-section">
+                <i class="bi bi-bar-chart-fill"></i><span>Statistik</span>
+            </a>
+
+            <div class="sidebar-category">USER</div>
+
+            <a class="sidebar-link" data-target="setting-section">
+                <i class="bi bi-gear-fill"></i><span>Setting</span>
+            </a>
+            <a class="sidebar-link" data-target="ticket-section">
+                <i class="bi bi-ticket-detailed-fill"></i><span>Ticket</span>
+            </a>
+            <a class="sidebar-link" data-target="invoice-section">
+                <i class="bi bi-receipt"></i><span>Invoice</span>
+            </a>
+            <a class="sidebar-link" data-target="affiliate-section">
+                <i class="bi bi-people-fill"></i><span>Affiliate</span>
+            </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+            <div class="sidebar-profile" id="sidebar-profile-btn">
+                <img src="avatar.png" alt="Avatar" class="sidebar-profile-avatar">
+                <div class="sidebar-profile-info">
+                    <span class="sidebar-profile-name" id="sidebar-user-name">panness</span>
+                    <span class="sidebar-profile-role" id="sidebar-user-role">Basic</span>
+                </div>
+                <button class="sidebar-logout-btn" id="sidebar-logout-btn" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Overlay for mobile sidebar -->
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+    <!-- Main Content -->
+    <main class="main-content" id="main-content">
+        <!-- Top Navbar -->
+        <header class="topbar">
+            <button class="topbar-toggle" id="sidebar-toggle">
+                <i class="bi bi-list"></i>
+            </button>
+            <div class="d-flex align-items-center gap-2 d-none d-md-flex">
+                <span class="text-muted small">Home</span>
+                <span class="text-muted small">/</span>
+                <span class="fw-semibold small text-dark">Dashboard</span>
+            </div>
+            <div class="topbar-right">
+                <button class="theme-btn" id="theme-toggle-btn" title="Toggle Theme">
+                    <i class="bi bi-moon" id="theme-icon"></i>
+                </button>
+                <button class="theme-btn text-danger ms-1" id="web-logout-btn" title="Logout dari Panel">
+                    <i class="bi bi-power"></i>
+                </button>
+                <img src="avatar.png" alt="Admin" class="topbar-avatar ms-2" id="topbar-avatar-btn" style="cursor: pointer;" title="Lihat Profil">
+            </div>
+        </header>
+
+        <!-- Page Container -->
+        <div class="page-container">
+
+            <!-- ========== DASHBOARD ========== -->
+            <section id="dashboard-section">
+
+                <!-- 4 Columns Stats Grid (Wibusoft Theme) -->
+                <div class="row g-3 mb-4">
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-info-group">
+                                <span class="stat-label">Status</span>
+                                <span class="stat-value text-dark" id="bot-status-text">Offline</span>
+                            </div>
+                            <div class="stat-icon-wrapper stat-icon-blue" id="bot-status-icon-wrapper">
+                                <i class="bi bi-activity"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-info-group">
+                                <span class="stat-label">Kedaluwarsa</span>
+                                <span class="stat-value text-dark" style="font-size: 1.1rem; font-weight:700;">23 Juli 2026</span>
+                            </div>
+                            <div class="stat-icon-wrapper stat-icon-red">
+                                <i class="bi bi-calendar-event"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-info-group">
+                                <span class="stat-label">Runtime</span>
+                                <span class="stat-value text-dark" id="bot-runtime-text">-</span>
+                            </div>
+                            <div class="stat-icon-wrapper stat-icon-green">
+                                <i class="bi bi-clock"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="stat-card">
+                            <div class="stat-info-group">
+                                <span class="stat-label">Role</span>
+                                <span class="stat-value text-dark" id="bot-role-text">Basic</span>
+                            </div>
+                            <div class="stat-icon-wrapper stat-icon-gold">
+                                <i class="bi bi-star-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Log Terminal & Control Bot Layout -->
+                <div class="row g-4 mb-4">
+                    <!-- macOS style Terminal Console -->
+                    <div class="col-12 col-lg-8">
+                        <div class="terminal-box">
+                            <div class="terminal-header">
+                                <div class="terminal-dots">
+                                    <div class="terminal-dot red"></div>
+                                    <div class="terminal-dot yellow"></div>
+                                    <div class="terminal-dot green"></div>
+                                </div>
+                                <span class="terminal-title">kucai@bot — logs</span>
+                                <div class="terminal-actions">
+                                    <span class="terminal-status" id="terminal-status-indicator">connected</span>
+                                    <button class="terminal-clear-btn" id="btn-clear-terminal">clear</button>
+                                </div>
+                            </div>
+                            <div class="terminal-body" id="terminal-log-content">$ menunggu log dari bot...</div>
+                        </div>
+                    </div>
+
+                    <!-- Pairing & Action Control Card -->
+                    <div class="col-12 col-lg-4">
+                        <div class="content-card h-100 mb-0 d-flex flex-column justify-content-between">
+                            <div>
+                                <h6 class="fw-bold mb-1 text-dark">Kontrol Bot</h6>
+                                <p class="text-muted small mb-4">Sambungkan WhatsApp kamu</p>
+                                <!-- State 0: Default Waiting -->
+                                <div id="pairing-default" class="pairing-default-state mb-3">
+                                    <i class="bi bi-qr-code d-block mb-2" style="font-size: 1.5rem; opacity: 0.5;"></i>
+                                    Menunggu QR atau status dari bot...
+                                </div>
+
+                                <!-- State 1: Connected Alert -->
+                                <div id="pairing-connected" class="d-none">
+                                    <div class="alert alert-success border-success-subtle rounded-3 d-flex align-items-center gap-2 mb-3 py-2 px-3 small" role="alert">
+                                        <i class="bi bi-check-circle-fill fs-6"></i>
+                                        <div>Terhubung: <strong id="pairing-bot-number"></strong></div>
+                                    </div>
+                                </div>
+
+                                <!-- State 2: Show Pairing Code -->
+                                <div id="pairing-code-display" class="d-none">
+                                    <div class="text-center mb-3">
+                                        <p class="text-muted small mb-2">Masukkan kode ini di WhatsApp kamu:</p>
+                                    </div>
+                                    <div class="pairing-code-box mb-3" id="pairing-code-value">XXXX-XXXX</div>
+                                    <div class="text-center">
+                                        <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                        <span class="text-muted small fs-7">Menunggu konfirmasi WhatsApp...</span>
+                                    </div>
+                                </div>
+
+                                <!-- State 3: Disconnected Request Form -->
+                                <div id="pairing-disconnected" class="d-none">
+                                    <div class="mb-3">
+                                        <label class="form-label small text-muted fw-bold">Nomor WhatsApp Bot</label>
+                                        <input type="text" class="form-control bg-light" id="pairing-phone-input" placeholder="contoh: 6281234567890">
+                                        <div class="form-text small">Gunakan kode negara (tanpa spasi / +).</div>
+                                    </div>
+                                </div>
+
+                                <!-- State 4: Connection Error Reason -->
+                                <div id="pairing-reason" class="d-none mt-2">
+                                    <div class="alert alert-warning py-2 px-3 rounded-3 small mb-0" role="alert">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                        <span id="pairing-reason-text"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Horizontal Button Groups -->
+                            <div class="mt-4 pt-3 border-top">
+                                <div class="row g-2">
+                                    <div class="col-4">
+                                        <button class="btn btn-success w-100 py-2 fs-7 fw-bold" id="btn-request-pair">
+                                            Start
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-warning text-dark w-100 py-2 fs-7 fw-bold" id="btn-cancel-pair">
+                                            Stop
+                                        </button>
+                                    </div>
+                                    <div class="col-4">
+                                        <button class="btn btn-danger w-100 py-2 fs-7 fw-bold" id="btn-logout">
+                                            Hapus Sesi
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Papan Informasi Statis -->
+                <div class="content-card mt-3 d-none" id="info-board-card">
+                    <h5 class="card-heading text-primary" id="info-board-title">
+                        <i class="bi bi-info-circle-fill me-2"></i>Informasi
+                    </h5>
+                    <div class="text-muted fs-6" id="info-board-content" style="line-height: 1.6;"></div>
+                </div>
+
+                <!-- FAQ Accordion Section -->
+                <div class="mt-4 mb-3">
+                    <h6 class="faq-section-title"><i class="bi bi-patch-question-fill me-2 text-primary"></i>Pertanyaan Umum (FAQ)</h6>
+                    <div class="faq-accordion" id="faq-accordion">
+                        <div class="faq-item open">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span class="faq-question-text">Bagaimana cara mengaktifkan bot WhatsApp?</span>
+                                <i class="bi bi-chevron-down faq-question-icon"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <div class="faq-answer-inner">
+                                    Untuk mengaktifkan bot WhatsApp, ikuti langkah-langkah berikut:
+                                    <ol>
+                                        <li>Klik tombol <strong>"Start"</strong> pada panel <strong>Kontrol Bot</strong> di atas.</li>
+                                        <li>Masukkan nomor WhatsApp yang ingin digunakan sebagai bot.</li>
+                                        <li>Buka aplikasi <strong>WhatsApp</strong> di HP Anda, lalu masuk ke <em>Linked Devices > Link a Device</em>.</li>
+                                        <li>Masukkan kode pairing <strong>8 digit</strong> yang muncul di dashboard ini.</li>
+                                        <li>Tunggu hingga status berubah menjadi <strong>"Connected"</strong>.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span class="faq-question-text">Bagaimana kalau bot tiba-tiba offline?</span>
+                                <i class="bi bi-chevron-down faq-question-icon"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <div class="faq-answer-inner">
+                                    Jika bot tiba-tiba offline, pastikan:
+                                    <ol>
+                                        <li>Koneksi internet server / VPS Anda stabil.</li>
+                                        <li>Cek apakah sesi WhatsApp masih terhubung di HP (Linked Devices).</li>
+                                        <li>Klik <strong>"Hapus Sesi"</strong> lalu <strong>"Start"</strong> ulang untuk membuat koneksi baru.</li>
+                                        <li>Periksa <strong>Log Terminal</strong> untuk melihat pesan error yang muncul.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span class="faq-question-text">Apakah saya bisa pakai nomor WhatsApp utama untuk bot?</span>
+                                <i class="bi bi-chevron-down faq-question-icon"></i>
+                            </div>
+                            <div class="faq-answer">
+                                <div class="faq-answer-inner">
+                                    Bisa, tapi <strong>tidak disarankan</strong>. Menggunakan nomor utama berisiko terkena <em>ban</em> dari WhatsApp jika bot melakukan spam atau aktivitas yang melanggar ketentuan layanan. Kami merekomendasikan menggunakan nomor WhatsApp terpisah khusus untuk bot.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- ========== TRIGGERS ========== -->
+            <section id="triggers-section" class="d-none">
+                <div class="content-card">
+                    <h5 class="card-heading">Search Features</h5>
+                    <div class="row mb-4 g-2">
+                        <div class="col">
+                            <input type="text" class="form-control" id="search-input" placeholder="Search features...">
+                        </div>
+                        <div class="col-auto">
+                            <button class="btn btn-primary px-4" data-bs-toggle="modal" data-bs-target="#addTriggerModal">
+                                <i class="bi bi-plus-lg me-1"></i> Add Trigger
+                            </button>
+                        </div>
+                    </div>
+
+                    <p class="text-muted fw-semibold small mb-2">All Triggers List</p>
+
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0" id="trigger-table">
+                            <thead>
+                                <tr>
+                                    <th style="width:60px;">NO</th>
+                                    <th>KATA KUNCI</th>
+                                    <th>MODE COCOK</th>
+                                    <th>TEKS BALASAN</th>
+                                    <th class="text-end" style="width:180px;">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="triggers-list"></tbody>
+                        </table>
+                    </div>
+
+                    <div id="table-loading" class="text-center py-4">
+                        <div class="spinner-border spinner-border-sm text-primary"></div>
+                        <p class="mt-2 text-muted small">Memuat data trigger...</p>
+                    </div>
+                    <div id="table-empty" class="text-center py-4 d-none">
+                        <i class="bi bi-inbox fs-1 text-muted"></i>
+                        <p class="mt-2 text-muted small">Belum ada trigger. Klik "Add Trigger" untuk menambahkan.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== BOT SETTINGS (Wibusoft Style) ========== -->
+            <section id="bot-settings-section" class="d-none">
+                <div class="ws-config-page">
+
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1>Config Bot</h1>
+                        <p>Atur identitas, batas, dan perilaku bot WhatsApp kamu. Hover atau baca penjelasan tiap field kalau bingung.</p>
+                    </div>
+
+                    <form id="bot-settings-form">
+
+                        <!-- Card 1: Identitas Bot -->
+                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                            <div class="card-section-header">
+                                <h2>Identitas Bot</h2>
+                                <p>Nama dan branding yang muncul di pesan dan sticker.</p>
+                            </div>
+                            <div class="ws-field-grid">
+                                <div class="ws-field">
+                                    <label for="input-bot-name">Nama Bot <span class="text-danger">*</span></label>
+                                    <input id="input-bot-name" type="text" class="ws-input" placeholder="Contoh: Wiby Bot" required>
+                                    <p class="ws-field-hint">Nama yang bot pakai saat menyapa user. Muncul di greeting message dan beberapa template.</p>
+                                </div>
+                                <div class="ws-field">
+                                    <label for="input-owner-name">Nama Pemilik (Owner) <span class="text-danger">*</span></label>
+                                    <input id="input-owner-name" type="text" class="ws-input" placeholder="Contoh: Alvin Kucai" required>
+                                    <p class="ws-field-hint">Nama kamu sebagai pemilik bot. Muncul di beberapa pesan bot sebagai branding.</p>
+                                </div>
+                                <div class="ws-field">
+                                    <label for="input-channel-link">Link Saluran WhatsApp <span class="text-danger">*</span></label>
+                                    <input id="input-channel-link" type="url" class="ws-input" placeholder="https://whatsapp.com/channel/..." required>
+                                    <p class="ws-field-hint">Link saluran WhatsApp yang terhubung ke bot untuk broadcast dan update.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Owner Bot -->
+                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                            <div class="card-section-header" style="display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; flex-wrap: wrap;">
+                                <div>
+                                    <h2>Owner Bot <span class="text-danger">*</span></h2>
+                                    <p>Nomor yang punya akses penuh ke bot (bypass limit, perintah owner-only). <span id="owner-count-text" style="color:var(--text); font-weight:600;">0/3</span> terpakai.</p>
+                                </div>
+                            </div>
+                            <div style="display:flex; flex-direction: column; gap: 0.75rem;">
+                                <div id="owner-chips-container" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+                                <div class="ws-empty-state" id="owner-empty-state">
+                                    <i class="bi bi-people ws-empty-icon"></i>
+                                    <div class="ws-empty-title">Belum ada owner</div>
+                                    <div class="ws-empty-desc">Tambah minimal 1 nomor owner agar kamu bisa pakai perintah owner-only dan bypass limit.</div>
+                                </div>
+                                <div style="display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+                                    <input type="text" class="ws-input" id="input-new-owner" placeholder="Contoh: 6283140021959" style="max-width: 260px; flex: 1;">
+                                    <button type="button" class="ws-btn-outline-primary" id="btn-add-owner"><i class="bi bi-plus-lg"></i> Tambah Owner</button>
+                                </div>
+                                <input type="hidden" id="input-owner-numbers" value="">
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Prefix Perintah -->
+                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                            <div class="card-section-header">
+                                <h2>Prefix Perintah</h2>
+                                <p>Karakter di depan command supaya bot tahu user lagi panggil bot.</p>
+                            </div>
+                            <div class="ws-field-grid">
+                                <div class="ws-field">
+                                    <label for="input-prefix">Karakter prefix <span class="text-danger">*</span></label>
+                                    <input id="input-prefix" type="text" class="ws-input ws-input-mono" placeholder="#" maxlength="10">
+                                    <p class="ws-field-hint">Contoh: kalau diisi <code>#</code>, user ketik <code>#menu</code> untuk panggil menu. Bisa multi karakter, misal <code>#!/</code> kalau pakai mode Multi. Pisahkan dengan koma.</p>
+                                </div>
+                                <div class="ws-field">
+                                    <div style="margin-bottom: 0.4rem;">
+                                        <label style="margin-bottom: 0;">Mode prefix</label>
+                                    </div>
+                                    <div class="ws-toggle-group" id="prefix-mode-group">
+                                        <button type="button" class="ws-toggle-btn" data-mode="multi">Multi</button>
+                                        <button type="button" class="ws-toggle-btn" data-mode="single">Single</button>
+                                        <button type="button" class="ws-toggle-btn" data-mode="none">Tanpa prefix</button>
+                                    </div>
+                                    <input type="hidden" id="input-no-prefix" value="false">
+                                    <p class="ws-field-hint" id="prefix-mode-hint">Bot menerima banyak prefix sekaligus, misal <code>#</code>, <code>!</code>, <code>/</code>.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Perilaku Bot -->
+                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                            <div class="card-section-header">
+                                <h2>Perilaku Bot</h2>
+                                <p>Atur perilaku dan respon otomatis bot saat berinteraksi dengan user.</p>
+                            </div>
+                            <div class="ws-checkbox-stack">
+                                <div class="ws-checkbox-row">
+                                    <input type="checkbox" id="input-verified-quoted">
+                                    <div class="ws-checkbox-content">
+                                        <label class="ws-checkbox-label" for="input-verified-quoted">Fake Verified Quoted</label>
+                                        <p class="ws-checkbox-hint">Menampilkan centang hijau (verified) di kutipan balasan bot. Efek kosmetik saja.</p>
+                                    </div>
+                                </div>
+                                <div class="ws-checkbox-row">
+                                    <input type="checkbox" id="input-auto-read">
+                                    <div class="ws-checkbox-content">
+                                        <label class="ws-checkbox-label" for="input-auto-read">Auto Read</label>
+                                        <p class="ws-checkbox-hint">Bot otomatis menandai centang biru (read receipt) setiap kali ada chat masuk. Matikan kalau mau bot terlihat stealth.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ws-field" style="margin-top: 1rem;">
+                                <label for="input-presence-status">Status Kehadiran Bot</label>
+                                <select id="input-presence-status" class="ws-input" style="max-width: 300px;">
+                                    <option value="composing">Mengetik (Typing...)</option>
+                                    <option value="recording">Merekam (Recording...)</option>
+                                    <option value="disabled">Mati (Tanpa Efek)</option>
+                                </select>
+                                <p class="ws-field-hint">Status yang muncul di obrolan lawan bicara saat bot memproses balasan.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 5: Jadwal Kerja -->
+                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                            <div class="card-section-header">
+                                <h2>Jadwal Kerja</h2>
+                                <p>Atur jam operasional bot. Bot tidak akan membalas di luar jadwal yang ditentukan.</p>
+                            </div>
+                            <div class="ws-checkbox-stack" style="margin-bottom: 1rem;">
+                                <div class="ws-checkbox-row">
+                                    <input type="checkbox" id="input-work-hours-enabled">
+                                    <div class="ws-checkbox-content">
+                                        <label class="ws-checkbox-label" for="input-work-hours-enabled">Aktifkan Jadwal Kerja</label>
+                                        <p class="ws-checkbox-hint">Bot akan offline di luar jam operasional yang kamu tentukan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ws-field-grid-2">
+                                <div class="ws-field">
+                                    <label for="input-work-start-time">Jam Mulai</label>
+                                    <input id="input-work-start-time" type="time" class="ws-input" value="08:00">
+                                </div>
+                                <div class="ws-field">
+                                    <label for="input-work-end-time">Jam Selesai</label>
+                                    <input id="input-work-end-time" type="time" class="ws-input" value="22:00">
+                                </div>
+                            </div>
+                            <div class="ws-field" style="margin-top: 1rem;">
+                                <label for="input-work-days">Hari Kerja</label>
+                                <select id="input-work-days" class="ws-input" multiple style="height: 140px;">
+                                    <option value="Senin">Senin</option>
+                                    <option value="Selasa">Selasa</option>
+                                    <option value="Rabu">Rabu</option>
+                                    <option value="Kamis">Kamis</option>
+                                    <option value="Jumat">Jumat</option>
+                                    <option value="Sabtu">Sabtu</option>
+                                    <option value="Minggu">Minggu</option>
+                                </select>
+                                <p class="ws-field-hint">Tahan Ctrl (atau Cmd di Mac) untuk pilih beberapa hari.</p>
+                            </div>
+                            <div class="ws-field" style="margin-top: 1rem;">
+                                <label for="input-offline-message">Pesan Offline</label>
+                                <textarea id="input-offline-message" class="ws-input" rows="3" placeholder="Masukkan pesan yang dikirim saat bot sedang offline..."></textarea>
+                                <p class="ws-field-hint">Pesan otomatis yang dikirim saat user chat di luar jadwal kerja.</p>
+                            </div>
+                        </div>
+
+                        <!-- Card 6: Papan Informasi Beranda -->
+                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                            <div class="card-section-header">
+                                <h2><i class="bi bi-info-circle me-1 text-primary"></i> Papan Informasi Beranda</h2>
+                                <p>Tampilkan pengumuman atau informasi penting di halaman Dashboard utama.</p>
+                            </div>
+                            <div class="ws-checkbox-stack" style="margin-bottom: 1rem;">
+                                <div class="ws-checkbox-row">
+                                    <input type="checkbox" id="input-info-active">
+                                    <div class="ws-checkbox-content">
+                                        <label class="ws-checkbox-label" for="input-info-active">Tampilkan Papan Informasi di Dashboard Utama</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ws-field-grid">
+                                <div class="ws-field">
+                                    <label for="input-info-title">Judul Informasi</label>
+                                    <input id="input-info-title" type="text" class="ws-input" placeholder="Pengumuman / Jadwal Restock">
+                                </div>
+                                <div class="ws-field">
+                                    <label for="input-info-content">Konten Informasi (Mendukung HTML)</label>
+                                    <textarea id="input-info-content" class="ws-input" rows="3" placeholder="Tulis pengumuman di sini..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 7: Kustomisasi Teks Menu Bot -->
+                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                            <div class="card-section-header">
+                                <h2><i class="bi bi-file-text me-1 text-primary"></i> Kustomisasi Teks Menu Bot (.menu)</h2>
+                                <p>Atur judul header dan daftar menu utama saat pengguna mengetik perintah menu.</p>
+                            </div>
+                            <div class="ws-field-grid">
+                                <div class="ws-field">
+                                    <label for="input-menu-title">Header Title Menu</label>
+                                    <input id="input-menu-title" type="text" class="ws-input" placeholder="BOT KUCAI AKUN">
+                                </div>
+                                <div class="ws-field">
+                                    <label for="input-menu-body">Daftar Customer Menu (Bisa Multi Line)</label>
+                                    <textarea id="input-menu-body" class="ws-input" rows="5" placeholder="┃ • buy akun / beli akun&#10;┃ • jual akun / sell akun&#10;┃ • saluran / ch (Link Saluran WhatsApp)"></textarea>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sticky Save Bar -->
+                        <div class="ws-save-bar">
+                            <span class="ws-hint"><span class="text-danger">*</span> wajib diisi</span>
+                            <button type="submit" class="ws-btn-primary" id="save-bot-settings-btn">Simpan Config</button>
+                        </div>
+
+                    </form>
+                </div>
+            </section>
+
+            <!-- ========== PAIRING ========== -->
+            <section id="pairing-section" class="d-none">
+                <div class="content-card" style="max-width:600px;">
+                    <h5 class="card-heading"><i class="bi bi-link-45deg text-primary me-2"></i>Pairing Manager</h5>
+                    <p class="text-muted small mb-4">Kontrol koneksi bot WhatsApp Anda langsung dari dashboard ini.</p>
+
+                    <!-- Status Card -->
+                    <div class="pairing-status-card mb-4" id="pairing-status-card">
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="pairing-status-icon" id="pairing-status-icon">
+                                <i class="bi bi-circle-fill"></i>
+                            </div>
+                            <div>
+                                <div class="fw-bold fs-5" id="pairing-status-text">Memuat...</div>
+                                <div class="text-muted small" id="pairing-status-detail">Mengecek status koneksi bot...</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Connected State -->
+                    <div id="pairing-connected" class="d-none">
+                        <div class="alert alert-success d-flex align-items-center gap-2 mb-3" role="alert">
+                            <i class="bi bi-check-circle-fill fs-5"></i>
+                            <div>Bot terhubung sebagai <strong id="pairing-bot-number"></strong></div>
+                        </div>
+                        <button class="btn btn-danger w-100" id="btn-logout">
+                            <i class="bi bi-box-arrow-right me-2"></i>Putuskan Koneksi (Logout)
+                        </button>
+                    </div>
+
+                    <!-- Pairing State (Show Code) -->
+                    <div id="pairing-code-display" class="d-none">
+                        <div class="text-center mb-3">
+                            <p class="text-muted small mb-2">Masukkan kode berikut di aplikasi WhatsApp Anda:</p>
+                            <p class="text-muted small">(Pengaturan → Perangkat Taut → Tautkan dengan Nomor)</p>
+                        </div>
+                        <div class="pairing-code-box" id="pairing-code-value">XXXX-XXXX</div>
+                        <div class="text-center mt-3">
+                            <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                            <span class="text-muted small">Menunggu konfirmasi dari WhatsApp...</span>
+                        </div>
+                        <button class="btn btn-outline-secondary w-100 mt-3" id="btn-cancel-pair">
+                            <i class="bi bi-x-circle me-2"></i>Batal / Cancel Pairing
+                        </button>
+                    </div>
+
+                    <!-- Disconnected State (Request Pairing) -->
+                    <div id="pairing-disconnected" class="d-none">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Nomor WhatsApp Bot</label>
+                            <input type="text" class="form-control" id="pairing-phone-input" placeholder="6281234567890">
+                            <div class="form-text">Masukkan nomor dengan kode negara (tanpa + atau spasi).</div>
+                        </div>
+                        <button class="btn btn-primary w-100" id="btn-request-pair">
+                            <i class="bi bi-send me-2"></i>Minta Kode Pairing
+                        </button>
+                    </div>
+
+                    <!-- Error/Reason Display -->
+                    <div id="pairing-reason" class="d-none mt-3">
+                        <div class="alert alert-warning d-flex align-items-center gap-2 mb-0" role="alert">
+                            <i class="bi bi-exclamation-triangle-fill"></i>
+                            <div id="pairing-reason-text"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+        </div>
+    </main>
+
+    <!-- Add Trigger Modal -->
+    <div class="modal fade" id="addTriggerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-plus-circle text-primary me-2"></i>Tambah Trigger</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="add-trigger-form">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Kata Kunci (Key)</label>
+                            <input type="text" class="form-control" id="trigger-key" placeholder="halo, menu, p" required>
+                            <div class="form-text">Akan dicocokkan dalam huruf kecil.</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Mode Cocok (Match Mode)</label>
+                            <select class="form-select" id="trigger-match-mode">
+                                <option value="exact" selected>Exact Match (Sama Persis)</option>
+                                <option value="contains">Contains (Kalimat Mengandung Kata)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Teks Balasan (Value)</label>
+                            <textarea class="form-control" id="trigger-value" rows="4" placeholder="Masukkan pesan balasan otomatis..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">URL Gambar (Kosongkan jika tidak pakai)</label>
+                            <input type="text" class="form-control" id="trigger-image-url" placeholder="https://example.com/image.png">
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 py-2" id="save-trigger-btn">
+                            <i class="bi bi-plus-circle me-1"></i>Tambah Trigger
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 400px;">
+            <div class="modal-content">
+                <div class="modal-header border-0 pb-0">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center pt-0">
+                    <img src="avatar.png" class="rounded-circle mb-3 border border-3 border-light shadow-sm" style="width: 90px; height: 90px; object-fit: cover;">
+                    <h5 class="fw-bold mb-1" id="profile-role-title">Admin Kucai</h5>
+                    <span class="badge bg-success-subtle text-success border border-success-subtle px-3 py-1.5 rounded-pill small mb-4"><i class="bi bi-check-circle-fill me-1"></i>Status Aktif</span>
+                    
+                    <div class="text-start border rounded-4 p-3 bg-light-subtle mb-3">
+                        <div class="mb-2.5">
+                            <label class="small text-muted mb-0.5 d-block">Nomor HP / Email</label>
+                            <span class="fw-semibold text-dark fs-6" id="profile-identifier-val">628999991950</span>
+                        </div>
+                        <div class="mb-2.5">
+                            <label class="small text-muted mb-0.5 d-block">Hak Akses (Role)</label>
+                            <span class="badge bg-primary-subtle text-primary border border-primary-subtle" id="profile-role-badge">Admin</span>
+                        </div>
+                        <div class="mb-0">
+                            <label class="small text-muted mb-0.5 d-block">Token Login</label>
+                            <div class="d-flex align-items-center justify-content-between">
+                                <span class="fw-semibold text-dark font-monospace" id="profile-token-val">••••••••••••••••</span>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-sm btn-link p-0 text-muted" id="btn-toggle-token-view" title="Lihat/Sembunyikan"><i class="bi bi-eye"></i></button>
+                                    <button class="btn btn-sm btn-link p-0 text-muted ms-1" id="btn-copy-profile-token" title="Salin Token"><i class="bi bi-clipboard"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-outline-danger w-100 py-2 rounded-3 small" id="btn-logout-modal">
+                        <i class="bi bi-power me-2"></i>Keluar Akun
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Trigger Modal -->
+    <div class="modal fade" id="editTriggerModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title"><i class="bi bi-pencil-square text-primary me-2"></i>Edit Trigger</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-trigger-form">
+                        <input type="hidden" id="edit-original-key">
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Kata Kunci (Key)</label>
+                            <input type="text" class="form-control" id="edit-trigger-key" disabled>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Mode Cocok (Match Mode)</label>
+                            <select class="form-select" id="edit-trigger-match-mode">
+                                <option value="exact">Exact Match (Sama Persis)</option>
+                                <option value="contains">Contains (Kalimat Mengandung Kata)</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">Teks Balasan (Value)</label>
+                            <textarea class="form-control" id="edit-trigger-value" rows="4" required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label small text-muted">URL Gambar (Kosongkan jika tidak pakai)</label>
+                            <input type="text" class="form-control" id="edit-trigger-image-url" placeholder="https://example.com/image.png">
+                        </div>
+                        <div class="d-flex justify-content-end gap-2">
+                            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Batal</button>
+                            <button type="submit" class="btn btn-primary">Perbarui</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast align-items-center text-white border-0 rounded-3" role="alert">
+            <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center">
+                    <i class="bi me-2" id="toast-icon"></i>
+                    <span id="toast-message"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+    // ===== App Init - Wait for DOM =====
+    document.addEventListener("DOMContentLoaded", function() {
+        "use strict";
+
+        // ===== Express API Server URL Config =====
+        // Force pointing to local server for localhost testing
+        var API_URL = "http://localhost:3000";
+
+        // ===== Default Settings (sama dengan settings.js) =====
+        var DEFAULT_SETTINGS = {
+            bot_name: "BOT KUCAI AKUN",
+            owner_name: "Alvin Kucai",
+            owner_numbers: ["6283140021959", "79658775265356", "628999991950"],
+            prefix: [".", "#", "!", "/"],
+            no_prefix: true,
+            verified_quoted: false,
+            channel_link: "https://whatsapp.com/channel/0029VbD8Wx9545uqEqWnPY3E"
+        };
+
+        // ===== DOM Elements =====
+        var sidebar = document.getElementById("sidebar");
+        var sidebarOverlay = document.getElementById("sidebar-overlay");
+        var sidebarToggle = document.getElementById("sidebar-toggle");
+
+        var dbStatus = document.getElementById("db-status");
+        var dbIcon = document.getElementById("db-icon");
+        var totalTriggersEl = document.getElementById("total-triggers");
+        var triggersList = document.getElementById("triggers-list");
+        var tableLoading = document.getElementById("table-loading");
+        var tableEmpty = document.getElementById("table-empty");
+        var searchInput = document.getElementById("search-input");
+
+        var botSettingsForm = document.getElementById("bot-settings-form");
+        var inputBotName = document.getElementById("input-bot-name");
+        var inputOwnerName = document.getElementById("input-owner-name");
+        var inputOwnerNumbers = document.getElementById("input-owner-numbers");
+        var inputPrefix = document.getElementById("input-prefix");
+        var inputChannelLink = document.getElementById("input-channel-link");
+        var inputNoPrefix = document.getElementById("input-no-prefix");
+        var saveBotSettingsBtn = document.getElementById("save-bot-settings-btn");
+
+        var addTriggerForm = document.getElementById("add-trigger-form");
+        var editTriggerForm = document.getElementById("edit-trigger-form");
+        var editOriginalKey = document.getElementById("edit-original-key");
+        var editTriggerKey = document.getElementById("edit-trigger-key");
+        var editTriggerValue = document.getElementById("edit-trigger-value");
+
+        var toastEl = document.getElementById("liveToast");
+        var toastMsg = document.getElementById("toast-message");
+        var toastIcon = document.getElementById("toast-icon");
+
+        var toastInstance = null;
+        var supabaseClient = null;
+        var allTriggers = [];
+
+        // ===== Toast Helper (Using SweetAlert2) =====
+        function showToast(message, type) {
+            type = type || "success";
+            window.Swal.fire({
+                title: type === "success" ? "Sukses!" : "Gagal!",
+                text: message,
+                icon: type === "success" ? "success" : "error",
+                confirmButtonText: "Mengerti",
+                confirmButtonColor: "#4f46e5",
+                customClass: {
+                    confirmButton: 'btn btn-primary px-4 py-2'
+                },
+                buttonsStyling: false
+            });
+        }
+
+        // ===== Sidebar Toggle =====
+        sidebarToggle.addEventListener("click", function() {
+            sidebar.classList.toggle("open");
+        });
+
+        sidebarOverlay.addEventListener("click", function() {
+            sidebar.classList.remove("open");
+        });
+
+        // ===== SPA Navigation =====
+        var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link");
+        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section"];
+
+        menuLinks.forEach(function(link) {
+            link.addEventListener("click", function() {
+                var target = link.getAttribute("data-target");
+
+                // Update active state
+                menuLinks.forEach(function(l) { l.classList.remove("active"); });
+                link.classList.add("active");
+
+                // Show/hide sections
+                allSections.forEach(function(id) {
+                    var el = document.getElementById(id);
+                    if (el) {
+                        if (id === target) {
+                            el.classList.remove("d-none");
+                        } else {
+                            el.classList.add("d-none");
+                        }
+                    }
+                });
+
+                // Close sidebar on mobile
+                if (window.innerWidth < 768) {
+                    sidebar.classList.remove("open");
+                }
+            });
+        });
+
+        // ===== Theme Toggle =====
+        var themeToggleBtn = document.getElementById("theme-toggle-btn");
+        var themeIcon = document.getElementById("theme-icon");
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+            themeIcon.className = theme === "dark" ? "bi bi-sun" : "bi bi-moon";
+        }
+
+        themeToggleBtn.addEventListener("click", function() {
+            var current = document.documentElement.getAttribute("data-theme");
+            setTheme(current === "dark" ? "light" : "dark");
+        });
+
+        // ===== Fetch Web Settings (Maintenance & Popup) =====
+        function fetchWebSettings() {
+            fetch(API_URL + "/api/settings").then(function(r) { return r.json(); }).then(function(data) {
+                if (data) {
+                    // Cek Maintenance
+                    if (data.maintenance_mode) {
+                        var overlay = document.getElementById("maintenance-overlay");
+                        overlay.classList.remove("d-none");
+                        overlay.style.display = "flex";
+                        document.body.style.overflow = "hidden"; // Kunci scroll
+                        return; // Stop eksekusi, biarkan halaman blank kecuali maintenance
+                    }
+                    
+                    // Cek Popup
+                    if (data.popup_active) {
+                        window.Swal.fire({
+                            title: data.popup_title || "Pengumuman",
+                            html: data.popup_content || "",
+                            icon: "info",
+                            confirmButtonText: "Mengerti",
+                            confirmButtonColor: "#4f46e5",
+                            customClass: {
+                                popup: 'swal2-custom-popup',
+                                confirmButton: 'btn btn-primary px-4 py-2'
+                            },
+                            buttonsStyling: false
+                        });
+                    }
+
+                    // Cek Papan Informasi Statis
+                    renderInfoBoard(data);
+                }
+            }).catch(function(err) {
+                console.log("Web settings belum dikonfigurasi.");
+            });
+        }
+
+        function renderInfoBoard(data) {
+            var infoCard = document.getElementById("info-board-card");
+            if (!infoCard) return;
+            if (data && data.info_active) {
+                var infoTitleEl = document.getElementById("info-board-title");
+                var infoContentEl = document.getElementById("info-board-content");
+                
+                infoTitleEl.innerHTML = '<i class="bi bi-info-circle-fill me-2 text-primary"></i>' + (data.info_title || "Informasi");
+                infoContentEl.innerHTML = data.info_content || "";
+                infoCard.classList.remove("d-none");
+            } else {
+                infoCard.classList.add("d-none");
+            }
+        }
+
+        // ===== Fetch All Data =====
+        function fetchData() {
+            if (dbStatus) {
+                dbStatus.textContent = "Menghubungkan...";
+                dbStatus.className = "stat-value text-primary";
+            }
+
+            fetch(API_URL + "/api/triggers")
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (dbStatus) {
+                        dbStatus.textContent = "Connected (SQLite)";
+                        dbStatus.className = "stat-value text-success";
+                    }
+                    if (dbIcon) {
+                        dbIcon.className = "bi bi-database-check stat-icon text-success";
+                    }
+                    allTriggers = data || [];
+                    renderTriggers(allTriggers);
+                    fetchBotSettings();
+                    fetchWebSettings();
+                })
+                .catch(function(err) {
+                    console.error("DB Error:", err);
+                    if (dbStatus) {
+                        dbStatus.textContent = "Error";
+                        dbStatus.className = "stat-value text-danger";
+                    }
+                    if (dbIcon) {
+                        dbIcon.className = "bi bi-database-x stat-icon text-danger";
+                    }
+                    showToast("Gagal terhubung ke API Bot VPS.", "error");
+                    tableLoading.classList.add("d-none");
+                    tableEmpty.classList.remove("d-none");
+                });
+        }
+
+        function fetchTriggersOnly() {
+            fetch(API_URL + "/api/triggers")
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    allTriggers = data || [];
+                    renderTriggers(allTriggers);
+                });
+        }
+
+        // ===== Bot Settings =====
+        var ownerList = [];
+
+        function renderOwnerChips() {
+            var container = document.getElementById("owner-chips-container");
+            var emptyState = document.getElementById("owner-empty-state");
+            var countText = document.getElementById("owner-count-text");
+            container.innerHTML = "";
+            if (ownerList.length === 0) {
+                emptyState.style.display = "flex";
+            } else {
+                emptyState.style.display = "none";
+                ownerList.forEach(function(num, idx) {
+                    var chip = document.createElement("span");
+                    chip.className = "ws-owner-chip";
+                    chip.innerHTML = num + ' <i class="bi bi-x-lg ws-chip-remove" data-idx="' + idx + '"></i>';
+                    chip.querySelector(".ws-chip-remove").addEventListener("click", function() {
+                        ownerList.splice(idx, 1);
+                        renderOwnerChips();
+                    });
+                    container.appendChild(chip);
+                });
+            }
+            if (countText) countText.textContent = ownerList.length + "/3";
+            // Sync hidden input
+            inputOwnerNumbers.value = ownerList.join(", ");
+        }
+
+        // Add Owner button
+        document.getElementById("btn-add-owner").addEventListener("click", function() {
+            var input = document.getElementById("input-new-owner");
+            var val = input.value.trim().replace(/[^0-9]/g, '');
+            if (!val || val.length < 8) {
+                showToast("Masukkan nomor WhatsApp yang valid.", "error");
+                return;
+            }
+            if (ownerList.includes(val)) {
+                showToast("Nomor sudah ada di daftar owner.", "error");
+                return;
+            }
+            if (ownerList.length >= 3) {
+                showToast("Maksimal 3 owner. Upgrade ke Nitro untuk lebih.", "error");
+                return;
+            }
+            ownerList.push(val);
+            renderOwnerChips();
+            input.value = "";
+        });
+
+        // Prefix Mode Toggle
+        var prefixModeGroup = document.getElementById("prefix-mode-group");
+        var prefixModeHint = document.getElementById("prefix-mode-hint");
+        var currentPrefixMode = "multi";
+
+        function setPrefixMode(mode) {
+            currentPrefixMode = mode;
+            var btns = prefixModeGroup.querySelectorAll(".ws-toggle-btn");
+            btns.forEach(function(btn) {
+                btn.classList.toggle("active", btn.getAttribute("data-mode") === mode);
+            });
+            var noPrefixInput = document.getElementById("input-no-prefix");
+            if (mode === "none") {
+                noPrefixInput.value = "true";
+                if (prefixModeHint) prefixModeHint.textContent = "Bot bisa dipanggil tanpa prefix apapun. User langsung ketik perintah.";
+            } else if (mode === "single") {
+                noPrefixInput.value = "false";
+                if (prefixModeHint) prefixModeHint.textContent = "Bot hanya menerima satu karakter prefix pertama dari daftar.";
+            } else {
+                noPrefixInput.value = "false";
+                if (prefixModeHint) prefixModeHint.innerHTML = 'Bot menerima banyak prefix sekaligus, misal <code>#</code>, <code>!</code>, <code>/</code>.';
+            }
+        }
+
+        prefixModeGroup.querySelectorAll(".ws-toggle-btn").forEach(function(btn) {
+            btn.addEventListener("click", function() {
+                setPrefixMode(btn.getAttribute("data-mode"));
+            });
+        });
+
+        function fillFormWithData(data) {
+            inputBotName.value = data.bot_name || "";
+            inputOwnerName.value = data.owner_name || "";
+            
+            // Owner chips
+            var nums = Array.isArray(data.owner_numbers) ? data.owner_numbers : [];
+            ownerList = nums.filter(Boolean);
+            renderOwnerChips();
+            
+            var pref = Array.isArray(data.prefix) ? data.prefix : [];
+            inputPrefix.value = pref.join(", ");
+            inputChannelLink.value = data.channel_link || "";
+            
+            // Prefix mode toggle
+            if (data.no_prefix) {
+                setPrefixMode("none");
+            } else {
+                setPrefixMode("multi");
+            }
+
+            document.getElementById("input-verified-quoted").checked = !!data.verified_quoted;
+            document.getElementById("input-auto-read").checked = data.auto_read !== false;
+            document.getElementById("input-presence-status").value = data.presence_status || "composing";
+            
+            document.getElementById("input-work-hours-enabled").checked = !!data.work_hours_enabled;
+            document.getElementById("input-work-start-time").value = data.work_start_time || "08:00";
+            document.getElementById("input-work-end-time").value = data.work_end_time || "22:00";
+            document.getElementById("input-offline-message").value = data.offline_message || "";
+            
+            // Set multiple select
+            var daysSelect = document.getElementById("input-work-days");
+            var selectedDays = Array.isArray(data.work_days) ? data.work_days : ["Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu", "Minggu"];
+            for (var i = 0; i < daysSelect.options.length; i++) {
+                daysSelect.options[i].selected = selectedDays.includes(daysSelect.options[i].value);
+            }
+            
+            // Set Papan Informasi
+            document.getElementById("input-info-active").checked = !!data.info_active;
+            document.getElementById("input-info-title").value = data.info_title || "";
+            document.getElementById("input-info-content").value = data.info_content || "";
+
+            // Set Menu Custom Dinamis
+            document.getElementById("input-menu-title").value = data.menu_title || "BOT KUCAI AKUN";
+            document.getElementById("input-menu-body").value = data.menu_body || "┃ • buy akun / beli akun\n┃ • jual akun / sell akun\n┃ • saluran / ch (Link Saluran WhatsApp)";
+        }
+
+        function fetchBotSettings() {
+            fetch(API_URL + "/api/settings")
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (data) {
+                        window.botSettings = data;
+                        fillFormWithData(data);
+                    }
+                }).catch(function(err) {
+                    console.log("Menggunakan setelan bawaan.");
+                });
+        }
+
+        botSettingsForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            saveBotSettingsBtn.setAttribute("disabled", "true");
+            
+            var payload = {
+                bot_name: inputBotName.value.trim(),
+                owner_name: inputOwnerName.value.trim(),
+                owner_numbers: ownerList.slice(),
+                prefix: inputPrefix.value.split(",").map(function(s) { return s.trim(); }).filter(Boolean),
+                no_prefix: document.getElementById("input-no-prefix").value === "true",
+                verified_quoted: document.getElementById("input-verified-quoted").checked,
+                auto_read: document.getElementById("input-auto-read").checked,
+                channel_link: inputChannelLink.value.trim(),
+                presence_status: document.getElementById("input-presence-status").value,
+                work_hours_enabled: document.getElementById("input-work-hours-enabled").checked,
+                work_start_time: document.getElementById("input-work-start-time").value,
+                work_end_time: document.getElementById("input-work-end-time").value,
+                offline_message: document.getElementById("input-offline-message").value.trim(),
+                work_days: Array.from(document.getElementById("input-work-days").selectedOptions).map(function(opt) { return opt.value; }),
+                info_active: document.getElementById("input-info-active").checked,
+                info_title: document.getElementById("input-info-title").value.trim(),
+                info_content: document.getElementById("input-info-content").value.trim(),
+                menu_title: document.getElementById("input-menu-title").value.trim(),
+                menu_body: document.getElementById("input-menu-body").value
+            };
+
+            fetch(API_URL + "/api/settings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(function(r) { return r.json(); }).then(function(res) {
+                if (!res.success) throw new Error(res.error || "Gagal menyimpan");
+                showToast("Config Bot berhasil disimpan!");
+            }).catch(function(err) {
+                showToast("Gagal menyimpan: " + err.message, "error");
+            }).finally(function() {
+                saveBotSettingsBtn.removeAttribute("disabled");
+            });
+        });
+
+        // ===== Render Triggers =====
+        function renderTriggers(triggers) {
+            tableLoading.classList.add("d-none");
+            triggersList.innerHTML = "";
+            if (totalTriggersEl) {
+                totalTriggersEl.textContent = triggers.length;
+            }
+            if (triggers.length === 0) {
+                tableEmpty.classList.remove("d-none");
+                return;
+            }
+            tableEmpty.classList.add("d-none");
+            triggers.forEach(function(tr, idx) {
+                var row = document.createElement("tr");
+                var ek = (tr.key || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                var ev = (tr.value || "").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+                var modeText = tr.match_mode === "contains" ? "Contains" : "Exact";
+                var modeBadge = tr.match_mode === "contains" ? "badge bg-info" : "badge bg-secondary";
+                var imgIndicator = tr.image_url ? ' <span class="badge bg-success" title="' + tr.image_url + '"><i class="bi bi-image"></i> Gambar</span>' : '';
+                row.innerHTML =
+                    '<td class="text-muted fw-bold">' + (idx + 1) + '</td>' +
+                    '<td><span class="badge-key">' + ek + '</span></td>' +
+                    '<td><span class="' + modeBadge + '">' + modeText + '</span></td>' +
+                    '<td><div class="text-truncate" style="max-width:300px;">' + ev + imgIndicator + '</div></td>' +
+                    '<td class="text-end">' +
+                        '<button class="btn btn-sm btn-outline-primary me-1 btn-edit-trigger" data-key="' + ek + '"><i class="bi bi-pencil"></i></button>' +
+                        '<button class="btn btn-sm btn-outline-danger btn-delete-trigger" data-key="' + ek + '"><i class="bi bi-trash"></i></button>' +
+                    '</td>';
+                triggersList.appendChild(row);
+            });
+            triggersList.querySelectorAll(".btn-edit-trigger").forEach(function(btn) {
+                btn.addEventListener("click", function() { openEditModal(btn.getAttribute("data-key")); });
+            });
+            triggersList.querySelectorAll(".btn-delete-trigger").forEach(function(btn) {
+                btn.addEventListener("click", function() { deleteTrigger(btn.getAttribute("data-key")); });
+            });
+        }
+
+        // ===== Search =====
+        searchInput.addEventListener("input", function(e) {
+            var q = e.target.value.toLowerCase().trim();
+            renderTriggers(allTriggers.filter(function(t) {
+                return t.key.includes(q) || t.value.toLowerCase().includes(q);
+            }));
+        });
+
+        // ===== Add Trigger =====
+        addTriggerForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            var key = document.getElementById("trigger-key").value.trim().toLowerCase();
+            var value = document.getElementById("trigger-value").value.trim();
+            var mode = document.getElementById("trigger-match-mode").value;
+            var imageUrl = document.getElementById("trigger-image-url").value.trim() || null;
+
+            fetch(API_URL + "/api/triggers", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ key: key, value: value, match_mode: mode, image_url: imageUrl })
+            }).then(function(r) { return r.json(); }).then(function(res) {
+                if (!res.success) throw new Error(res.error || "Gagal menyimpan");
+                showToast('Trigger "' + key + '" berhasil disimpan!');
+                addTriggerForm.reset();
+                bootstrap.Modal.getInstance(document.getElementById("addTriggerModal")).hide();
+                fetchTriggersOnly();
+            }).catch(function(err) {
+                showToast("Gagal: " + err.message, "error");
+            });
+        });
+
+        // ===== Edit Trigger =====
+        function openEditModal(key) {
+            var tr = allTriggers.find(function(t) { return t.key === key; });
+            if (!tr) return;
+            editOriginalKey.value = tr.key;
+            editTriggerKey.value = tr.key;
+            editTriggerValue.value = tr.value;
+            document.getElementById("edit-trigger-match-mode").value = tr.match_mode || "exact";
+            document.getElementById("edit-trigger-image-url").value = tr.image_url || "";
+            new bootstrap.Modal(document.getElementById("editTriggerModal")).show();
+        }
+
+        editTriggerForm.addEventListener("submit", function(e) {
+            e.preventDefault();
+            var mode = document.getElementById("edit-trigger-match-mode").value;
+            var imageUrl = document.getElementById("edit-trigger-image-url").value.trim() || null;
+
+            fetch(API_URL + "/api/triggers", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ key: editOriginalKey.value, value: editTriggerValue.value.trim(), match_mode: mode, image_url: imageUrl })
+            }).then(function(r) { return r.json(); }).then(function(res) {
+                if (!res.success) throw new Error(res.error || "Gagal");
+                showToast("Trigger berhasil diperbarui!");
+                bootstrap.Modal.getInstance(document.getElementById("editTriggerModal")).hide();
+                fetchTriggersOnly();
+            }).catch(function(err) {
+                showToast("Gagal: " + err.message, "error");
+            });
+        });
+
+        // ===== Delete Trigger =====
+        function deleteTrigger(key) {
+            if (!confirm('Hapus trigger "' + key + '"?')) return;
+            fetch(API_URL + "/api/triggers/" + encodeURIComponent(key), {
+                method: "DELETE"
+            }).then(function(r) { return r.json(); }).then(function(res) {
+                if (!res.success) throw new Error(res.error || "Gagal");
+                showToast('Trigger "' + key + '" dihapus!');
+                fetchTriggersOnly();
+            }).catch(function(err) {
+                showToast("Gagal: " + err.message, "error");
+            });
+        }
+
+        // ===== User IP & Date Info =====
+        function loadSystemInfo() {
+            // Set Date
+            var dateEl = document.getElementById("current-date");
+            if (dateEl) {
+                var options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                dateEl.textContent = new Date().toLocaleDateString('id-ID', options);
+            }
+
+            // Fetch IP
+            var ipEl = document.getElementById("user-ip");
+            if (ipEl) {
+                fetch('https://api.ipify.org?format=json')
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        ipEl.textContent = data.ip;
+                    })
+                    .catch(function() {
+                        ipEl.textContent = "Gagal memuat";
+                    });
+            }
+        }
+
+        // ===== Pairing Manager =====
+        function fetchPairingStatus() {
+            fetch(API_URL + "/api/connection")
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    if (!data) {
+                        var fallback = { status: "disconnected", reason: "Bot connection offline." };
+                        renderPairingUI(fallback);
+                        updateDashboardBotStatus(fallback);
+                        return;
+                    }
+                    renderPairingUI(data);
+                    updateDashboardBotStatus(data);
+                }).catch(function() {
+                    var fallback = { status: "disconnected", reason: "Gagal memuat status koneksi dari VPS." };
+                    renderPairingUI(fallback);
+                    updateDashboardBotStatus(fallback);
+                });
+        }
+
+        function renderPairingUI(data) {
+            var statusText = document.getElementById("pairing-status-text");
+            var statusDetail = document.getElementById("pairing-status-detail");
+            var statusIcon = document.getElementById("pairing-status-icon");
+            var connectedDiv = document.getElementById("pairing-connected");
+            var disconnectedDiv = document.getElementById("pairing-disconnected");
+            var codeDisplay = document.getElementById("pairing-code-display");
+            var reasonDiv = document.getElementById("pairing-reason");
+
+            // Hide all states first
+            connectedDiv.classList.add("d-none");
+            disconnectedDiv.classList.add("d-none");
+            codeDisplay.classList.add("d-none");
+            reasonDiv.classList.add("d-none");
+
+            var status = data.status || "disconnected";
+
+            if (status === "connected") {
+                statusText.textContent = "Terhubung";
+                statusDetail.textContent = "Bot sedang aktif dan berjalan.";
+                statusIcon.className = "pairing-status-icon text-success";
+                statusIcon.innerHTML = '<i class="bi bi-check-circle-fill fs-3"></i>';
+                connectedDiv.classList.remove("d-none");
+                document.getElementById("pairing-bot-number").textContent = data.phone_number || data.bot_number || "???";
+            } else if (status === "pairing") {
+                statusText.textContent = "Menunggu Pairing";
+                statusDetail.textContent = "Kode pairing telah dikirim. Masukkan di WhatsApp Anda.";
+                statusIcon.className = "pairing-status-icon text-warning";
+                statusIcon.innerHTML = '<i class="bi bi-hourglass-split fs-3"></i>';
+                codeDisplay.classList.remove("d-none");
+                document.getElementById("pairing-code-value").textContent = data.pairing_code || "????-????";
+            } else if (status === "waiting_pair") {
+                statusText.textContent = "Menunggu Pairing";
+                statusDetail.textContent = "Bot menyala tapi belum terhubung. Masukkan nomor untuk memulai pairing.";
+                statusIcon.className = "pairing-status-icon text-info";
+                statusIcon.innerHTML = '<i class="bi bi-phone fs-3"></i>';
+                disconnectedDiv.classList.remove("d-none");
+            } else if (status === "connecting") {
+                statusText.textContent = "Menghubungkan...";
+                statusDetail.textContent = "Bot sedang mencoba terhubung ke WhatsApp.";
+                statusIcon.className = "pairing-status-icon text-primary";
+                statusIcon.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"></div>';
+            } else {
+                statusText.textContent = "Terputus";
+                statusDetail.textContent = "Bot tidak terhubung ke WhatsApp.";
+                statusIcon.className = "pairing-status-icon text-danger";
+                statusIcon.innerHTML = '<i class="bi bi-x-circle-fill fs-3"></i>';
+                disconnectedDiv.classList.remove("d-none");
+            }
+
+            // Show reason if available
+            if (data.reason) {
+                reasonDiv.classList.remove("d-none");
+                document.getElementById("pairing-reason-text").textContent = data.reason;
+            }
+        }
+
+        function formatUptime(seconds) {
+            if (!seconds || isNaN(seconds)) return "-";
+            var d = Math.floor(seconds / (3600 * 24));
+            var h = Math.floor((seconds % (3600 * 24)) / 3600);
+            var m = Math.floor((seconds % 3600) / 60);
+            var s = Math.floor(seconds % 60);
+            
+            var res = "";
+            if (d > 0) res += d + "d ";
+            if (h > 0) res += h + "h ";
+            if (m > 0) res += m + "m ";
+            res += s + "s";
+            return res;
+        }
+
+        var botUptimeSeconds = 0;
+        var uptimeIntervalId = null;
+
+        function startUptimeCounter(initialSeconds) {
+            if (uptimeIntervalId) clearInterval(uptimeIntervalId);
+            botUptimeSeconds = initialSeconds;
+            document.getElementById("bot-runtime-text").textContent = formatUptime(botUptimeSeconds);
+            
+            uptimeIntervalId = setInterval(function() {
+                botUptimeSeconds++;
+                document.getElementById("bot-runtime-text").textContent = formatUptime(botUptimeSeconds);
+            }, 1000);
+        }
+
+        function stopUptimeCounter() {
+            if (uptimeIntervalId) {
+                clearInterval(uptimeIntervalId);
+                uptimeIntervalId = null;
+            }
+            document.getElementById("bot-runtime-text").textContent = "-";
+        }
+
+        function updateDashboardBotStatus(data) {
+            var statusEl = document.getElementById("bot-status-text");
+            var wrapperEl = document.getElementById("bot-status-icon-wrapper");
+            if (!statusEl || !wrapperEl) return;
+
+            var status = (data && data.status) || "disconnected";
+            statusEl.textContent = status === "connected" ? "Terhubung" : (status === "pairing" || status === "waiting_pair" ? "Waiting JID" : (status === "connecting" ? "Connecting" : "Offline"));
+            
+            // Set dynamic icon wrapper color class
+            wrapperEl.className = "stat-icon-wrapper";
+            if (status === "connected") {
+                statusEl.className = "stat-value text-success";
+                wrapperEl.classList.add("stat-icon-green");
+                if (data.uptime) {
+                    startUptimeCounter(data.uptime);
+                }
+            } else if (status === "pairing" || status === "waiting_pair" || status === "connecting") {
+                statusEl.className = "stat-value text-warning";
+                wrapperEl.classList.add("stat-icon-gold");
+                stopUptimeCounter();
+            } else {
+                statusEl.className = "stat-value text-danger";
+                wrapperEl.classList.add("stat-icon-red");
+                stopUptimeCounter();
+            }
+        }
+
+        // Keep last 150 terminal log lines in memory
+        var terminalLogs = [];
+        var maxLogLines = 150;
+
+        function appendTerminalLog(text) {
+            var termBody = document.getElementById("terminal-log-content");
+            if (!termBody) return;
+            
+            // Format log with timestamp
+            var timeStr = new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            var formattedLine = "[" + timeStr + "] " + text;
+            
+            terminalLogs.push(formattedLine);
+            if (terminalLogs.length > maxLogLines) {
+                terminalLogs.shift();
+            }
+            
+            termBody.textContent = terminalLogs.join("\n");
+            
+            // Autoscroll terminal body to bottom
+            termBody.scrollTop = termBody.scrollHeight;
+        }
+
+        function initPairing() {
+            // Initial fetch
+            fetchPairingStatus();
+
+            // Clear terminal log handler
+            document.getElementById("btn-clear-terminal").addEventListener("click", function() {
+                terminalLogs = [];
+                document.getElementById("terminal-log-content").textContent = "$ logs cleared.";
+            });
+
+            // ===== Socket.io Realtime Listener =====
+            try {
+                socket = io(API_URL);
+
+                socket.on('connect', function() {
+                    document.getElementById("terminal-status-indicator").textContent = "connected";
+                    document.getElementById("terminal-status-indicator").className = "terminal-status text-success";
+                });
+
+                socket.on('disconnect', function() {
+                    document.getElementById("terminal-status-indicator").textContent = "disconnected";
+                    document.getElementById("terminal-status-indicator").className = "terminal-status text-danger";
+                });
+
+                socket.on('bot-connection-update', function(data) {
+                    if (data) {
+                        renderPairingUI(data);
+                        updateDashboardBotStatus(data);
+                    }
+                });
+
+                socket.on('triggers-update', function() {
+                    fetchTriggersOnly();
+                });
+
+                socket.on('bot-settings-update', function(data) {
+                    if (data) {
+                        window.botSettings = data;
+                        fillFormWithData(data);
+                        renderInfoBoard(data);
+                    }
+                });
+
+                // Pipe bot logs directly to macOS terminal mockup
+                socket.on('bot-log', function(logText) {
+                    appendTerminalLog(logText);
+                });
+            } catch (err) {
+                console.error("Gagal menginisiasi WebSocket Socket.io:", err);
+            }
+
+            // Request Pair button (Start)
+            document.getElementById("btn-request-pair").addEventListener("click", function() {
+                var phone = document.getElementById("pairing-phone-input").value.trim().replace(/[^0-9]/g, '');
+                
+                var isFormHidden = document.getElementById("pairing-disconnected").classList.contains("d-none") &&
+                                   document.getElementById("pairing-connected").classList.contains("d-none") &&
+                                   document.getElementById("pairing-code-display").classList.contains("d-none");
+                
+                if (isFormHidden || document.getElementById("pairing-disconnected").classList.contains("d-none")) {
+                    document.getElementById("pairing-connected").classList.add("d-none");
+                    document.getElementById("pairing-code-display").classList.add("d-none");
+                    document.getElementById("pairing-disconnected").classList.remove("d-none");
+                    return;
+                }
+
+                if (!phone || phone.length < 10) {
+                    return showToast("Masukkan nomor WhatsApp yang valid!", "error");
+                }
+
+                var btn = this;
+                btn.setAttribute("disabled", "true");
+                btn.innerHTML = '<div class="spinner-border spinner-border-sm me-1" role="status"></div>';
+
+                fetch(API_URL + "/api/connection/action", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: "pair", phone_number: phone })
+                }).then(function(r) { return r.json(); }).then(function(res) {
+                    if (!res.success) throw new Error("Gagal mengirim aksi");
+                    showToast("Permintaan pairing terkirim! Menunggu bot menghasilkan kode...");
+                }).catch(function(err) {
+                    showToast("Gagal mengirim permintaan: " + err.message, "error");
+                }).finally(function() {
+                    btn.removeAttribute("disabled");
+                    btn.innerHTML = 'Start';
+                });
+            });
+
+            // Batal Pairing button (Stop)
+            document.getElementById("btn-cancel-pair").addEventListener("click", function() {
+                var btn = this;
+                btn.setAttribute("disabled", "true");
+                btn.innerHTML = '<div class="spinner-border spinner-border-sm me-1" role="status"></div>';
+
+                fetch(API_URL + "/api/connection/action", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ action: null })
+                }).then(function(r) { return r.json(); }).then(function(res) {
+                    if (!res.success) throw new Error("Gagal");
+                    showToast("Pairing berhasil dibatalkan!");
+                }).catch(function(err) {
+                    showToast("Gagal membatalkan pairing: " + err.message, "error");
+                }).finally(function() {
+                    btn.removeAttribute("disabled");
+                    btn.innerHTML = 'Stop';
+                });
+            });
+
+            // Logout button (Hapus Sesi)
+            document.getElementById("btn-logout").addEventListener("click", function() {
+                window.Swal.fire({
+                    title: "Hapus Sesi?",
+                    text: "Session bot akan dihapus. Anda perlu memasukkan kode pairing baru untuk menghubungkan kembali.",
+                    icon: "warning",
+                    showCancelButton: true,
+                    confirmButtonText: "Ya, Hapus",
+                    cancelButtonText: "Batal",
+                    confirmButtonColor: "#dc3545",
+                    cancelButtonColor: "#6c757d",
+                    customClass: {
+                        confirmButton: 'btn btn-danger px-4 py-2 me-2',
+                        cancelButton: 'btn btn-secondary px-4 py-2'
+                    },
+                    buttonsStyling: false
+                }).then(function(result) {
+                    if (result.isConfirmed) {
+                        fetch(API_URL + "/api/connection/action", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ action: "logout" })
+                        }).then(function(r) { return r.json(); }).then(function(res) {
+                            if (!res.success) throw new Error("Gagal");
+                            showToast("Perintah logout terkirim! Bot akan memutuskan koneksi...");
+                        }).catch(function(err) {
+                            showToast("Gagal mengirim perintah logout: " + err.message, "error");
+                        });
+                    }
+                });
+            });
+        }
+
+        // ===== Authentication Manager =====
+        function checkAuth() {
+            var loginOverlay = document.getElementById("login-overlay");
+            var savedIdentifier = localStorage.getItem("admin_identifier");
+            var savedToken = localStorage.getItem("admin_token");
+
+            if (!savedIdentifier || !savedToken) {
+                loginOverlay.classList.remove("d-none");
+                loginOverlay.style.display = "flex";
+                return;
+            }
+
+            // Verifikasi kredensial ke API VPS
+            fetch(API_URL + "/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ identifier: savedIdentifier, token: savedToken })
+            }).then(function(r) { return r.json(); }).then(function(res) {
+                if (!res.success) {
+                    localStorage.removeItem("admin_identifier");
+                    localStorage.removeItem("admin_token");
+                    loginOverlay.classList.remove("d-none");
+                    loginOverlay.style.display = "flex";
+                    showToast("Sesi login Anda tidak valid atau telah kadaluarsa.", "error");
+                } else {
+                    loginOverlay.classList.add("d-none");
+                    loginOverlay.style.display = "none";
+                    fetchData();
+                    initPairing();
+                }
+            }).catch(function() {
+                // Offline/Error koneksi sementara
+                loginOverlay.classList.add("d-none");
+                loginOverlay.style.display = "none";
+                fetchData();
+                initPairing();
+            });
+        }
+
+        // Login Form Handler
+        document.getElementById("login-form").addEventListener("submit", function(e) {
+            e.preventDefault();
+            var identifierInput = document.getElementById("login-identifier").value.trim();
+            var tokenInput = document.getElementById("login-token").value.trim();
+            var btnSubmit = document.getElementById("btn-login-submit");
+
+            btnSubmit.setAttribute("disabled", "true");
+            btnSubmit.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div>Memverifikasi...';
+
+            var cleanId = identifierInput;
+            if (!identifierInput.includes("@")) {
+                cleanId = identifierInput.replace(/[^0-9]/g, '');
+            }
+
+            fetch(API_URL + "/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ identifier: cleanId, token: tokenInput })
+            }).then(function(r) { return r.json(); }).then(function(res) {
+                if (!res.success) {
+                    showToast("Nomor/Email atau Token Login salah!", "error");
+                } else {
+                    localStorage.setItem("admin_identifier", cleanId);
+                    localStorage.setItem("admin_token", tokenInput);
+                    
+                    document.getElementById("login-overlay").classList.add("d-none");
+                    document.getElementById("login-overlay").style.display = "none";
+                    
+                    showToast("Berhasil masuk ke panel!");
+                    fetchData();
+                    initPairing();
+                }
+            }).catch(function(err) {
+                showToast("Error verifikasi: " + err.message, "error");
+            }).finally(function() {
+                btnSubmit.removeAttribute("disabled");
+                btnSubmit.innerHTML = '<i class="bi bi-box-arrow-in-right me-2"></i>Masuk Ke Dashboard';
+            });
+        });
+
+        // Logout Button Handler
+        document.getElementById("web-logout-btn").addEventListener("click", function() {
+            window.Swal.fire({
+                title: "Keluar dari Panel?",
+                text: "Anda harus memasukkan token kembali untuk mengakses dashboard.",
+                icon: "question",
+                showCancelButton: true,
+                confirmButtonText: "Ya, Keluar",
+                cancelButtonText: "Batal",
+                confirmButtonColor: "#dc3545",
+                cancelButtonColor: "#6c757d",
+                customClass: {
+                    confirmButton: 'btn btn-danger px-4 py-2 me-2',
+                    cancelButton: 'btn btn-secondary px-4 py-2'
+                },
+                buttonsStyling: false
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    localStorage.removeItem("admin_identifier");
+                    localStorage.removeItem("admin_token");
+                    location.reload();
+                }
+            });
+        });
+
+        // ===== Profile Modal Logic =====
+        var profileModalInstance = new bootstrap.Modal(document.getElementById("profileModal"));
+        var tokenVisible = false;
+
+        document.getElementById("topbar-avatar-btn").addEventListener("click", function() {
+            var identifier = localStorage.getItem("admin_identifier") || "-";
+            var token = localStorage.getItem("admin_token") || "-";
+            
+            document.getElementById("profile-identifier-val").textContent = identifier;
+            
+            // Check if owner (match both dynamic settings or hardcoded default owner numbers)
+            var isOwner = false;
+            var ownerList = [];
+            if (window.botSettings) {
+                if (Array.isArray(window.botSettings.ownerNumbers)) {
+                    ownerList = ownerList.concat(window.botSettings.ownerNumbers);
+                } else if (Array.isArray(window.botSettings.owner_numbers)) {
+                    ownerList = ownerList.concat(window.botSettings.owner_numbers);
+                }
+            }
+            if (DEFAULT_SETTINGS) {
+                if (Array.isArray(DEFAULT_SETTINGS.ownerNumbers)) {
+                    ownerList = ownerList.concat(DEFAULT_SETTINGS.ownerNumbers);
+                } else if (Array.isArray(DEFAULT_SETTINGS.owner_numbers)) {
+                    ownerList = ownerList.concat(DEFAULT_SETTINGS.owner_numbers);
+                }
+            }
+            
+            // Clean values for robust matching
+            var cleanIdentifier = identifier.trim().replace(/[^0-9]/g, '');
+            isOwner = ownerList.some(function(num) {
+                var cleanNum = String(num).trim().replace(/[^0-9]/g, '');
+                return cleanNum === cleanIdentifier && cleanNum.length > 0;
+            });
+            
+            var roleTitle = document.getElementById("profile-role-title");
+            var roleBadge = document.getElementById("profile-role-badge");
+            
+            if (isOwner) {
+                roleTitle.textContent = "Owner Bot";
+                roleBadge.textContent = "Owner";
+                roleBadge.className = "badge bg-danger-subtle text-danger border border-danger-subtle";
+            } else {
+                roleTitle.textContent = "Admin Kucai";
+                roleBadge.textContent = "Admin";
+                roleBadge.className = "badge bg-primary-subtle text-primary border border-primary-subtle";
+            }
+
+            // Reset token view
+            tokenVisible = false;
+            document.getElementById("profile-token-val").textContent = "••••••••••••••••";
+            document.getElementById("btn-toggle-token-view").innerHTML = '<i class="bi bi-eye"></i>';
+            
+            profileModalInstance.show();
+        });
+
+        // Toggle Token View
+        document.getElementById("btn-toggle-token-view").addEventListener("click", function() {
+            var token = localStorage.getItem("admin_token") || "-";
+            var tokenSpan = document.getElementById("profile-token-val");
+            tokenVisible = !tokenVisible;
+            if (tokenVisible) {
+                tokenSpan.textContent = token;
+                this.innerHTML = '<i class="bi bi-eye-slash"></i>';
+            } else {
+                tokenSpan.textContent = "••••••••••••••••";
+                this.innerHTML = '<i class="bi bi-eye"></i>';
+            }
+        });
+
+        // Copy Token to Clipboard
+        document.getElementById("btn-copy-profile-token").addEventListener("click", function() {
+            var token = localStorage.getItem("admin_token");
+            if (!token) return;
+            navigator.clipboard.writeText(token).then(function() {
+                showToast("Token berhasil disalin ke clipboard!");
+            }).catch(function() {
+                showToast("Gagal menyalin token.", "error");
+            });
+        });
+
+        // Logout from Modal
+        document.getElementById("btn-logout-modal").addEventListener("click", function() {
+            profileModalInstance.hide();
+            setTimeout(function() {
+                document.getElementById("web-logout-btn").click();
+            }, 300);
+        });
+
+        // ===== Database Latency Ping =====
+        function pingDatabase() {
+            var startTime = performance.now();
+            fetch(API_URL + "/api/settings")
+                .then(function() {
+                    var latency = Math.round(performance.now() - startTime);
+                    var latencyEl = document.getElementById("network-latency");
+                    if (latencyEl) {
+                        latencyEl.textContent = latency + " ms";
+                        if (latency < 150) latencyEl.className = "stat-value text-success";
+                        else if (latency < 400) latencyEl.className = "stat-value text-warning";
+                        else latencyEl.className = "stat-value text-danger";
+                    }
+                })
+                .catch(function() {
+                    var latencyEl = document.getElementById("network-latency");
+                    if (latencyEl) {
+                        latencyEl.textContent = "Offline";
+                        latencyEl.className = "stat-value text-danger";
+                    }
+                });
+        }
+
+        // Update Profile Info in Sidebar Footer Dinamis
+        function initSidebarProfile() {
+            var identifier = localStorage.getItem("admin_identifier") || "-";
+            var ownerList = [];
+            if (window.botSettings) {
+                if (Array.isArray(window.botSettings.ownerNumbers)) ownerList = ownerList.concat(window.botSettings.ownerNumbers);
+                else if (Array.isArray(window.botSettings.owner_numbers)) ownerList = ownerList.concat(window.botSettings.owner_numbers);
+            }
+            if (DEFAULT_SETTINGS) {
+                if (Array.isArray(DEFAULT_SETTINGS.ownerNumbers)) ownerList = ownerList.concat(DEFAULT_SETTINGS.ownerNumbers);
+                else if (Array.isArray(DEFAULT_SETTINGS.owner_numbers)) ownerList = ownerList.concat(DEFAULT_SETTINGS.owner_numbers);
+            }
+
+            var cleanIdentifier = identifier.trim().replace(/[^0-9]/g, '');
+            var isOwner = ownerList.some(function(num) {
+                var cleanNum = String(num).trim().replace(/[^0-9]/g, '');
+                return cleanNum === cleanIdentifier && cleanNum.length > 0;
+            });
+
+            var nameEl = document.getElementById("sidebar-user-name");
+            var roleEl = document.getElementById("sidebar-user-role");
+            var roleStatVal = document.getElementById("bot-role-text");
+
+            if (isOwner) {
+                nameEl.textContent = "Alvin Kucai";
+                roleEl.textContent = "Owner";
+                if (roleStatVal) roleStatVal.textContent = "Owner";
+            } else {
+                nameEl.textContent = identifier.substring(0, 12) + (identifier.length > 12 ? "..." : "");
+                roleEl.textContent = "Admin";
+                if (roleStatVal) roleStatVal.textContent = "Admin";
+            }
+        }
+
+        // Bind profile click to sidebar profile button
+        var sidebarProfileBtn = document.getElementById("sidebar-profile-btn");
+        if (sidebarProfileBtn) {
+            sidebarProfileBtn.addEventListener("click", function() {
+                document.getElementById("topbar-avatar-btn").click();
+            });
+        }
+
+        // ===== FAQ Accordion Toggle =====
+        window.toggleFaq = function(el) {
+            var item = el.closest('.faq-item');
+            if (!item) return;
+            var isOpen = item.classList.contains('open');
+            // Close all FAQ items
+            document.querySelectorAll('.faq-item').forEach(function(faq) {
+                faq.classList.remove('open');
+            });
+            // Toggle clicked one
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        };
+
+        // ===== Sidebar Logout Button =====
+        var sidebarLogoutBtn = document.getElementById("sidebar-logout-btn");
+        if (sidebarLogoutBtn) {
+            sidebarLogoutBtn.addEventListener("click", function(e) {
+                e.stopPropagation(); // Prevent profile click
+                document.getElementById("web-logout-btn").click();
+            });
+        }
+
+        // ===== Boot =====
+        setTheme(localStorage.getItem("theme") || "light");
+        fillFormWithData(DEFAULT_SETTINGS); 
+        loadSystemInfo(); 
+        checkAuth(); 
+        
+        // Mulai ping database setiap 1 detik
+        setInterval(function() {
+            pingDatabase();
+            initSidebarProfile(); // Refresh profile values
+        }, 1000);
+        console.log("[Bot Kucai Panel] Ready.");
+    });
+    </script>
+</body>
+</html>

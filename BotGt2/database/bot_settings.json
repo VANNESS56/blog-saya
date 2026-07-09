@@ -1,0 +1,31 @@
+{
+  "botName": "BOT KUCAI AKUN",
+  "ownerName": "Alvin Kucai",
+  "ownerNumbers": [
+    "6283140021959"
+  ],
+  "prefix": [
+    ".",
+    "#",
+    "!",
+    "/"
+  ],
+  "noPrefix": true,
+  "verifiedQuoted": false,
+  "channelLink": "https://whatsapp.com/channel/0029VbD8Wx9545uqEqWnPY3E",
+  "presenceStatus": "composing",
+  "workHoursEnabled": false,
+  "workStartTime": "08:00",
+  "workEndTime": "22:00",
+  "workDays": [
+    "Senin",
+    "Selasa",
+    "Rabu",
+    "Kamis",
+    "Jumat",
+    "Sabtu",
+    "Minggu"
+  ],
+  "offlineMessage": "Halo Kak! Mohon maaf saat ini toko kami sedang Offline/Tutup. Pesan Anda akan dibalas segera setelah kami kembali aktif.",
+  "autoRead": true
+}

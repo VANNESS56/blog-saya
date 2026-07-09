@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dev Panel - BOT KUCAI AKUN</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .login-wrapper {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #ffffff; /* Putih bersih sesuai screenshot */
+            font-family: 'Outfit', sans-serif;
+        }
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            padding: 2rem;
+            text-align: left;
+        }
+        .login-logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+        .login-logo i {
+            font-size: 2rem;
+            background: linear-gradient(135deg, #4f46e5, #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-right: 0.5rem;
+        }
+        .login-logo span {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: #111827;
+            letter-spacing: -0.5px;
+        }
+        .login-card h4 {
+            font-weight: 700;
+            color: #1e293b;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            font-size: 1.5rem;
+        }
+        .login-card p {
+            text-align: center;
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-bottom: 2rem;
+        }
+        .form-label {
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: #475569;
+            margin-bottom: 0.4rem;
+        }
+        .login-card .form-control {
+            padding: 0.75rem 1rem;
+            font-size: 0.95rem;
+            border-radius: 6px;
+            border: 1px solid #cbd5e1;
+            color: #334155;
+        }
+        .login-card .form-control:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        .login-card .btn-primary {
+            background-color: #1e88e5; /* Biru terang mirip screenshot */
+            border: none;
+            padding: 0.75rem;
+            font-weight: 500;
+            border-radius: 6px;
+            box-shadow: 0 4px 6px rgba(30, 136, 229, 0.2);
+            transition: all 0.2s;
+        }
+        .login-card .btn-primary:hover {
+            background-color: #1565c0;
+            transform: translateY(-1px);
+        }
+        .login-card .form-check-label {
+            font-size: 0.9rem;
+            color: #475569;
+        }
+        .forgot-link {
+            float: right;
+            font-size: 0.85rem;
+            color: #64748b;
+            text-decoration: none;
+        }
+        .forgot-link:hover {
+            text-decoration: underline;
+        }
+        .dev-header {
+            background: var(--primary);
+            color: white;
+            padding: 2rem;
+            border-radius: 12px 12px 0 0;
+            margin-bottom: 2rem;
+        }
+        .dev-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Login Section -->
+    <div id="login-section" class="login-wrapper">
+        <div class="login-card">
+            <div class="login-logo">
+                <i class="bi bi-robot"></i>
+                <span>BOT KUCAI</span>
+            </div>
+            
+            <h4>Sign In</h4>
+            <p>Enter your username and password to access dev panel.</p>
+            
+            <form id="login-form">
+                <div class="mb-3">
+                    <label class="form-label">Username</label>
+                    <input type="text" class="form-control" id="admin-username" placeholder="Username" required value="admin">
+                </div>
+                
+                <div class="mb-4">
+                    <label class="form-label">
+                        Password
+                        <a href="#" class="forgot-link">Forgot your password?</a>
+                    </label>
+                    <input type="password" class="form-control" id="admin-password" placeholder="Password" required>
+                </div>
+                
+                <div class="mb-4 form-check">
+                    <input type="checkbox" class="form-check-input" id="remember-me">
+                    <label class="form-check-label" for="remember-me">Remember me</label>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100" id="login-btn">Log In</button>
+            </form>
+            <div id="login-error" class="text-danger mt-3 small text-center d-none">Password salah atau database error.</div>
+        </div>
+    </div>
+
+    <!-- Dashboard Section -->
+    <div id="dashboard-section" class="d-none">
+        
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <i class="bi bi-robot fs-4 me-2"></i>
+                <span>BOT KUCAI</span>
+            </div>
+            <nav class="sidebar-nav" id="sidebar-menu">
+                <a class="sidebar-link active" data-target="dashboard-section">
+                    <i class="bi bi-code-slash"></i><span>Dev Panel</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <small>© 2026 Kucai Bot Akun<br>Created By <b>Vanness Wangsaff</b></small>
+            </div>
+        </aside>
+
+        <!-- Overlay for mobile sidebar -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content" id="main-content">
+            <!-- Top Navbar -->
+            <header class="topbar">
+                <button class="topbar-toggle" id="sidebar-toggle">
+                    <i class="bi bi-list"></i>
+                </button>
+                <div class="topbar-right d-flex align-items-center gap-2">
+                    <button class="theme-btn" id="theme-toggle-btn" title="Toggle Theme">
+                        <i class="bi bi-moon" id="theme-icon"></i>
+                    </button>
+                    <a href="/" class="btn btn-sm btn-outline-primary px-3"><i class="bi bi-house me-1"></i>Ke Index</a>
+                    <img src="avatar.png" alt="Dev" class="topbar-avatar">
+                </div>
+            </header>
+
+            <!-- Page Container -->
+            <div class="page-container">
+                <h4 class="fw-bold mb-4"><i class="bi bi-code-slash text-primary me-2"></i>Dev Management Panel</h4>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="content-card mb-4">
+                            <h5 class="card-heading"><i class="bi bi-cone-striped me-2 text-warning"></i>Maintenance Mode</h5>
+                            <p class="text-muted small mb-3">Jika diaktifkan, pengunjung tidak bisa melihat dashboard utama dan akan dialihkan ke layar Maintenance.</p>
+                            <div class="form-check form-switch fs-5">
+                                <input class="form-check-input" type="checkbox" id="maintenance-toggle">
+                                <label class="form-check-label ms-2" for="maintenance-toggle">Aktifkan Maintenance</label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="content-card mb-4">
+                            <h5 class="card-heading"><i class="bi bi-megaphone-fill me-2 text-info"></i>Papan Pengumuman (Popup)</h5>
+                            <p class="text-muted small mb-3">Jika diaktifkan, pengunjung akan melihat popup pengumuman saat membuka web.</p>
+                            
+                            <div class="form-check form-switch fs-5 mb-4">
+                                <input class="form-check-input" type="checkbox" id="popup-toggle">
+                                <label class="form-check-label ms-2" for="popup-toggle">Aktifkan Popup</label>
+                            </div>
+
+                            <div id="popup-form-area" class="d-none">
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted">Judul Pengumuman</label>
+                                    <input type="text" class="form-control" id="popup-title" placeholder="Contoh: Info Update Maintenance">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted">Isi Pengumuman (HTML)</label>
+                                    <textarea class="form-control" id="popup-content" rows="4" placeholder="Contoh: <b>Halo semuanya!</b> Web sedang maintenance."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="content-card mb-4">
+                            <h5 class="card-heading"><i class="bi bi-info-circle-fill me-2 text-primary"></i>Papan Informasi (Teks di Dashboard)</h5>
+                            <p class="text-muted small mb-3">Jika diaktifkan, teks informasi akan muncul secara statis di bawah card "Selamat Datang".</p>
+                            
+                            <div class="form-check form-switch fs-5 mb-4">
+                                <input class="form-check-input" type="checkbox" id="info-toggle">
+                                <label class="form-check-label ms-2" for="info-toggle">Aktifkan Papan Informasi</label>
+                            </div>
+
+                            <div id="info-form-area" class="d-none">
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted">Judul Informasi</label>
+                                    <input type="text" class="form-control" id="info-title" placeholder="Contoh: Papan Informasi Terkini">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted">Isi Informasi (HTML)</label>
+                                    <textarea class="form-control" id="info-content" rows="4" placeholder="Tuliskan berita atau petunjuk tambahan di sini..."></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end mt-2">
+                    <button type="button" class="btn btn-primary px-5 btn-lg shadow-sm" id="save-dev-btn">
+                        <i class="bi bi-save me-2"></i>Simpan Perubahan
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast-container position-fixed bottom-0 end-0 p-3">
+        <div id="liveToast" class="toast align-items-center text-white border-0 rounded-3" role="alert">
+            <div class="d-flex">
+                <div class="toast-body d-flex align-items-center">
+                    <i class="bi me-2" id="toast-icon"></i>
+                    <span id="toast-message"></span>
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            "use strict";
+
+            // ===== Supabase Credentials (hardcoded) =====
+            var SUPABASE_URL = "https://kswvikgwuihzxfyxyxqq.supabase.co";
+            var SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imtzd3Zpa2d3dWloenhmeXh5eHFxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODI5OTY5MjAsImV4cCI6MjA5ODU3MjkyMH0.-Oe8wGdw5OUVIfECyYocWMi4Qok1NTpPEoTP1xVHB54";
+            var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+            // ===== DOM Elements =====
+            var loginSection = document.getElementById("login-section");
+            var dashboardSection = document.getElementById("dashboard-section");
+            var loginForm = document.getElementById("login-form");
+            var passwordInput = document.getElementById("admin-password");
+            var loginBtn = document.getElementById("login-btn");
+            var loginError = document.getElementById("login-error");
+
+            var maintenanceToggle = document.getElementById("maintenance-toggle");
+            var popupToggle = document.getElementById("popup-toggle");
+            var popupFormArea = document.getElementById("popup-form-area");
+            var popupTitle = document.getElementById("popup-title");
+            var popupContent = document.getElementById("popup-content");
+
+            var infoToggle = document.getElementById("info-toggle");
+            var infoFormArea = document.getElementById("info-form-area");
+            var infoTitle = document.getElementById("info-title");
+            var infoContent = document.getElementById("info-content");
+
+            var saveBtn = document.getElementById("save-dev-btn");
+
+            var toastEl = document.getElementById("liveToast");
+            var toastMsg = document.getElementById("toast-message");
+            var toastIcon = document.getElementById("toast-icon");
+            var toastInstance = null;
+
+            // ===== Toast Helper (Using SweetAlert2) =====
+            function showToast(message, type) {
+                type = type || "success";
+                window.Swal.fire({
+                    title: type === "success" ? "Sukses!" : "Gagal!",
+                    text: message,
+                    icon: type === "success" ? "success" : "error",
+                    confirmButtonText: "Mengerti",
+                    confirmButtonColor: "#4f46e5",
+                    customClass: {
+                        confirmButton: 'btn btn-primary px-4 py-2'
+                    },
+                    buttonsStyling: false
+                });
+            }
+
+            // ===== Login Logic =====
+            loginForm.addEventListener("submit", function(e) {
+                e.preventDefault();
+                var pwd = passwordInput.value;
+                var usr = document.getElementById("admin-username").value;
+                
+                loginBtn.textContent = "Logging In...";
+                loginBtn.disabled = true;
+                loginError.classList.add("d-none");
+
+                supabaseClient.from("bot_settings").select("*").eq("id", 1).single().then(function(res) {
+                    if (res.error) throw res.error;
+                    var data = res.data;
+                    
+                    // Kita asumsikan username selalu 'admin' karena di database hanya ada field password
+                    if (data && data.admin_password === pwd && usr.toLowerCase() === 'admin') {
+                        // Login Success
+                        loginSection.classList.add("d-none");
+                        loginSection.classList.remove("login-wrapper");
+                        dashboardSection.classList.remove("d-none");
+                        
+                        // Fill Form
+                        maintenanceToggle.checked = !!data.maintenance_mode;
+                        popupToggle.checked = !!data.popup_active;
+                        popupTitle.value = data.popup_title || "";
+                        popupContent.value = data.popup_content || "";
+                        
+                        infoToggle.checked = !!data.info_active;
+                        infoTitle.value = data.info_title || "";
+                        infoContent.value = data.info_content || "";
+
+                        togglePopupForm();
+                        toggleInfoForm();
+                    } else {
+                        throw new Error("Kredensial salah");
+                    }
+                }).catch(function(err) {
+                    console.error("Login Error:", err);
+                    loginError.classList.remove("d-none");
+                }).finally(function() {
+                    loginBtn.textContent = "Log In";
+                    loginBtn.disabled = false;
+                });
+            });
+
+            // ===== Theme Toggle =====
+            var themeToggleBtn = document.getElementById("theme-toggle-btn");
+            var themeIcon = document.getElementById("theme-icon");
+
+            function setTheme(theme) {
+                document.documentElement.setAttribute("data-theme", theme);
+                localStorage.setItem("theme", theme);
+                if (themeIcon) {
+                    themeIcon.className = theme === "dark" ? "bi bi-sun" : "bi bi-moon";
+                }
+            }
+
+            if (themeToggleBtn) {
+                themeToggleBtn.addEventListener("click", function() {
+                    var current = document.documentElement.getAttribute("data-theme");
+                    setTheme(current === "dark" ? "light" : "dark");
+                });
+            }
+
+            // ===== Sidebar Logic =====
+            var sidebar = document.getElementById("sidebar");
+            var sidebarOverlay = document.getElementById("sidebar-overlay");
+            var sidebarToggle = document.getElementById("sidebar-toggle");
+
+            if (sidebarToggle && sidebar && sidebarOverlay) {
+                sidebarToggle.addEventListener("click", function() {
+                    sidebar.classList.toggle("open");
+                });
+                sidebarOverlay.addEventListener("click", function() {
+                    sidebar.classList.remove("open");
+                });
+            }
+
+            // ===== Dashboard Logic =====
+            popupToggle.addEventListener("change", togglePopupForm);
+            infoToggle.addEventListener("change", toggleInfoForm);
+
+            function togglePopupForm() {
+                if (popupToggle.checked) {
+                    popupFormArea.classList.remove("d-none");
+                } else {
+                    popupFormArea.classList.add("d-none");
+                }
+            }
+
+            function toggleInfoForm() {
+                if (infoToggle.checked) {
+                    infoFormArea.classList.remove("d-none");
+                } else {
+                    infoFormArea.classList.add("d-none");
+                }
+            }
+
+            saveBtn.addEventListener("click", function() {
+                saveBtn.disabled = true;
+                saveBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+
+                supabaseClient.from("bot_settings").update({
+                    maintenance_mode: maintenanceToggle.checked,
+                    popup_active: popupToggle.checked,
+                    popup_title: popupTitle.value,
+                    popup_content: popupContent.value,
+                    info_active: infoToggle.checked,
+                    info_title: infoTitle.value,
+                    info_content: infoContent.value
+                }).eq("id", 1).then(function(res) {
+                    if (res.error) throw res.error;
+                    showToast("Pengaturan berhasil disimpan!");
+                }).catch(function(err) {
+                    console.error("Save Error:", err);
+                    showToast("Gagal menyimpan data.", "error");
+                }).finally(function() {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = '<i class="bi bi-save me-2"></i>Simpan Perubahan';
+                });
+            });
+            // ===== Boot =====
+            setTheme(localStorage.getItem("theme") || "light");
+        });
+    </script>
+</body>
+</html>
