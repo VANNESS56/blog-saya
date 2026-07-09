@@ -2883,7 +2883,7 @@
                             document.getElementById("payment-invoice-id").textContent = res.order_id;
                             
                             // Ambil nama pelanggan dan email dari localStorage auth
-                            var username = localStorage.getItem("admin_username") || "Pelanggan Kucai";
+                            var username = localStorage.getItem("admin_identifier") || "Pelanggan Kucai";
                             document.getElementById("payment-customer-name").textContent = username;
                             document.getElementById("payment-customer-email").textContent = username.includes("@") ? username : username + "@gmail.com";
                             
