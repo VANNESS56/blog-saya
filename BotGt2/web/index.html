@@ -114,9 +114,18 @@
             </a>
             
             <!-- Dynamic Developer Menu (Visible only to developers) -->
-            <a class="sidebar-link d-none" id="sidebar-developer-menu" data-target="dev-section" data-path="/dev">
-                <i class="bi bi-code-square"></i><span>Developer</span>
-            </a>
+            <div class="d-none" id="sidebar-developer-menu">
+                <div class="sidebar-category">DEVELOPER</div>
+                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="switchDevTab('changelog')">
+                    <i class="bi bi-clock-history"></i><span>Changelog</span>
+                </a>
+                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="switchDevTab('pricing')">
+                    <i class="bi bi-box-seam"></i><span>Product</span>
+                </a>
+                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="setTimeout(function(){ document.getElementById('dev-save-features-btn').scrollIntoView({behavior:'smooth'}); }, 100)">
+                    <i class="bi bi-sliders2"></i><span>Feature</span>
+                </a>
+            </div>
         </nav>
         
         <div class="sidebar-footer">
@@ -3605,11 +3614,13 @@
             });
         };
 
-        // Bind Developer Section Click to fetch its data
+        // Bind Developer Section Click to fetch its data (Changelog, Product, Feature sub links)
         var devSidebarMenu = document.getElementById("sidebar-developer-menu");
         if (devSidebarMenu) {
-            devSidebarMenu.addEventListener("click", function() {
-                fetchDevPanelData();
+            devSidebarMenu.querySelectorAll(".sidebar-link").forEach(function(link) {
+                link.addEventListener("click", function() {
+                    fetchDevPanelData();
+                });
             });
         }
 
