@@ -115,13 +115,13 @@
             
             <!-- Dynamic Developer Menu (Visible only to developers) -->
             <div class="sidebar-category d-none dev-only-element">DEVELOPER</div>
-            <a class="sidebar-link d-none dev-only-element" data-target="dev-section" data-path="/dev/changelog" onclick="switchDevTab('changelog')">
+            <a class="sidebar-link d-none dev-only-element" data-target="dev-changelog-section" data-path="/dev/changelog">
                 <i class="bi bi-clock-history"></i><span>Changelog</span>
             </a>
-            <a class="sidebar-link d-none dev-only-element" data-target="dev-section" data-path="/dev/product" onclick="switchDevTab('pricing')">
+            <a class="sidebar-link d-none dev-only-element" data-target="dev-product-section" data-path="/dev/product">
                 <i class="bi bi-box-seam"></i><span>Product</span>
             </a>
-            <a class="sidebar-link d-none dev-only-element" data-target="dev-section" data-path="/dev/feature" onclick="switchDevTab('features')">
+            <a class="sidebar-link d-none dev-only-element" data-target="dev-feature-section" data-path="/dev/feature">
                 <i class="bi bi-sliders2"></i><span>Feature</span>
             </a>
         </nav>
@@ -1346,13 +1346,115 @@
             </section>
 
             <!-- ========== DEVELOPER SECTION (Dashboard Control) ========== -->
-            <section id="dev-section" class="d-none">
+            <!-- Tab Changelog (Mempublish update log rilis) -->
+            <section id="dev-changelog-section" class="d-none">
                 <div class="ws-config-page">
                     <!-- Page Header -->
                     <div class="page-header d-flex justify-content-between align-items-center mb-4">
                         <div>
-                            <h1>Developer Control Panel</h1>
-                            <p>Manajemen tingkat lanjut sistem, pricing, changelog, lisensi, dan monitoring transaksi.</p>
+                            <h1>Developer Center — Changelog</h1>
+                            <p>Publish changelog baru secara langsung ke database SQLite panel.</p>
+                        </div>
+                        <span class="badge bg-danger px-3 py-2 rounded-3"><i class="bi bi-shield-lock-fill me-1"></i>Developer Mode</span>
+                    </div>
+
+                    <!-- Content Changelog Tab -->
+                    <div class="ws-config-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="fs-6 fw-bold mb-0">Publish Changelog Baru</h3>
+                        </div>
+                        <form id="dev-add-changelog-form" class="row g-3">
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Versi</label>
+                                <input type="text" class="form-control" id="dev-changelog-version" placeholder="v4.12.0" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Tanggal</label>
+                                <input type="text" class="form-control" id="dev-changelog-date" placeholder="09 Juli 2026" required>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Tipe Update</label>
+                                <select class="form-select" id="dev-changelog-type">
+                                    <option value="FITUR">FITUR (Penambahan Fitur)</option>
+                                    <option value="IMPROVEMENT" selected>IMPROVEMENT (Peningkatan)</option>
+                                    <option value="BUGFIX">BUGFIX (Perbaikan Bug)</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="form-label small text-muted">Judul Ringkas</label>
+                                <input type="text" class="form-control" id="dev-changelog-title" placeholder="Fitur Invoice Histori" required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small text-muted">Deskripsi Singkat</label>
+                                <input type="text" class="form-control" id="dev-changelog-desc" placeholder="Menambahkan halaman rekap invoice history transaksi pembeli." required>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label small text-muted">Detail List Item (Pisahkan dengan tanda koma `,` atau enter)</label>
+                                <textarea class="form-control" id="dev-changelog-details" rows="3" placeholder='["Halaman Invoice list history", "Status badge real-time scan QRIS"]' required></textarea>
+                            </div>
+                            <div class="col-12 text-end">
+                                <button type="submit" class="btn btn-primary px-4 rounded-3"><i class="bi bi-send me-1"></i>Publish Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab Product (Kelola pricing premium lisensi) -->
+            <section id="dev-product-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1>Developer Center — Products</h1>
+                            <p>Kelola daftar produk pricing premium lisensi.</p>
+                        </div>
+                        <span class="badge bg-danger px-3 py-2 rounded-3"><i class="bi bi-shield-lock-fill me-1"></i>Developer Mode</span>
+                    </div>
+
+                    <!-- Content Pricing Tab (Manage Pricing) -->
+                    <div class="ws-config-card p-4">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <h3 class="fs-6 fw-bold mb-0">Kelola Produk & Harga Lisensi</h3>
+                            <button class="btn btn-sm btn-success rounded-3" onclick="showAddProductModal()"><i class="bi bi-plus-circle me-1"></i>Tambah Produk</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Nama Produk</th>
+                                        <th>Tipe</th>
+                                        <th>Harga</th>
+                                        <th>Status</th>
+                                        <th class="text-end">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dev-products-table-body">
+                                    <tr>
+                                        <td><strong>Downloader Menu Premium</strong></td>
+                                        <td><span class="badge bg-light text-dark border">Sekali Bayar</span></td>
+                                        <td class="fw-bold text-primary">Rp 10.000</td>
+                                        <td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>
+                                        <td class="text-end">
+                                            <button class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-3" onclick="editProductMock()" style="font-size:0.75rem;"><i class="bi bi-pencil me-1"></i>Edit</button>
+                                            <button class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-3 ms-1" onclick="deleteProductMock()" style="font-size:0.75rem;"><i class="bi bi-trash me-1"></i>Hapus</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Tab Feature (Toggle Fitur Owner & Maintenance) -->
+            <section id="dev-feature-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1>Developer Center — Features Control</h1>
+                            <p>Aktifkan / matikan fitur dashboard owner Alvin dan monitoring transaksi global.</p>
                         </div>
                         <span class="badge bg-danger px-3 py-2 rounded-3"><i class="bi bi-shield-lock-fill me-1"></i>Developer Mode</span>
                     </div>
@@ -1390,133 +1492,49 @@
                         </div>
                     </div>
 
-                    <!-- Manage Changelog & Pricing Tabs -->
-                    <div class="ws-config-card p-0 overflow-hidden mb-4">
-                        <div class="border-bottom px-3 py-2 bg-light d-flex gap-2">
-                            <button class="btn btn-sm btn-dark rounded-3 px-3 py-1.5" id="tab-btn-changelog" onclick="switchDevTab('changelog')">Kelola Changelog</button>
-                            <button class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5" id="tab-btn-pricing" onclick="switchDevTab('pricing')">Kelola Produk Pricing</button>
-                            <button class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5" id="tab-btn-features" onclick="switchDevTab('features')">Kelola Fitur Dashboard</button>
-                        </div>
-
-                        <!-- Content Changelog Tab -->
-                        <div id="dev-tab-changelog-content" class="p-4">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="fs-6 fw-bold mb-0">Publish Changelog Baru</h3>
-                            </div>
-                            <form id="dev-add-changelog-form" class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Versi</label>
-                                    <input type="text" class="form-control" id="dev-changelog-version" placeholder="v4.12.0" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Tanggal</label>
-                                    <input type="text" class="form-control" id="dev-changelog-date" placeholder="09 Juli 2026" required>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Tipe Update</label>
-                                    <select class="form-select" id="dev-changelog-type">
-                                        <option value="FITUR">FITUR (Penambahan Fitur)</option>
-                                        <option value="IMPROVEMENT" selected>IMPROVEMENT (Peningkatan)</option>
-                                        <option value="BUGFIX">BUGFIX (Perbaikan Bug)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label small text-muted">Judul Ringkas</label>
-                                    <input type="text" class="form-control" id="dev-changelog-title" placeholder="Fitur Invoice Histori" required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label small text-muted">Deskripsi Singkat</label>
-                                    <input type="text" class="form-control" id="dev-changelog-desc" placeholder="Menambahkan halaman rekap invoice history transaksi pembeli." required>
-                                </div>
-                                <div class="col-12">
-                                    <label class="form-label small text-muted">Detail List Item (Pisahkan dengan tanda koma `,` atau enter)</label>
-                                    <textarea class="form-control" id="dev-changelog-details" rows="3" placeholder='["Halaman Invoice list history", "Status badge real-time scan QRIS"]' required></textarea>
-                                </div>
-                                <div class="col-12 text-end">
-                                    <button type="submit" class="btn btn-primary px-4 rounded-3"><i class="bi bi-send me-1"></i>Publish Update</button>
-                                </div>
-                            </form>
-                        </div>
-
-                        <!-- Content Pricing Tab (Manage Pricing) -->
-                        <div id="dev-tab-pricing-content" class="p-4 d-none">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
-                                <h3 class="fs-6 fw-bold mb-0">Kelola Produk & Harga Lisensi</h3>
-                                <button class="btn btn-sm btn-success rounded-3" onclick="showAddProductModal()"><i class="bi bi-plus-circle me-1"></i>Tambah Produk</button>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Nama Produk</th>
-                                            <th>Tipe</th>
-                                            <th>Harga</th>
-                                            <th>Status</th>
-                                            <th class="text-end">Aksi</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="dev-products-table-body">
-                                        <tr>
-                                            <td><strong>Downloader Menu Premium</strong></td>
-                                            <td><span class="badge bg-light text-dark border">Sekali Bayar</span></td>
-                                            <td class="fw-bold text-primary">Rp 10.000</td>
-                                            <td><span class="badge bg-success-subtle text-success border border-success-subtle px-2 py-1">Aktif</span></td>
-                                            <td class="text-end">
-                                                <button class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-3" onclick="editProductMock()" style="font-size:0.75rem;"><i class="bi bi-pencil me-1"></i>Edit</button>
-                                                <button class="btn btn-xs btn-outline-danger py-1 px-2.5 rounded-3 ms-1" onclick="deleteProductMock()" style="font-size:0.75rem;"><i class="bi bi-trash me-1"></i>Hapus</button>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <!-- Content Features Tab (Manage Dashboard Features) -->
-                        <div id="dev-tab-features-content" class="p-4 d-none">
-                            <div class="row g-4">
-                                <!-- Card 1: Toggle Fitur Owner -->
-                                <div class="col-md-6">
-                                    <div class="ws-config-card h-100 p-0 border-0 shadow-none">
-                                        <div class="card-section-header">
-                                            <h3 class="fs-6 fw-bold mb-1"><i class="bi bi-toggle-on text-primary me-2"></i>Toggle Fitur Owner</h3>
-                                            <p class="text-muted small">Aktifkan atau matikan hak akses menu secara paksa untuk Owner Alvin.</p>
-                                        </div>
-                                        <div class="ws-checkbox-stack mt-3">
-                                            <div class="ws-checkbox-row">
-                                                <input type="checkbox" id="dev-toggle-maker-menu">
-                                                <div class="ws-checkbox-content">
-                                                    <label class="ws-checkbox-label" for="dev-toggle-maker-menu">Lisensi Downloader Menu Premium</label>
-                                                    <p class="ws-checkbox-hint">Aktifkan ini untuk membuka fitur menu downloader secara langsung tanpa harus melakukan pembayaran.</p>
-                                                </div>
-                                            </div>
-                                            <div class="ws-checkbox-row mt-3">
-                                                <input type="checkbox" id="dev-toggle-maintenance">
-                                                <div class="ws-checkbox-content">
-                                                    <label class="ws-checkbox-label" for="dev-toggle-maintenance">Mode Maintenance Web Dashboard</label>
-                                                    <p class="ws-checkbox-hint">Kunci seluruh dashboard dan tampilkan halaman pemeliharaan sistem.</p>
-                                                </div>
+                    <!-- Content Features Tab (Manage Dashboard Features) -->
+                    <div class="ws-config-card p-4">
+                        <div class="row g-4">
+                            <!-- Card 1: Toggle Fitur Owner -->
+                            <div class="col-md-6">
+                                <div class="ws-config-card h-100 p-0 border-0 shadow-none">
+                                    <div class="card-section-header">
+                                        <h3 class="fs-6 fw-bold mb-1"><i class="bi bi-toggle-on text-primary me-2"></i>Toggle Fitur Owner</h3>
+                                        <p class="text-muted small">Aktifkan atau matikan hak akses menu secara paksa untuk Owner Alvin.</p>
+                                    </div>
+                                    <div class="ws-checkbox-stack mt-3">
+                                        <div class="ws-checkbox-row">
+                                            <input type="checkbox" id="dev-toggle-maker-menu">
+                                            <div class="ws-checkbox-content">
+                                                <label class="ws-checkbox-label" for="dev-toggle-maker-menu">Lisensi Downloader Menu Premium</label>
+                                                <p class="ws-checkbox-hint">Aktifkan ini untuk membuka fitur menu downloader secara langsung tanpa harus melakukan pembayaran.</p>
                                             </div>
                                         </div>
-                                        <div class="mt-4">
-                                            <button class="btn btn-primary w-100 rounded-3 py-2" id="dev-save-features-btn">
-                                                <i class="bi bi-check-circle me-1"></i>Terapkan Perubahan Fitur
-                                            </button>
+                                        <div class="ws-checkbox-row mt-3">
+                                            <input type="checkbox" id="dev-toggle-maintenance">
+                                            <div class="ws-checkbox-content">
+                                                <label class="ws-checkbox-label" for="dev-toggle-maintenance">Mode Maintenance Web Dashboard</label>
+                                                <p class="ws-checkbox-hint">Kunci seluruh dashboard dan tampilkan halaman pemeliharaan sistem.</p>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
-                                
-                                <!-- Card 2: Status Informasi Toggle -->
-                                <div class="col-md-6">
-                                    <div class="ws-config-card h-100 bg-light border-0">
-                                        <h3 class="fs-6 fw-bold mb-2"><i class="bi bi-info-circle-fill text-info me-2"></i>Panduan Sistem</h3>
-                                        <p class="small text-muted mb-0">Semua toggle perubahan yang Anda lakukan di tab ini akan langsung disimpan ke database SQLite utama (`bot.db`) dan berdampak secara global ke akun dashboard owner atau admin lain dalam waktu kurang dari 1 detik secara realtime.</p>
+                                    <div class="mt-4">
+                                        <button class="btn btn-primary w-100 rounded-3 py-2" id="dev-save-features-btn">
+                                            <i class="bi bi-check-circle me-1"></i>Terapkan Perubahan Fitur
+                                        </button>
                                     </div>
                                 </div>
                             </div>
+                            
+                            <!-- Card 2: Status Informasi Toggle -->
+                            <div class="col-md-6">
+                                <div class="ws-config-card h-100 bg-light border-0">
+                                    <h3 class="fs-6 fw-bold mb-2"><i class="bi bi-info-circle-fill text-info me-2"></i>Panduan Sistem</h3>
+                                    <p class="small text-muted mb-0">Semua toggle perubahan yang Anda lakukan di tab ini akan langsung disimpan ke database SQLite utama (`bot.db`) dan berdampak secara global ke akun dashboard owner atau admin lain dalam waktu kurang dari 1 detik secara realtime.</p>
+                                </div>
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
             </section>
 
@@ -1793,7 +1811,7 @@
 
         // ===== SPA Navigation (Pretty URL Router) =====
         var menuLinks = document.querySelectorAll(".sidebar-link");
-        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-section", "pricing-section", "faq-section", "mass-section", "filter-command-section", "script-section", "galeri-script-section", "statistik-section", "invoice-section"];
+        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-changelog-section", "dev-product-section", "dev-feature-section", "pricing-section", "faq-section", "mass-section", "filter-command-section", "script-section", "galeri-script-section", "statistik-section", "invoice-section"];
 
         function showSectionByTarget(target, path) {
             // Update active state di sidebar
@@ -1825,13 +1843,6 @@
                 var path = link.getAttribute("data-path");
                 if (target) {
                     showSectionByTarget(target, path);
-                    if (path === "/dev/product") {
-                        switchDevTab('pricing');
-                    } else if (path === "/dev/feature") {
-                        switchDevTab('features');
-                    } else if (path === "/dev/changelog") {
-                        switchDevTab('changelog');
-                    }
                 }
 
                 // Close sidebar on mobile
@@ -1844,15 +1855,14 @@
         // Deteksi Route Awal saat page load
         function handleInitialRoute() {
             var currentPath = window.location.pathname;
-            if (currentPath.startsWith("/dev")) {
-                showSectionByTarget("dev-section", currentPath);
-                if (currentPath === "/dev/product") {
-                    switchDevTab('pricing');
-                } else if (currentPath === "/dev/feature") {
-                    switchDevTab('features');
-                } else {
-                    switchDevTab('changelog');
-                }
+            if (currentPath === "/dev/product") {
+                showSectionByTarget("dev-product-section", "/dev/product");
+                return;
+            } else if (currentPath === "/dev/feature") {
+                showSectionByTarget("dev-feature-section", "/dev/feature");
+                return;
+            } else if (currentPath === "/dev/changelog") {
+                showSectionByTarget("dev-changelog-section", "/dev/changelog");
                 return;
             }
             if (currentPath === "/invoice") {
@@ -3444,35 +3454,6 @@
         }
 
         // ===== Developer Panel Control Logic =====
-        window.switchDevTab = function(tabName) {
-            var tabChangelog = document.getElementById("dev-tab-changelog-content");
-            var tabPricing = document.getElementById("dev-tab-pricing-content");
-            var tabFeatures = document.getElementById("dev-tab-features-content");
-            var btnChangelog = document.getElementById("tab-btn-changelog");
-            var btnPricing = document.getElementById("tab-btn-pricing");
-            var btnFeatures = document.getElementById("tab-btn-features");
-
-            // Hide all first
-            if (tabChangelog) tabChangelog.classList.add("d-none");
-            if (tabPricing) tabPricing.classList.add("d-none");
-            if (tabFeatures) tabFeatures.classList.add("d-none");
-
-            // Reset buttons to outline
-            if (btnChangelog) btnChangelog.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
-            if (btnPricing) btnPricing.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
-            if (btnFeatures) btnFeatures.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
-
-            if (tabName === 'changelog') {
-                if (tabChangelog) tabChangelog.classList.remove("d-none");
-                if (btnChangelog) btnChangelog.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
-            } else if (tabName === 'pricing') {
-                if (tabPricing) tabPricing.classList.remove("d-none");
-                if (btnPricing) btnPricing.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
-            } else {
-                if (tabFeatures) tabFeatures.classList.remove("d-none");
-                if (btnFeatures) btnFeatures.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
-            }
-        };
 
         // Fetch & Populate Developer Section Data
         function fetchDevPanelData() {
