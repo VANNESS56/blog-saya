@@ -367,12 +367,12 @@ app.post('/api/payment/create', async (req, res) => {
     const orderId = 'INV-' + Date.now();
     try {
         // Hit Pakasir API to create a QRIS transaction
-        // Menggunakan project slug "kucaibot" dan API Key placeholder atau riil sesuai skema Pakasir
+        // Menggunakan project slug "vanness-store" dan API Key dari pengguna
         const response = await axios.post('https://app.pakasir.com/api/transactioncreate/qris', {
-            project: 'kucaibot',
+            project: 'vanness-store',
             order_id: orderId,
             amount: 10000,
-            api_key: 'kucai_pakasir_api_key_placeholder'
+            api_key: 'bZSgVa8RdQmb25dYMn4t5aety7U0QNps'
         });
 
         const resData = response.data;
