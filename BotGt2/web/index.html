@@ -122,7 +122,7 @@
                 <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="switchDevTab('pricing')">
                     <i class="bi bi-box-seam"></i><span>Product</span>
                 </a>
-                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="setTimeout(function(){ document.getElementById('dev-save-features-btn').scrollIntoView({behavior:'smooth'}); }, 100)">
+                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="switchDevTab('features')">
                     <i class="bi bi-sliders2"></i><span>Feature</span>
                 </a>
             </div>
@@ -1361,58 +1361,31 @@
 
                     <!-- Developer Cards Grid -->
                     <div class="row g-4 mb-4">
-                        <!-- Card 1: Toggle Fitur Owner -->
-                        <div class="col-md-6">
-                            <div class="ws-config-card h-100">
-                                <div class="card-section-header">
-                                    <h2><i class="bi bi-toggle-on text-primary me-2"></i>Toggle Fitur Owner</h2>
-                                    <p>Aktifkan atau matikan hak akses menu secara paksa untuk Owner.</p>
-                                </div>
-                                <div class="ws-checkbox-stack mt-3">
-                                    <div class="ws-checkbox-row">
-                                        <input type="checkbox" id="dev-toggle-maker-menu">
-                                        <div class="ws-checkbox-content">
-                                            <label class="ws-checkbox-label" for="dev-toggle-maker-menu">Lisensi Downloader Menu Premium</label>
-                                            <p class="ws-checkbox-hint">Aktifkan ini untuk membuka fitur menu downloader secara langsung tanpa harus melakukan pembayaran.</p>
-                                        </div>
-                                    </div>
-                                    <div class="ws-checkbox-row mt-3">
-                                        <input type="checkbox" id="dev-toggle-maintenance">
-                                        <div class="ws-checkbox-content">
-                                            <label class="ws-checkbox-label" for="dev-toggle-maintenance">Mode Maintenance Web Dashboard</label>
-                                            <p class="ws-checkbox-hint">Kunci seluruh dashboard dan tampilkan halaman pemeliharaan sistem.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="mt-4">
-                                    <button class="btn btn-primary w-100 rounded-3 py-2" id="dev-save-features-btn">
-                                        <i class="bi bi-check-circle me-1"></i>Terapkan Perubahan Fitur
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Card 2: Monitoring Transaksi -->
-                        <div class="col-md-6">
-                            <div class="ws-config-card h-100">
+                        <!-- Card: Monitoring Transaksi Global -->
+                        <div class="col-12">
+                            <div class="ws-config-card">
                                 <div class="card-section-header">
                                     <h2><i class="bi bi-wallet2 text-success me-2"></i>Monitoring Transaksi</h2>
-                                    <p>Pantau pembayaran yang masuk secara realtime.</p>
+                                    <p>Pantau pembayaran yang masuk secara realtime dari database VPS.</p>
                                 </div>
-                                <div class="d-flex flex-column gap-3 mt-3">
-                                    <div class="p-3 bg-light-subtle rounded-3 border d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <div class="small text-muted">Total Pembayaran Berhasil</div>
-                                            <h4 class="fw-bold mb-0 text-success mt-1" id="dev-total-success-amount">Rp 0</h4>
+                                <div class="row g-3 mt-2">
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light-subtle rounded-3 border d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div class="small text-muted">Total Pembayaran Berhasil</div>
+                                                <h4 class="fw-bold mb-0 text-success mt-1" id="dev-total-success-amount">Rp 0</h4>
+                                            </div>
+                                            <i class="bi bi-cash-coin fs-2 text-success"></i>
                                         </div>
-                                        <i class="bi bi-cash-coin fs-2 text-success"></i>
                                     </div>
-                                    <div class="p-3 bg-light-subtle rounded-3 border d-flex justify-content-between align-items-center">
-                                        <div>
-                                            <div class="small text-muted">Total Transaksi</div>
-                                            <h4 class="fw-bold mb-0 text-dark mt-1" id="dev-total-tx-count">0 Transaksi</h4>
+                                    <div class="col-md-6">
+                                        <div class="p-3 bg-light-subtle rounded-3 border d-flex justify-content-between align-items-center">
+                                            <div>
+                                                <div class="small text-muted">Total Transaksi</div>
+                                                <h4 class="fw-bold mb-0 text-dark mt-1" id="dev-total-tx-count">0 Transaksi</h4>
+                                            </div>
+                                            <i class="bi bi-receipt fs-2 text-primary"></i>
                                         </div>
-                                        <i class="bi bi-receipt fs-2 text-primary"></i>
                                     </div>
                                 </div>
                             </div>
@@ -1424,6 +1397,7 @@
                         <div class="border-bottom px-3 py-2 bg-light d-flex gap-2">
                             <button class="btn btn-sm btn-dark rounded-3 px-3 py-1.5" id="tab-btn-changelog" onclick="switchDevTab('changelog')">Kelola Changelog</button>
                             <button class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5" id="tab-btn-pricing" onclick="switchDevTab('pricing')">Kelola Produk Pricing</button>
+                            <button class="btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5" id="tab-btn-features" onclick="switchDevTab('features')">Kelola Fitur Dashboard</button>
                         </div>
 
                         <!-- Content Changelog Tab -->
@@ -1496,6 +1470,50 @@
                                         </tr>
                                     </tbody>
                                 </table>
+                            </div>
+                        </div>
+
+                        <!-- Content Features Tab (Manage Dashboard Features) -->
+                        <div id="dev-tab-features-content" class="p-4 d-none">
+                            <div class="row g-4">
+                                <!-- Card 1: Toggle Fitur Owner -->
+                                <div class="col-md-6">
+                                    <div class="ws-config-card h-100 p-0 border-0 shadow-none">
+                                        <div class="card-section-header">
+                                            <h3 class="fs-6 fw-bold mb-1"><i class="bi bi-toggle-on text-primary me-2"></i>Toggle Fitur Owner</h3>
+                                            <p class="text-muted small">Aktifkan atau matikan hak akses menu secara paksa untuk Owner Alvin.</p>
+                                        </div>
+                                        <div class="ws-checkbox-stack mt-3">
+                                            <div class="ws-checkbox-row">
+                                                <input type="checkbox" id="dev-toggle-maker-menu">
+                                                <div class="ws-checkbox-content">
+                                                    <label class="ws-checkbox-label" for="dev-toggle-maker-menu">Lisensi Downloader Menu Premium</label>
+                                                    <p class="ws-checkbox-hint">Aktifkan ini untuk membuka fitur menu downloader secara langsung tanpa harus melakukan pembayaran.</p>
+                                                </div>
+                                            </div>
+                                            <div class="ws-checkbox-row mt-3">
+                                                <input type="checkbox" id="dev-toggle-maintenance">
+                                                <div class="ws-checkbox-content">
+                                                    <label class="ws-checkbox-label" for="dev-toggle-maintenance">Mode Maintenance Web Dashboard</label>
+                                                    <p class="ws-checkbox-hint">Kunci seluruh dashboard dan tampilkan halaman pemeliharaan sistem.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="mt-4">
+                                            <button class="btn btn-primary w-100 rounded-3 py-2" id="dev-save-features-btn">
+                                                <i class="bi bi-check-circle me-1"></i>Terapkan Perubahan Fitur
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Card 2: Status Informasi Toggle -->
+                                <div class="col-md-6">
+                                    <div class="ws-config-card h-100 bg-light border-0">
+                                        <h3 class="fs-6 fw-bold mb-2"><i class="bi bi-info-circle-fill text-info me-2"></i>Panduan Sistem</h3>
+                                        <p class="small text-muted mb-0">Semua toggle perubahan yang Anda lakukan di tab ini akan langsung disimpan ke database SQLite utama (`bot.db`) dan berdampak secara global ke akun dashboard owner atau admin lain dalam waktu kurang dari 1 detik secara realtime.</p>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -3417,19 +3435,30 @@
         window.switchDevTab = function(tabName) {
             var tabChangelog = document.getElementById("dev-tab-changelog-content");
             var tabPricing = document.getElementById("dev-tab-pricing-content");
+            var tabFeatures = document.getElementById("dev-tab-features-content");
             var btnChangelog = document.getElementById("tab-btn-changelog");
             var btnPricing = document.getElementById("tab-btn-pricing");
+            var btnFeatures = document.getElementById("tab-btn-features");
+
+            // Hide all first
+            if (tabChangelog) tabChangelog.classList.add("d-none");
+            if (tabPricing) tabPricing.classList.add("d-none");
+            if (tabFeatures) tabFeatures.classList.add("d-none");
+
+            // Reset buttons to outline
+            if (btnChangelog) btnChangelog.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
+            if (btnPricing) btnPricing.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
+            if (btnFeatures) btnFeatures.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
 
             if (tabName === 'changelog') {
-                tabChangelog.classList.remove("d-none");
-                tabPricing.classList.add("d-none");
-                btnChangelog.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
-                btnPricing.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
+                if (tabChangelog) tabChangelog.classList.remove("d-none");
+                if (btnChangelog) btnChangelog.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
+            } else if (tabName === 'pricing') {
+                if (tabPricing) tabPricing.classList.remove("d-none");
+                if (btnPricing) btnPricing.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
             } else {
-                tabChangelog.classList.add("d-none");
-                tabPricing.classList.remove("d-none");
-                btnChangelog.className = "btn btn-sm btn-outline-secondary rounded-3 px-3 py-1.5";
-                btnPricing.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
+                if (tabFeatures) tabFeatures.classList.remove("d-none");
+                if (btnFeatures) btnFeatures.className = "btn btn-sm btn-dark rounded-3 px-3 py-1.5";
             }
         };
 
