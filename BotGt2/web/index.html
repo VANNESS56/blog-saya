@@ -867,15 +867,106 @@
                 </div>
             </section>
 
-            <!-- ========== PRICING (Coming Soon) ========== -->
+            <!-- ========== PRICING (Maker Menu Activation) ========== -->
             <section id="pricing-section" class="d-none">
-                <div class="ws-coming-soon-wrapper">
-                    <div class="ws-coming-soon-icon"><i class="bi bi-currency-dollar"></i></div>
-                    <h2 class="ws-coming-soon-title">Pricing</h2>
-                    <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
-                    <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1>Pricing & Fitur Premium</h1>
+                        <p>Buka fitur premium Kucai Bot untuk memaksimalkan performa bisnis WhatsApp Anda.</p>
+                    </div>
+
+                    <!-- Status Banner -->
+                    <div class="ws-config-card mb-4" style="background: linear-gradient(135deg, rgba(79,70,229,0.05), rgba(139,92,246,0.03)); border: 1.5px solid var(--primary);">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3">
+                            <div>
+                                <h4 class="fw-bold mb-1" style="color:var(--primary);"><i class="bi bi-shield-lock-fill me-2"></i>Status Lisensi Fitur</h4>
+                                <p class="text-muted small mb-0">Status kepemilikan lisensi fitur premium saat ini.</p>
+                            </div>
+                            <div>
+                                <span class="badge px-4 py-2.5 rounded-pill fs-6" id="pricing-license-badge" style="background: rgba(220,38,38,0.1); color: #dc2626; border: 1px solid rgba(220,38,38,0.2);">
+                                    <i class="bi bi-x-circle-fill me-1.5"></i>Belum Aktif
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Grid -->
+                    <div class="row g-4" style="max-width: 900px;">
+                        <div class="col-md-6 col-lg-5">
+                            <div class="ws-config-card h-100" style="display:flex; flex-direction:column; justify-content:space-between; position:relative; overflow:hidden;">
+                                <!-- Badge Rekomendasi / Populer -->
+                                <div style="position:absolute; top: 12px; right: -30px; background: var(--primary); color:#fff; font-size:0.68rem; font-weight:700; padding:4px 30px; transform:rotate(45deg); text-transform:uppercase; letter-spacing:0.5px;">Premium</div>
+
+                                <div>
+                                    <div class="mb-3">
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-1 rounded-pill small fw-bold">Sekali Bayar</span>
+                                    </div>
+                                    <h3 class="fw-bold mb-2 text-dark">MAKER MENU</h3>
+                                    <p class="text-muted small mb-4">Aktivasi kustomisasi template menu bot utama secara penuh selamanya.</p>
+                                    
+                                    <div class="mb-4">
+                                        <span class="fs-2 fw-extrabold text-dark" style="font-family:'Outfit',sans-serif;">Rp10.000</span>
+                                        <span class="text-muted small">/ selamanya</span>
+                                    </div>
+
+                                    <ul class="list-unstyled mb-4" style="display:flex; flex-direction:column; gap:0.75rem;">
+                                        <li class="small text-muted"><i class="bi bi-check-circle-fill text-success me-2"></i>Buka perintah <code>menu</code> / <code>help</code></li>
+                                        <li class="small text-muted"><i class="bi bi-check-circle-fill text-success me-2"></i>Akses penuh Menu Editor di Dashboard</li>
+                                        <li class="small text-muted"><i class="bi bi-check-circle-fill text-success me-2"></i>Gunakan variable dinamis kustom</li>
+                                        <li class="small text-muted"><i class="bi bi-check-circle-fill text-success me-2"></i>Tanpa masa tenggang (Aktif Selamanya)</li>
+                                    </ul>
+                                </div>
+
+                                <div>
+                                    <button class="ws-btn-primary w-100 py-2.5 fs-6" id="btn-buy-maker-menu" style="border-radius:10px;">Beli Sekarang</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </section>
+
+            <!-- Modal QRIS Pembayaran Premium -->
+            <div class="modal fade" id="qrisPaymentModal" tabindex="-1" data-bs-backdrop="static">
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
+                    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
+                        <div class="modal-header border-0 pb-0">
+                            <h5 class="modal-title fw-bold text-center w-100 mt-2">Aktivasi Fitur MAKER MENU</h5>
+                            <button type="button" class="btn-close" id="btn-close-qris-modal" data-bs-dismiss="modal"></button>
+                        </div>
+                        <div class="modal-body text-center px-4 pb-4">
+                            <p class="text-muted small mb-3">Pindai kode QRIS di bawah menggunakan aplikasi e-wallet / mobile banking Anda untuk menyelesaikan pembayaran.</p>
+                            
+                            <div class="border rounded-4 p-3 bg-white d-inline-block shadow-sm mb-3">
+                                <div id="qris-qrcode-container">
+                                    <!-- QR code generated here -->
+                                </div>
+                            </div>
+
+                            <div class="mb-3">
+                                <span class="text-muted small d-block">TOTAL PEMBAYARAN</span>
+                                <span class="fs-4 fw-extrabold text-primary" style="font-family:'Outfit';">Rp10.000</span>
+                            </div>
+
+                            <div class="p-2.5 bg-light rounded-3 small text-muted text-start mb-3" style="line-height:1.5;">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Nomor Invoice:</span>
+                                    <strong class="font-monospace" id="payment-invoice-id">-</strong>
+                                </div>
+                                <div class="d-flex justify-content-between">
+                                    <span>Status Transaksi:</span>
+                                    <strong class="text-warning" id="payment-status-text"><i class="spinner-border spinner-border-sm text-warning me-1"></i>Menunggu Pembayaran</strong>
+                                </div>
+                            </div>
+
+                            <div class="alert alert-info py-2 px-3 small text-start mb-0" role="alert" style="border-radius:10px;">
+                                <i class="bi bi-info-circle-fill me-2"></i>Pembayaran akan ter-verifikasi otomatis secara realtime setelah sukses dikirim. Jangan menutup jendela ini.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- ========== FAQ ========== -->
             <section id="faq-section" class="d-none">
@@ -2575,6 +2666,153 @@
             }, 300);
         });
 
+        // ===== Premium Pricing & Payment Gateway Logic =====
+        var qrisModalEl = document.getElementById("qrisPaymentModal");
+        var qrisModalInstance = qrisModalEl ? new bootstrap.Modal(qrisModalEl) : null;
+        var paymentPollingInterval = null;
+
+        function updatePricingLicenseBadge(makerMenuActive) {
+            var badge = document.getElementById("pricing-license-badge");
+            var buyBtn = document.getElementById("btn-buy-maker-menu");
+            if (!badge) return;
+
+            if (makerMenuActive) {
+                badge.className = "badge px-4 py-2.5 rounded-pill fs-6";
+                badge.style.background = "rgba(22, 163, 74, 0.1)";
+                badge.style.color = "#16a34a";
+                badge.style.border = "1px solid rgba(22, 163, 74, 0.2)";
+                badge.innerHTML = '<i class="bi bi-patch-check-fill me-1.5"></i>Aktif (Milik Anda)';
+                
+                if (buyBtn) {
+                    buyBtn.setAttribute("disabled", "true");
+                    buyBtn.textContent = "Sudah Aktif";
+                    buyBtn.className = "btn btn-secondary w-100 py-2.5 fs-6 disabled";
+                }
+            } else {
+                badge.className = "badge px-4 py-2.5 rounded-pill fs-6";
+                badge.style.background = "rgba(220, 38, 38, 0.1)";
+                badge.style.color = "#dc2626";
+                badge.style.border = "1px solid rgba(220, 38, 38, 0.2)";
+                badge.innerHTML = '<i class="bi bi-x-circle-fill me-1.5"></i>Belum Aktif';
+                
+                if (buyBtn) {
+                    buyBtn.removeAttribute("disabled");
+                    buyBtn.textContent = "Beli Sekarang";
+                    buyBtn.className = "ws-btn-primary w-100 py-2.5 fs-6";
+                }
+            }
+        }
+
+        // Add event listener to "Beli Sekarang"
+        var buyBtn = document.getElementById("btn-buy-maker-menu");
+        if (buyBtn) {
+            buyBtn.addEventListener("click", function() {
+                var btn = this;
+                btn.setAttribute("disabled", "true");
+                btn.innerHTML = '<div class="spinner-border spinner-border-sm me-2" role="status"></div>Membuat Invoice...';
+
+                fetch(API_URL + "/api/payment/create", { method: "POST" })
+                    .then(function(r) { return r.json(); })
+                    .then(function(res) {
+                        if (res.success) {
+                            // Set invoice detail
+                            document.getElementById("payment-invoice-id").textContent = res.order_id;
+                            
+                            // Generate QR Code di container
+                            var qrContainer = document.getElementById("qris-qrcode-container");
+                            qrContainer.innerHTML = "";
+                            
+                            // Load QRCode library CDN dynamically if not loaded
+                            if (typeof QRCode === "undefined") {
+                                var script = document.createElement("script");
+                                script.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+                                script.onload = function() {
+                                    new QRCode(qrContainer, {
+                                        text: res.qris_data,
+                                        width: 220,
+                                        height: 220,
+                                        colorDark: "#000000",
+                                        colorLight: "#ffffff",
+                                        correctLevel: QRCode.CorrectLevel.M
+                                    });
+                                };
+                                document.head.appendChild(script);
+                            } else {
+                                new QRCode(qrContainer, {
+                                    text: res.qris_data,
+                                    width: 220,
+                                    height: 220,
+                                    colorDark: "#000000",
+                                    colorLight: "#ffffff",
+                                    correctLevel: QRCode.CorrectLevel.M
+                                });
+                            }
+
+                            document.getElementById("payment-status-text").innerHTML = '<i class="spinner-border spinner-border-sm text-warning me-1"></i>Menunggu Pembayaran';
+                            document.getElementById("payment-status-text").className = "text-warning";
+
+                            // Tampilkan modal
+                            if (qrisModalInstance) qrisModalInstance.show();
+
+                            // Mulai Polling status pembayaran setiap 2 detik
+                            startPaymentPolling(res.order_id);
+                        } else {
+                            showToast("Gagal membuat invoice.", "error");
+                        }
+                    }).catch(function(err) {
+                        showToast("Error: " + err.message, "error");
+                    }).finally(function() {
+                        btn.removeAttribute("disabled");
+                        btn.textContent = "Beli Sekarang";
+                    });
+            });
+        }
+
+        function startPaymentPolling(orderId) {
+            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+            paymentPollingInterval = setInterval(function() {
+                fetch(API_URL + "/api/payment/status/" + orderId)
+                    .then(function(r) { return r.json(); })
+                    .then(function(res) {
+                        if (res.success && res.status === "success") {
+                            clearInterval(paymentPollingInterval);
+                            document.getElementById("payment-status-text").innerHTML = '<i class="bi bi-patch-check-fill text-success me-1"></i>Pembayaran Sukses!';
+                            document.getElementById("payment-status-text").className = "text-success";
+                            
+                            // Tutup modal setelah 2 detik
+                            setTimeout(function() {
+                                if (qrisModalInstance) qrisModalInstance.hide();
+                                showToast("Selamat! Lisensi MAKER MENU Anda telah aktif.");
+                                // Fetch settings untuk update status badge
+                                fetchSettings();
+                            }, 2500);
+                        }
+                    });
+            }, 2000);
+        }
+
+        // Hentikan polling jika modal ditutup manual
+        var closeQrisBtn = document.getElementById("btn-close-qris-modal");
+        if (closeQrisBtn) {
+            closeQrisBtn.addEventListener("click", function() {
+                if (paymentPollingInterval) {
+                    clearInterval(paymentPollingInterval);
+                }
+            });
+        }
+
+        // Modifikasi fetchSettings / fillFormWithData agar update lisensi badge
+        function fetchSettings() {
+            fetch(API_URL + "/api/settings")
+                .then(function(r) { return r.json(); })
+                .then(function(data) {
+                    window.botSettings = data;
+                    fillFormWithData(data);
+                    renderInfoBoard(data);
+                    updatePricingLicenseBadge(data.maker_menu_active);
+                });
+        }
+
         // ===== Database Latency Ping =====
         function pingDatabase() {
             var startTime = performance.now();
@@ -2669,7 +2907,7 @@
         fillFormWithData(DEFAULT_SETTINGS); 
         loadSystemInfo(); 
         checkAuth(); 
-        
+        fetchSettings(); // Ambil settings premium saat boot awal
         // Mulai ping database setiap 1 detik
         setInterval(function() {
             pingDatabase();

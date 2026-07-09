@@ -172,11 +172,29 @@ function initTables() {
             }
         });
 
+        // Table: transactions
+        db.run(`
+            CREATE TABLE IF NOT EXISTS transactions (
+                order_id TEXT PRIMARY KEY,
+                amount INTEGER NOT NULL,
+                status TEXT DEFAULT 'pending',
+                payment_url TEXT,
+                qris_data TEXT,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+
         // Insert default connection if empty
         db.get("SELECT COUNT(*) as count FROM bot_connection WHERE id = 1", [], (err, row) => {
             if (!err && row.count === 0) {
                 db.run("INSERT INTO bot_connection (id, status) VALUES (1, 'disconnected')");
             }
+            
+            // Ensure columns exist on older DB creations
+            db.run("ALTER TABLE bot_settings ADD COLUMN menu_title TEXT DEFAULT 'BOT KUCAI AKUN'", () => {});
+            db.run("ALTER TABLE bot_settings ADD COLUMN menu_body TEXT DEFAULT 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'", () => {});
+            db.run("ALTER TABLE bot_settings ADD COLUMN maker_menu_active INTEGER DEFAULT 0", () => {});
+            
             // Mark database initialization completed
             resolveReady();
         });

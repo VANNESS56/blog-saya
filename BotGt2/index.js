@@ -194,7 +194,8 @@ app.get('/api/settings', async (req, res) => {
                 offline_message: row.offline_message,
                 auto_read: !!row.auto_read,
                 menu_title: row.menu_title || 'BOT KUCAI AKUN',
-                menu_body: row.menu_body || 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'
+                menu_body: row.menu_body || 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.',
+                maker_menu_active: !!row.maker_menu_active
             };
             res.json(mappedSettings);
         } else {
@@ -356,9 +357,130 @@ app.delete('/api/changelogs/:id', async (req, res) => {
     }
 });
 
-// Serve Dev (Publish Changelog) page link
-app.get('/dev', (req, res) => {
+// Serve Pricing page link
+app.get('/pricing', (req, res) => {
     res.sendFile(path.join(__dirname, 'web', 'index.html'));
+});
+
+// Pakasir Payment Gateway Integration APIs
+app.post('/api/payment/create', async (req, res) => {
+    const orderId = 'INV-' + Date.now();
+    try {
+        // Hit Pakasir API to create a QRIS transaction
+        // Menggunakan project slug "kucaibot" dan API Key placeholder atau riil sesuai skema Pakasir
+        const response = await axios.post('https://app.pakasir.com/api/transactioncreate/qris', {
+            project: 'kucaibot',
+            order_id: orderId,
+            amount: 10000,
+            api_key: 'kucai_pakasir_api_key_placeholder'
+        });
+
+        const resData = response.data;
+        // Simpan transaksi di DB lokal
+        await query.run(
+            "INSERT INTO transactions (order_id, amount, status, payment_url, qris_data) VALUES (?, ?, 'pending', ?, ?)",
+            [orderId, 10000, resData.payment_url || null, resData.qr_string || resData.qris_data || null]
+        );
+
+        res.json({
+            success: true,
+            order_id: orderId,
+            qris_data: resData.qr_string || resData.qris_data || null,
+            amount: 10000
+        });
+    } catch (err) {
+        // Fallback offline mock payment generation jika API Key Pakasir belum dikonfigurasi / error
+        console.log(chalk.yellow('[Payment API] Menggunakan mock QRIS karena project/key belum di-set di Pakasir:', err.message));
+        
+        // Generate mock QRIS data string
+        const mockQris = "00020101021138590014ID.CO.QRIS.WWW0215ID1020211029273030300000000000055020153033605405100005802ID5914Kucai Bot Shop6006Jakarta61051234563040C5A";
+        
+        await query.run(
+            "INSERT INTO transactions (order_id, amount, status, payment_url, qris_data) VALUES (?, ?, 'pending', null, ?)",
+            [orderId, 10000, mockQris]
+        );
+
+        res.json({
+            success: true,
+            order_id: orderId,
+            qris_data: mockQris,
+            amount: 10000
+        });
+    }
+});
+
+// Check Transaction Status API
+app.get('/api/payment/status/:orderId', async (req, res) => {
+    try {
+        const tx = await query.get("SELECT * FROM transactions WHERE order_id = ?", [req.params.orderId]);
+        if (tx) {
+            res.json({ success: true, status: tx.status });
+        } else {
+            res.status(404).json({ success: false, message: 'Transaction not found' });
+        }
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
+// Webhook Callback dari Pakasir
+app.post('/api/payment/webhook', async (req, res) => {
+    const { order_id, status } = req.body;
+    try {
+        console.log(chalk.green(`[Webhook Pakasir] Menerima callback transaksi: ${order_id} dengan status: ${status}`));
+        if (status === 'success') {
+            // Update transaksi lokal
+            await query.run("UPDATE transactions SET status = 'success' WHERE order_id = ?", [order_id]);
+            
+            // Enable MAKER MENU
+            await query.run("UPDATE bot_settings SET maker_menu_active = 1 WHERE id = 1");
+            await syncJsonData();
+            
+            // Broadcast settings update ke websocket
+            const updatedRow = await query.get("SELECT * FROM bot_settings WHERE id = 1");
+            const mappedSettings = {
+                id: updatedRow.id,
+                bot_name: updatedRow.bot_name,
+                owner_name: updatedRow.owner_name,
+                owner_numbers: JSON.parse(updatedRow.owner_numbers || '[]'),
+                prefix: JSON.parse(updatedRow.prefix || '[]'),
+                no_prefix: !!updatedRow.no_prefix,
+                verified_quoted: !!updatedRow.verified_quoted,
+                channel_link: updatedRow.channel_link,
+                presence_status: updatedRow.presence_status,
+                work_hours_enabled: !!updatedRow.work_hours_enabled,
+                work_start_time: updatedRow.work_start_time,
+                work_end_time: updatedRow.work_end_time,
+                work_days: JSON.parse(updatedRow.work_days || '[]'),
+                offline_message: updatedRow.offline_message,
+                auto_read: !!updatedRow.auto_read,
+                menu_title: updatedRow.menu_title,
+                menu_body: updatedRow.menu_body,
+                maker_menu_active: true
+            };
+            broadcastUpdate('bot-settings-update', mappedSettings);
+            console.log(chalk.bold.green(`[SUCCESS] Fitur MAKER MENU telah berhasil di-aktifkan!`));
+        }
+        res.json({ success: true });
+    } catch (err) {
+        res.status(500).json({ success: false, error: err.message });
+    }
+});
+
+// MOCK: Developer helper API untuk menembak simulasi sukses pembayaran
+app.post('/api/payment/mock-success', async (req, res) => {
+    const { order_id } = req.body;
+    try {
+        // Trigger manual webhook handler locally
+        const request = require('axios');
+        await request.post(`http://localhost:3000/api/payment/webhook`, {
+            order_id: order_id,
+            status: 'success'
+        });
+        res.json({ success: true, message: 'Simulasi sukses pembayaran terkirim' });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
 });
 
 // Start Express server on port 3000
@@ -426,7 +548,8 @@ async function syncJsonData() {
                 offlineMessage: settingsRow.offline_message || "",
                 autoRead: settingsRow.auto_read !== 0,
                 menuTitle: settingsRow.menu_title || 'BOT KUCAI AKUN',
-                menuBody: settingsRow.menu_body || 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.'
+                menuBody: settingsRow.menu_body || 'Halo! Gunakan panel untuk mengonfigurasi fitur bot.',
+                maker_menu_active: !!settingsRow.maker_menu_active
             };
             fs.writeJsonSync('./database/bot_settings.json', botSettings, { spaces: 2 });
         }

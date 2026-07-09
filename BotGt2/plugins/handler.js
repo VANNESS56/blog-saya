@@ -672,6 +672,14 @@ module.exports = async (conn, m) => {
 
                 case 'menu':
                 case 'help': {
+                    // Pengecekan lisensi Maker Menu
+                    if (!config.maker_menu_active && !isOwner) {
+                        return await sendReply(
+                            `❌ *FITUR MAKER MENU TERKUNCI*\n\n` +
+                            `Mohon maaf, fitur menu bot saat ini dinonaktifkan karena belum diaktivasi oleh pemilik.\n\n` +
+                            `Silakan lakukan aktivasi lisensi menu secara instan melalui Dashboard Pricing Kucai Bot.`
+                        );
+                    }
 
                     const runtimeSecs = process.uptime();
                     const runtimeStr = formatRuntime(runtimeSecs);
