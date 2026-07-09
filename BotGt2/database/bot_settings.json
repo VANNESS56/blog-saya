@@ -29,5 +29,5 @@
   "offlineMessage": "Halo Kak! Mohon maaf saat ini toko kami sedang Offline/Tutup. Pesan Anda akan dibalas segera setelah kami kembali aktif.",
   "autoRead": true,
   "menuTitle": "BOT KUCAI AKUN",
-  "menuBody": "Halo! Gunakan panel untuk mengonfigurasi fitur bot."
+  "menuBody": "╭━〔 MAIN MENU 〕━⬣\n┃ 👤 *Owner* : {owner}\n┃ ⚡ *Prefix* : Multi Prefix\n┃ ⏰ *Runtime* : {runtime}\n╰━━━━━━━━━━━━━━━━⬣\n\n╭━〔 CUSTOMER MENU 〕━⬣\n┃ • buy akun / beli akun\n┃ • jual akun / sell akun\n┃ • saluran / ch (Link Saluran WhatsApp)\n╰━━━━━━━━━━━━━━━━⬣\n\n╭━〔 OWNER MENU 〕━⬣\n┃ • {prefix}addtrigger key|val\n┃ • {prefix}deltrigger key\n┃ • {prefix}listtrigger\n┃ • {prefix}addowner number\n┃ • {prefix}delowner number\n┃ • {prefix}bc / {prefix}broadcast pesan\n┃ • {prefix}verified on/off\n╰━━━━━━━━━━━━━━━━⬣"
 }

@@ -1616,52 +1616,67 @@
             var disconnectedDiv = document.getElementById("pairing-disconnected");
             var codeDisplay = document.getElementById("pairing-code-display");
             var reasonDiv = document.getElementById("pairing-reason");
-
+            var defaultDiv = document.getElementById("pairing-default");
+ 
             // Hide all states first
+            if (defaultDiv) defaultDiv.classList.add("d-none");
             connectedDiv.classList.add("d-none");
             disconnectedDiv.classList.add("d-none");
             codeDisplay.classList.add("d-none");
             reasonDiv.classList.add("d-none");
-
+ 
             var status = data.status || "disconnected";
-
+ 
             if (status === "connected") {
-                statusText.textContent = "Terhubung";
-                statusDetail.textContent = "Bot sedang aktif dan berjalan.";
-                statusIcon.className = "pairing-status-icon text-success";
-                statusIcon.innerHTML = '<i class="bi bi-check-circle-fill fs-3"></i>';
+                if (statusText) statusText.textContent = "Terhubung";
+                if (statusDetail) statusDetail.textContent = "Bot sedang aktif dan berjalan.";
+                if (statusIcon) {
+                    statusIcon.className = "pairing-status-icon text-success";
+                    statusIcon.innerHTML = '<i class="bi bi-check-circle-fill fs-3"></i>';
+                }
                 connectedDiv.classList.remove("d-none");
-                document.getElementById("pairing-bot-number").textContent = data.phone_number || data.bot_number || "???";
+                var botNumEl = document.getElementById("pairing-bot-number");
+                if (botNumEl) botNumEl.textContent = data.phone_number || data.bot_number || "???";
             } else if (status === "pairing") {
-                statusText.textContent = "Menunggu Pairing";
-                statusDetail.textContent = "Kode pairing telah dikirim. Masukkan di WhatsApp Anda.";
-                statusIcon.className = "pairing-status-icon text-warning";
-                statusIcon.innerHTML = '<i class="bi bi-hourglass-split fs-3"></i>';
+                if (statusText) statusText.textContent = "Menunggu Pairing";
+                if (statusDetail) statusDetail.textContent = "Kode pairing telah dikirim. Masukkan di WhatsApp Anda.";
+                if (statusIcon) {
+                    statusIcon.className = "pairing-status-icon text-warning";
+                    statusIcon.innerHTML = '<i class="bi bi-hourglass-split fs-3"></i>';
+                }
                 codeDisplay.classList.remove("d-none");
-                document.getElementById("pairing-code-value").textContent = data.pairing_code || "????-????";
+                var codeValEl = document.getElementById("pairing-code-value");
+                if (codeValEl) codeValEl.textContent = data.pairing_code || "????-????";
             } else if (status === "waiting_pair") {
-                statusText.textContent = "Menunggu Pairing";
-                statusDetail.textContent = "Bot menyala tapi belum terhubung. Masukkan nomor untuk memulai pairing.";
-                statusIcon.className = "pairing-status-icon text-info";
-                statusIcon.innerHTML = '<i class="bi bi-phone fs-3"></i>';
+                if (statusText) statusText.textContent = "Menunggu Pairing";
+                if (statusDetail) statusDetail.textContent = "Bot menyala tapi belum terhubung. Masukkan nomor untuk memulai pairing.";
+                if (statusIcon) {
+                    statusIcon.className = "pairing-status-icon text-info";
+                    statusIcon.innerHTML = '<i class="bi bi-phone fs-3"></i>';
+                }
                 disconnectedDiv.classList.remove("d-none");
             } else if (status === "connecting") {
-                statusText.textContent = "Menghubungkan...";
-                statusDetail.textContent = "Bot sedang mencoba terhubung ke WhatsApp.";
-                statusIcon.className = "pairing-status-icon text-primary";
-                statusIcon.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"></div>';
+                if (statusText) statusText.textContent = "Menghubungkan...";
+                if (statusDetail) statusDetail.textContent = "Bot sedang mencoba terhubung ke WhatsApp.";
+                if (statusIcon) {
+                    statusIcon.className = "pairing-status-icon text-primary";
+                    statusIcon.innerHTML = '<div class="spinner-border spinner-border-sm" role="status"></div>';
+                }
             } else {
-                statusText.textContent = "Terputus";
-                statusDetail.textContent = "Bot tidak terhubung ke WhatsApp.";
-                statusIcon.className = "pairing-status-icon text-danger";
-                statusIcon.innerHTML = '<i class="bi bi-x-circle-fill fs-3"></i>';
+                if (statusText) statusText.textContent = "Terputus";
+                if (statusDetail) statusDetail.textContent = "Bot tidak terhubung ke WhatsApp.";
+                if (statusIcon) {
+                    statusIcon.className = "pairing-status-icon text-danger";
+                    statusIcon.innerHTML = '<i class="bi bi-x-circle-fill fs-3"></i>';
+                }
                 disconnectedDiv.classList.remove("d-none");
             }
-
+ 
             // Show reason if available
-            if (data.reason) {
+            if (data.reason && reasonDiv) {
                 reasonDiv.classList.remove("d-none");
-                document.getElementById("pairing-reason-text").textContent = data.reason;
+                var reasonTextEl = document.getElementById("pairing-reason-text");
+                if (reasonTextEl) reasonTextEl.textContent = data.reason;
             }
         }
 
