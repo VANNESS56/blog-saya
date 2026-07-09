@@ -412,15 +412,70 @@ app.post('/api/payment/create', async (req, res) => {
     }
 });
 
-// Check Transaction Status API
+// Check Transaction Status API - Melakukan validasi realtime ke API Pakasir
 app.get('/api/payment/status/:orderId', async (req, res) => {
+    const orderId = req.params.orderId;
     try {
-        const tx = await query.get("SELECT * FROM transactions WHERE order_id = ?", [req.params.orderId]);
-        if (tx) {
-            res.json({ success: true, status: tx.status });
-        } else {
-            res.status(404).json({ success: false, message: 'Transaction not found' });
+        const tx = await query.get("SELECT * FROM transactions WHERE order_id = ?", [orderId]);
+        if (!tx) {
+            return res.status(404).json({ success: false, message: 'Transaction not found' });
         }
+
+        if (tx.status === 'success') {
+            return res.json({ success: true, status: 'success' });
+        }
+
+        // Cek status ke API Pakasir detail secara dinamis
+        try {
+            const check = await axios.get(`https://app.pakasir.com/api/transactiondetail`, {
+                params: {
+                    project: 'vanness-store',
+                    amount: 10000,
+                    order_id: orderId,
+                    api_key: 'bZSgVa8RdQmb25dYMn4t5aety7U0QNps'
+                }
+            });
+
+            if (check.data && check.data.transaction && check.data.transaction.status === 'completed') {
+                // Update ke success di DB lokal
+                await query.run("UPDATE transactions SET status = 'success' WHERE order_id = ?", [orderId]);
+                
+                // Aktifkan Fitur Downloader
+                await query.run("UPDATE bot_settings SET maker_menu_active = 1 WHERE id = 1");
+                await syncJsonData();
+
+                // Broadcast ke websocket dashboard
+                const updatedRow = await query.get("SELECT * FROM bot_settings WHERE id = 1");
+                const mappedSettings = {
+                    id: updatedRow.id,
+                    bot_name: updatedRow.bot_name,
+                    owner_name: updatedRow.owner_name,
+                    owner_numbers: JSON.parse(updatedRow.owner_numbers || '[]'),
+                    prefix: JSON.parse(updatedRow.prefix || '[]'),
+                    no_prefix: !!updatedRow.no_prefix,
+                    verified_quoted: !!updatedRow.verified_quoted,
+                    channel_link: updatedRow.channel_link,
+                    presence_status: updatedRow.presence_status,
+                    work_hours_enabled: !!updatedRow.work_hours_enabled,
+                    work_start_time: updatedRow.work_start_time,
+                    work_end_time: updatedRow.work_end_time,
+                    work_days: JSON.parse(updatedRow.work_days || '[]'),
+                    offline_message: updatedRow.offline_message,
+                    auto_read: !!updatedRow.auto_read,
+                    menu_title: updatedRow.menu_title,
+                    menu_body: updatedRow.menu_body,
+                    maker_menu_active: true
+                };
+                broadcastUpdate('bot-settings-update', mappedSettings);
+                console.log(chalk.bold.green(`[SUCCESS] Fitur DOWNLOADER MENU telah berhasil diaktifkan via Transaction Detail Polling!`));
+
+                return res.json({ success: true, status: 'success' });
+            }
+        } catch (apiErr) {
+            console.error('[Payment API Status Check] Gagal cek detail ke Pakasir:', apiErr.message);
+        }
+
+        res.json({ success: true, status: tx.status });
     } catch (e) {
         res.status(500).json({ success: false, error: e.message });
     }
@@ -431,7 +486,7 @@ app.post('/api/payment/webhook', async (req, res) => {
     const { order_id, status } = req.body;
     try {
         console.log(chalk.green(`[Webhook Pakasir] Menerima callback transaksi: ${order_id} dengan status: ${status}`));
-        if (status === 'success') {
+        if (status === 'completed' || status === 'success') {
             // Update transaksi lokal
             await query.run("UPDATE transactions SET status = 'success' WHERE order_id = ?", [order_id]);
             
