@@ -94,6 +94,9 @@ app.get('/script', serveIndex);
 app.get('/galeri-script', serveIndex);
 app.get('/statistik', serveIndex);
 app.get('/invoice', serveIndex);
+app.get('/dev/product', serveIndex);
+app.get('/dev/changelog', serveIndex);
+app.get('/dev/feature', serveIndex);
 
 // Broadcast helper for Socket.io
 function broadcastUpdate(channel, data) {

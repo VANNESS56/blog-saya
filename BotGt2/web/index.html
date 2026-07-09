@@ -116,13 +116,13 @@
             <!-- Dynamic Developer Menu (Visible only to developers) -->
             <div class="d-none" id="sidebar-developer-menu">
                 <div class="sidebar-category">DEVELOPER</div>
-                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="switchDevTab('changelog')">
+                <a class="sidebar-link" data-target="dev-section" data-path="/dev/changelog" onclick="switchDevTab('changelog')">
                     <i class="bi bi-clock-history"></i><span>Changelog</span>
                 </a>
-                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="switchDevTab('pricing')">
+                <a class="sidebar-link" data-target="dev-section" data-path="/dev/product" onclick="switchDevTab('pricing')">
                     <i class="bi bi-box-seam"></i><span>Product</span>
                 </a>
-                <a class="sidebar-link" data-target="dev-section" data-path="/dev" onclick="switchDevTab('features')">
+                <a class="sidebar-link" data-target="dev-section" data-path="/dev/feature" onclick="switchDevTab('features')">
                     <i class="bi bi-sliders2"></i><span>Feature</span>
                 </a>
             </div>
@@ -1839,8 +1839,15 @@
         // Deteksi Route Awal saat page load
         function handleInitialRoute() {
             var currentPath = window.location.pathname;
-            if (currentPath === "/dev") {
-                showSectionByTarget("dev-section", "/dev");
+            if (currentPath.startsWith("/dev")) {
+                showSectionByTarget("dev-section", currentPath);
+                if (currentPath === "/dev/product") {
+                    switchDevTab('pricing');
+                } else if (currentPath === "/dev/feature") {
+                    switchDevTab('features');
+                } else {
+                    switchDevTab('changelog');
+                }
                 return;
             }
             if (currentPath === "/invoice") {
