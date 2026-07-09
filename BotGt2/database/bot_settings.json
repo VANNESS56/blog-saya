@@ -27,5 +27,7 @@
     "Minggu"
   ],
   "offlineMessage": "Halo Kak! Mohon maaf saat ini toko kami sedang Offline/Tutup. Pesan Anda akan dibalas segera setelah kami kembali aktif.",
-  "autoRead": true
+  "autoRead": true,
+  "menuTitle": "BOT KUCAI AKUN",
+  "menuBody": "Halo! Gunakan panel untuk mengonfigurasi fitur bot."
 }

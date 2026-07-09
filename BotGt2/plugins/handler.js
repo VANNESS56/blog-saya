@@ -676,27 +676,32 @@ module.exports = async (conn, m) => {
                     const runtimeSecs = process.uptime();
                     const runtimeStr = formatRuntime(runtimeSecs);
 
-                    let menuText = `╭━〔 MAIN MENU 〕━⬣\n`;
-                    menuText += `┃ 👤 *Owner* : ${config.ownerName}\n`;
-                    menuText += `┃ ⚡ *Prefix* : Multi Prefix\n`;
-                    menuText += `┃ ⏰ *Runtime* : ${runtimeStr}\n`;
-                    menuText += `╰━━━━━━━━━━━━━━━━⬣\n\n`;
+                    // Formulasi Salam waktu Ucapan Indo
+                    const nowHour = new Date().getHours();
+                    let ucapanIndo = 'Malam';
+                    if (nowHour >= 4 && nowHour < 11) ucapanIndo = 'Pagi';
+                    else if (nowHour >= 11 && nowHour < 15) ucapanIndo = 'Siang';
+                    else if (nowHour >= 15 && nowHour < 18) ucapanIndo = 'Sore';
 
-                    // Ambil isi Menu Body Dinamis dari Database Dashboard
-                    const dynamicBody = config.menuBody || `┃ • buy akun / beli akun\n┃ • jual akun / sell akun\n┃ • saluran / ch (Link Saluran WhatsApp)`;
-                    menuText += `╭━〔 CUSTOMER MENU 〕━⬣\n`;
-                    menuText += `${dynamicBody}\n`;
-                    menuText += `╰━━━━━━━━━━━━━━━━⬣\n\n`;
+                    // Formulasi Hari Indo
+                    const hariIndoList = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
+                    const hariIndoVal = hariIndoList[new Date().getDay()];
 
-                    menuText += `╭━〔 OWNER MENU 〕━⬣\n`;
-                    menuText += `┃ • ${displayPrefix}addtrigger key|val\n`;
-                    menuText += `┃ • ${displayPrefix}deltrigger key\n`;
-                    menuText += `┃ • ${displayPrefix}listtrigger\n`;
-                    menuText += `┃ • ${displayPrefix}addowner number\n`;
-                    menuText += `┃ • ${displayPrefix}delowner number\n`;
-                    menuText += `┃ • ${displayPrefix}bc / ${displayPrefix}broadcast pesan\n`;
-                    menuText += `┃ • ${displayPrefix}verified on/off (Status: ${config.verifiedQuoted ? 'ON' : 'OFF'})\n`;
-                    menuText += `╰━━━━━━━━━━━━━━━━⬣`;
+                    // Template Default jika database kosong
+                    const defaultTemplate = `*{namebot}*\n\n_• Server: wibusoft.com_\n_• Version: v4.0_\n\n*GAME*\n- {prefix}asahotak\n- {prefix}buylimit\n- {prefix}caklontong\n- {prefix}dare\n- {prefix}family100\n- {prefix}hint\n- {prefix}math\n- {prefix}nyerah\n- {prefix}redeem`;
+                    
+                    let rawMenuBody = config.menuBody || defaultTemplate;
+
+                    // Mengganti variables
+                    let menuText = rawMenuBody
+                        .replace(/{pushname}/g, pushName)
+                        .replace(/{prefix}/g, displayPrefix)
+                        .replace(/{namebot}/g, config.botName || 'Bot')
+                        .replace(/{ucapan}/g, ucapanIndo)
+                        .replace(/{tanggal}/g, new Date().toLocaleDateString('id-ID'))
+                        .replace(/{hari}/g, hariIndoVal)
+                        .replace(/{owner}/g, config.ownerName || 'Alvin Kucai')
+                        .replace(/{runtime}/g, runtimeStr);
 
                     // Interactive native flow quick reply buttons
                     const buttons = [

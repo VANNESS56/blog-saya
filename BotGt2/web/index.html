@@ -601,23 +601,7 @@
                             </div>
                         </div>
 
-                        <!-- Card 7: Kustomisasi Teks Menu Bot -->
-                        <div class="ws-config-card" style="margin-bottom: 1.25rem;">
-                            <div class="card-section-header">
-                                <h2><i class="bi bi-file-text me-1 text-primary"></i> Kustomisasi Teks Menu Bot (.menu)</h2>
-                                <p>Atur judul header dan daftar menu utama saat pengguna mengetik perintah menu.</p>
-                            </div>
-                            <div class="ws-field-grid">
-                                <div class="ws-field">
-                                    <label for="input-menu-title">Header Title Menu</label>
-                                    <input id="input-menu-title" type="text" class="ws-input" placeholder="BOT KUCAI AKUN">
-                                </div>
-                                <div class="ws-field">
-                                    <label for="input-menu-body">Daftar Customer Menu (Bisa Multi Line)</label>
-                                    <textarea id="input-menu-body" class="ws-input" rows="5" placeholder="┃ • buy akun / beli akun&#10;┃ • jual akun / sell akun&#10;┃ • saluran / ch (Link Saluran WhatsApp)"></textarea>
-                                </div>
-                            </div>
-                        </div>
+
 
                         <!-- Sticky Save Bar -->
                         <div class="ws-save-bar">
@@ -693,6 +677,80 @@
                             <i class="bi bi-exclamation-triangle-fill"></i>
                             <div id="pairing-reason-text"></div>
                         </div>
+                    </div>
+                </div>
+            <!-- ========== MENU BOT EDITOR (Wibusoft Style) ========== -->
+            <section id="menu-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1>Menu Bot</h1>
+                        <p>Atur isi menu yang muncul saat user ketik {prefix}menu. Pakai variable seperti {pushname} untuk teks dinamis.</p>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-section-header">
+                            <h2>Edit Menu</h2>
+                            <p>Tulis template menu di sini. Variable yang dikenali ditandai <span class="ws-badge-variable-success">{seperti ini}</span>. Variable tidak dikenali ditandai <span class="ws-badge-variable-error">{merah}</span>.</p>
+                        </div>
+
+                        <div class="ws-menu-editor-grid">
+                            <!-- Left: Editor & Buttons -->
+                            <div>
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Header Title Menu (Judul Atas)</label>
+                                    <input type="text" class="ws-input mb-3" id="input-menu-title" placeholder="Contoh: BOT KUCAI AKUN">
+                                </div>
+                                
+                                <div class="mb-3">
+                                    <label class="form-label small text-muted fw-bold">Template Body Menu</label>
+                                    <textarea class="ws-editor-textarea" id="input-menu-body" rows="16" placeholder="Tulis menu di sini..."></textarea>
+                                </div>
+
+                                <div class="d-flex gap-2">
+                                    <button class="ws-btn-primary" id="btn-save-menu">
+                                        <i class="bi bi-save me-1"></i> Simpan Menu
+                                    </button>
+                                    <button class="btn btn-outline-secondary px-4 py-2" style="border-radius:12px; font-weight:600;" id="btn-reset-menu">
+                                        Reset ke Default
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Right: Available Variables -->
+                            <div class="ws-variable-card">
+                                <div class="ws-variable-card-title">Variable yang Tersedia</div>
+                                <div class="ws-variable-card-subtitle">Klik variable untuk masukkan ke posisi kursor di editor.</div>
+
+                                <div class="ws-variable-list">
+                                    <div class="ws-variable-item" data-var="{pushname}">
+                                        <div class="ws-variable-name">{pushname}</div>
+                                        <div class="ws-variable-desc">Nama pengguna WhatsApp pengirim</div>
+                                    </div>
+                                    <div class="ws-variable-item" data-var="{prefix}">
+                                        <div class="ws-variable-name">{prefix}</div>
+                                        <div class="ws-variable-desc">Prefix bot aktif</div>
+                                    </div>
+                                    <div class="ws-variable-item" data-var="{namebot}">
+                                        <div class="ws-variable-name">{namebot}</div>
+                                        <div class="ws-variable-desc">Nama bot aktif</div>
+                                    </div>
+                                    <div class="ws-variable-item" data-var="{ucapan}">
+                                        <div class="ws-variable-name">{ucapan}</div>
+                                        <div class="ws-variable-desc">Salam waktu (Pagi/Siang/Sore/Malam)</div>
+                                    </div>
+                                    <div class="ws-variable-item" data-var="{tanggal}">
+                                        <div class="ws-variable-name">{tanggal}</div>
+                                        <div class="ws-variable-desc">Tanggal hari ini</div>
+                                    </div>
+                                    <div class="ws-variable-item" data-var="{hari}">
+                                        <div class="ws-variable-name">{hari}</div>
+                                        <div class="ws-variable-desc">Nama hari ini (Senin/Selasa/...)</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </section>
@@ -926,7 +984,7 @@
 
         // ===== SPA Navigation =====
         var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link");
-        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section"];
+        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section"];
 
         menuLinks.forEach(function(link) {
             link.addEventListener("click", function() {
@@ -1243,6 +1301,113 @@
                 showToast("Gagal menyimpan: " + err.message, "error");
             }).finally(function() {
                 saveBotSettingsBtn.removeAttribute("disabled");
+            });
+        // ===== Menu Bot Editor Logic (Wibusoft Style) =====
+        var inputMenuTitle = document.getElementById("input-menu-title");
+        var inputMenuBody = document.getElementById("input-menu-body");
+        var btnSaveMenu = document.getElementById("btn-save-menu");
+        var btnResetMenu = document.getElementById("btn-reset-menu");
+
+        // Insert variable at cursor position helper
+        function insertAtCursor(myField, myValue) {
+            if (document.selection) {
+                myField.focus();
+                var sel = document.selection.createRange();
+                sel.text = myValue;
+            } else if (myField.selectionStart || myField.selectionStart === 0) {
+                var startPos = myField.selectionStart;
+                var endPos = myField.selectionEnd;
+                myField.value = myField.value.substring(0, startPos) + myValue + myField.value.substring(endPos, myField.value.length);
+                myField.selectionStart = startPos + myValue.length;
+                myField.selectionEnd = startPos + myValue.length;
+            } else {
+                myField.value += myValue;
+            }
+            myField.focus();
+        }
+
+        // Bind variable items click
+        document.querySelectorAll(".ws-variable-item").forEach(function(item) {
+            item.addEventListener("click", function() {
+                var val = this.getAttribute("data-var");
+                insertAtCursor(inputMenuBody, val);
+            });
+        });
+
+        // Save Menu Action
+        btnSaveMenu.addEventListener("click", function() {
+            btnSaveMenu.setAttribute("disabled", "true");
+            
+            // Re-fetch current settings to merge changes safely
+            fetch(API_URL + "/api/settings")
+                .then(function(r) { return r.json(); })
+                .then(function(currentData) {
+                    var payload = {
+                        bot_name: currentData.bot_name || inputBotName.value.trim(),
+                        owner_name: currentData.owner_name || inputOwnerName.value.trim(),
+                        owner_numbers: currentData.owner_numbers || ownerList,
+                        prefix: currentData.prefix || inputPrefix.value.split(",").map(function(s) { return s.trim(); }).filter(Boolean),
+                        no_prefix: !!currentData.no_prefix,
+                        verified_quoted: !!currentData.verified_quoted,
+                        auto_read: !!currentData.auto_read,
+                        channel_link: currentData.channel_link || inputChannelLink.value.trim(),
+                        presence_status: currentData.presence_status || "composing",
+                        work_hours_enabled: !!currentData.work_hours_enabled,
+                        work_start_time: currentData.work_start_time || "08:00",
+                        work_end_time: currentData.work_end_time || "22:00",
+                        offline_message: currentData.offline_message || "",
+                        work_days: currentData.work_days || [],
+                        info_active: !!currentData.info_active,
+                        info_title: currentData.info_title || "",
+                        info_content: currentData.info_content || "",
+                        
+                        // New dynamic menu text inputs
+                        menu_title: inputMenuTitle.value.trim(),
+                        menu_body: inputMenuBody.value
+                    };
+
+                    return fetch(API_URL + "/api/settings", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(payload)
+                    });
+                })
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    if (!res.success) throw new Error(res.error || "Gagal menyimpan");
+                    showToast("Teks Menu bot berhasil disimpan!");
+                    fetchData(); // reload
+                })
+                .catch(function(err) {
+                    showToast("Gagal menyimpan menu: " + err.message, "error");
+                })
+                .finally(function() {
+                    btnSaveMenu.removeAttribute("disabled");
+                });
+        });
+
+        // Reset Menu Action (Default Wibusoft Template)
+        btnResetMenu.addEventListener("click", function() {
+            window.Swal.fire({
+                title: "Reset Menu?",
+                text: "Isi editor menu akan dikembalikan ke template bawaan.",
+                icon: "warning",
+                showCancelButton: true,
+                confirmButtonText: "Ya, Reset",
+                cancelButtonText: "Batal",
+                confirmButtonColor: "#4f46e5",
+                cancelButtonColor: "#6c757d",
+                customClass: {
+                    confirmButton: 'btn btn-primary px-4 py-2 me-2',
+                    cancelButton: 'btn btn-secondary px-4 py-2'
+                },
+                buttonsStyling: false
+            }).then(function(result) {
+                if (result.isConfirmed) {
+                    inputMenuTitle.value = "BOT KUCAI AKUN";
+                    inputMenuBody.value = `╭━〔 MAIN MENU 〕━⬣\n┃ 👤 *Owner* : {owner}\n┃ ⚡ *Prefix* : Multi Prefix\n┃ ⏰ *Runtime* : {runtime}\n╰━━━━━━━━━━━━━━━━⬣\n\n╭━〔 CUSTOMER MENU 〕━⬣\n┃ • buy akun / beli akun\n┃ • jual akun / sell akun\n┃ • saluran / ch (Link Saluran WhatsApp)\n╰━━━━━━━━━━━━━━━━⬣\n\n╭━〔 OWNER MENU 〕━⬣\n┃ • {prefix}addtrigger key|val\n┃ • {prefix}deltrigger key\n┃ • {prefix}listtrigger\n┃ • {prefix}addowner number\n┃ • {prefix}delowner number\n┃ • {prefix}bc / {prefix}broadcast pesan\n┃ • {prefix}verified on/off\n╰━━━━━━━━━━━━━━━━⬣`;
+                    showToast("Teks menu di-reset di editor! Jangan lupa klik Simpan.");
+                }
             });
         });
 
