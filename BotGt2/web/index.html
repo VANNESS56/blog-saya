@@ -1827,6 +1827,13 @@
                 var path = link.getAttribute("data-path");
                 if (target) {
                     showSectionByTarget(target, path);
+                    if (path === "/dev/product") {
+                        switchDevTab('pricing');
+                    } else if (path === "/dev/feature") {
+                        switchDevTab('features');
+                    } else if (path === "/dev/changelog") {
+                        switchDevTab('changelog');
+                    }
                 }
 
                 // Close sidebar on mobile
