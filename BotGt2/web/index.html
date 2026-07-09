@@ -990,41 +990,141 @@
 
             <!-- Modal QRIS Pembayaran Premium -->
             <div class="modal fade" id="qrisPaymentModal" tabindex="-1" data-bs-backdrop="static">
-                <div class="modal-dialog modal-dialog-centered" style="max-width: 420px;">
-                    <div class="modal-content border-0 shadow-lg" style="border-radius: 20px;">
-                        <div class="modal-header border-0 pb-0">
-                            <h5 class="modal-title fw-bold text-center w-100 mt-2">Aktivasi Fitur DOWNLOADER MENU</h5>
-                            <button type="button" class="btn-close" id="btn-close-qris-modal" data-bs-dismiss="modal"></button>
-                        </div>
-                        <div class="modal-body text-center px-4 pb-4">
-                            <p class="text-muted small mb-3">Pindai kode QRIS di bawah menggunakan aplikasi e-wallet / mobile banking Anda untuk menyelesaikan pembayaran.</p>
-                            
-                            <div class="border rounded-4 p-3 bg-white d-inline-block shadow-sm mb-3">
-                                <div id="qris-qrcode-container">
-                                    <!-- QR code generated here -->
-                                </div>
+                <div class="modal-dialog modal-dialog-centered" style="max-width: 900px;">
+                    <div class="modal-content border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+                        
+                        <!-- Header Banner -->
+                        <div class="modal-header border-0 pb-0" style="padding: 1.5rem 2rem 0.5rem 2rem; display: flex; align-items: center; justify-content: space-between;">
+                            <div style="font-size: 1.5rem; font-weight: 800; color: var(--primary); letter-spacing: -0.5px;">
+                                <i class="bi bi-wallet2 me-2"></i>wibusoft.
                             </div>
-
-                            <div class="mb-3">
-                                <span class="text-muted small d-block">TOTAL PEMBAYARAN</span>
-                                <span class="fs-4 fw-extrabold text-primary" style="font-family:'Outfit';">Rp10.000</span>
-                            </div>
-
-                            <div class="p-2.5 bg-light rounded-3 small text-muted text-start mb-3" style="line-height:1.5;">
-                                <div class="d-flex justify-content-between mb-1">
-                                    <span>Nomor Invoice:</span>
-                                    <strong class="font-monospace" id="payment-invoice-id">-</strong>
+                            <div style="display: flex; align-items: center; gap: 1rem;">
+                                <div id="payment-timer" style="font-family: 'Outfit', sans-serif; font-size: 1.25rem; font-weight: 700; color: #dc2626; background: rgba(220, 38, 38, 0.08); padding: 4px 12px; border-radius: 8px;">
+                                    59:59
                                 </div>
-                                <div class="d-flex justify-content-between">
-                                    <span>Status Transaksi:</span>
-                                    <strong class="text-warning" id="payment-status-text"><i class="spinner-border spinner-border-sm text-warning me-1"></i>Menunggu Pembayaran</strong>
-                                </div>
-                            </div>
-
-                            <div class="alert alert-info py-2 px-3 small text-start mb-0" role="alert" style="border-radius:10px;">
-                                <i class="bi bi-info-circle-fill me-2"></i>Pembayaran akan ter-verifikasi otomatis secara realtime setelah sukses dikirim. Jangan menutup jendela ini.
+                                <button type="button" class="btn-close" id="btn-close-qris-modal" data-bs-dismiss="modal" style="box-shadow: none;"></button>
                             </div>
                         </div>
+
+                        <!-- Sub-header info -->
+                        <div style="padding: 0 2rem; margin-bottom: 1.5rem;">
+                            <h4 style="font-weight: 800; font-size: 1.15rem; color: var(--text); margin-bottom: 0.25rem; text-align: center;">Pembayaran dengan QRIS</h4>
+                            <p class="text-muted mb-0" style="font-size: 0.8rem; text-align: center;">Pastikan kamu melakukan pembayaran sebelum melewati batas waktu dan dengan nominal yang tepat.</p>
+                        </div>
+
+                        <div class="modal-body" style="padding: 0 2rem 2rem 2rem;">
+                            <div class="row g-4">
+                                <!-- Sisi Kiri: Invoice Details -->
+                                <div class="col-md-7" style="border-right: 1px solid var(--border); padding-right: 1.5rem;">
+                                    
+                                    <!-- No. Invoice & Status -->
+                                    <div class="mb-4">
+                                        <div class="text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">No. Invoice</div>
+                                        <div style="font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 0.95rem; color: var(--text);" id="payment-invoice-id">WBS-NTR15-1783000420-KHQUSB</div>
+                                    </div>
+
+                                    <div class="row g-3 mb-4">
+                                        <div class="col-6">
+                                            <div class="text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Nama Pelanggan</div>
+                                            <div style="font-weight: 700; font-size: 0.85rem; color: var(--text);" id="payment-customer-name">pannesa</div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Email</div>
+                                            <div style="font-weight: 700; font-size: 0.85rem; color: var(--text);" id="payment-customer-email">pepetgini@gmail.com</div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-4">
+                                        <div class="text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.35rem;">Status</div>
+                                        <span id="payment-status-badge" style="display: inline-flex; align-items:center; gap: 6px; background: #fef3c7; color: #d97706; padding: 4px 14px; border-radius: 6px; font-size: 0.72rem; font-weight: 700; text-transform: uppercase; border: 1px solid rgba(217, 119, 6, 0.15);">
+                                            UNPAID
+                                        </span>
+                                    </div>
+
+                                    <!-- Rincian Transaksi -->
+                                    <div class="mb-4">
+                                        <div class="text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem;">Rincian Transaksi</div>
+                                        <div class="p-3 rounded-3" style="background: rgba(248, 250, 252, 0.5); border: 1px solid var(--border);">
+                                            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.5rem; color: var(--text-muted);">
+                                                <span>1x Downloader Menu Premium</span>
+                                                <span style="font-weight: 700; color: var(--text);">Rp 10.000</span>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 0.82rem; margin-bottom: 0.75rem; color: var(--text-muted);">
+                                                <span>Biaya admin QRIS</span>
+                                                <span style="font-weight: 700; color: var(--text);">Rp 0</span>
+                                            </div>
+                                            <div style="display: flex; justify-content: space-between; font-size: 0.88rem; font-weight: 800; color: var(--text); border-top: 1px solid var(--border); padding-top: 0.75rem;">
+                                                <span>Total</span>
+                                                <span style="color: var(--primary);" id="payment-invoice-total">Rp 10.000</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Cara Pembayaran Accordion -->
+                                    <div>
+                                        <div class="text-muted" style="font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.5rem;">Cara Pembayaran</div>
+                                        <div class="accordion" id="paymentInstructionAccordion">
+                                            <div class="accordion-item border-0 mb-2" style="background: transparent;">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed px-3 py-2.5 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" style="font-size: 0.82rem; font-weight: 700; background: var(--bg-card); border: 1px solid var(--border); box-shadow: none;">
+                                                        Pembayaran via QRIS (ShopeePay, GoPay, OVO, DANA)
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#paymentInstructionAccordion">
+                                                    <div class="accordion-body text-muted p-3" style="font-size: 0.78rem; line-height: 1.6;">
+                                                        1. Buka aplikasi e-wallet Anda (GoPay, OVO, DANA, LinkAja, ShopeePay, dll).<br>
+                                                        2. Pilih menu <b>Scan / Bayar / Pay</b> pada e-wallet Anda.<br>
+                                                        3. Arahkan kamera HP Anda ke kode QRIS di samping kanan.<br>
+                                                        4. Masukkan nominal yang sesuai (Rp 10.000) dan klik Bayar.<br>
+                                                        5. Simpan bukti transfer Anda.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="accordion-item border-0" style="background: transparent;">
+                                                <h2 class="accordion-header">
+                                                    <button class="accordion-button collapsed px-3 py-2.5 rounded-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo" style="font-size: 0.82rem; font-weight: 700; background: var(--bg-card); border: 1px solid var(--border); box-shadow: none;">
+                                                        Pembayaran via QRIS (Mobile Banking)
+                                                    </button>
+                                                </h2>
+                                                <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#paymentInstructionAccordion">
+                                                    <div class="accordion-body text-muted p-3" style="font-size: 0.78rem; line-height: 1.6;">
+                                                        1. Buka aplikasi m-Banking Anda (BCA Mobile, Livin' Mandiri, BRImo, BNI Mobile, dll).<br>
+                                                        2. Pilih menu <b>QRIS / QR Pay</b>.<br>
+                                                        3. Scan kode QRIS yang tertera di samping kanan.<br>
+                                                        4. Periksa nama merchant dan nominal, lalu konfirmasi pembayaran.<br>
+                                                        5. Masukkan PIN transaksi Anda untuk menyelesaikan pembayaran.
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Sisi Kanan: QRIS Box -->
+                                <div class="col-md-5 d-flex flex-column align-items-center justify-content-center text-center">
+                                    <div class="mb-2" style="font-size: 0.82rem; font-weight: 700; color: var(--text);">Scan QR untuk bayar</div>
+                                    
+                                    <!-- QRIS Code Container -->
+                                    <div class="p-3 bg-white border rounded-4 shadow-sm mb-3" style="min-width: 250px; min-height: 250px; display: flex; align-items: center; justify-content: center;">
+                                        <div id="qris-qrcode-container">
+                                            <!-- QR code generated here -->
+                                        </div>
+                                    </div>
+
+                                    <div style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.5; max-width: 230px;" id="payment-status-text">
+                                        Buka aplikasi e-wallet kamu (GoPay, OVO, DANA, ShopeePay) lalu scan QR di atas.
+                                    </div>
+                                    
+                                    <div class="mt-3 w-100" style="padding: 0 1rem;">
+                                        <button class="btn btn-sm w-100" id="btn-refresh-status" style="background: rgba(79, 70, 229, 0.08); color: var(--primary); font-weight: 700; border-radius: 8px; font-size: 0.8rem; padding: 6px 0;">
+                                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh Status
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>
@@ -2764,6 +2864,9 @@
             }
         }
 
+        // Timer countdown dan detail invoice dinamis
+        var paymentTimerInterval = null;
+        
         // Add event listener to "Beli Sekarang"
         var buyBtn = document.getElementById("btn-buy-maker-menu");
         if (buyBtn) {
@@ -2779,6 +2882,19 @@
                             // Set invoice detail
                             document.getElementById("payment-invoice-id").textContent = res.order_id;
                             
+                            // Ambil nama pelanggan dan email dari localStorage auth
+                            var username = localStorage.getItem("admin_username") || "Pelanggan Kucai";
+                            document.getElementById("payment-customer-name").textContent = username;
+                            document.getElementById("payment-customer-email").textContent = username.includes("@") ? username : username + "@gmail.com";
+                            
+                            // Reset status badge ke UNPAID
+                            var statusBadge = document.getElementById("payment-status-badge");
+                            statusBadge.className = "badge";
+                            statusBadge.style.background = "#fef3c7";
+                            statusBadge.style.color = "#d97706";
+                            statusBadge.style.border = "1px solid rgba(217, 119, 6, 0.15)";
+                            statusBadge.innerHTML = "UNPAID";
+
                             // Generate QR Code di container
                             var qrContainer = document.getElementById("qris-qrcode-container");
                             qrContainer.innerHTML = "";
@@ -2809,14 +2925,64 @@
                                 });
                             }
 
-                            document.getElementById("payment-status-text").innerHTML = '<i class="spinner-border spinner-border-sm text-warning me-1"></i>Menunggu Pembayaran';
-                            document.getElementById("payment-status-text").className = "text-warning";
+                            document.getElementById("payment-status-text").innerHTML = 'Buka aplikasi e-wallet kamu (GoPay, OVO, DANA, ShopeePay) lalu scan QR di atas.';
+                            document.getElementById("payment-status-text").className = "text-muted";
+
+                            // Setup Timer (59 Menit 59 Detik)
+                            var duration = 60 * 60 - 1; 
+                            var timerDisplay = document.getElementById("payment-timer");
+                            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
+                            
+                            paymentTimerInterval = setInterval(function () {
+                                var minutes = parseInt(duration / 60, 10);
+                                var seconds = parseInt(duration % 60, 10);
+
+                                minutes = minutes < 10 ? "0" + minutes : minutes;
+                                seconds = seconds < 10 ? "0" + seconds : seconds;
+
+                                timerDisplay.textContent = minutes + ":" + seconds;
+
+                                if (--duration < 0) {
+                                    clearInterval(paymentTimerInterval);
+                                    timerDisplay.textContent = "00:00";
+                                    statusBadge.style.background = "#fee2e2";
+                                    statusBadge.style.color = "#dc2626";
+                                    statusBadge.style.border = "1px solid rgba(220, 38, 38, 0.15)";
+                                    statusBadge.innerHTML = "EXPIRED";
+                                    document.getElementById("payment-status-text").innerHTML = '<span class="text-danger">Waktu pembayaran telah habis. Silakan buat invoice baru.</span>';
+                                    if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+                                }
+                            }, 1000);
 
                             // Tampilkan modal
                             if (qrisModalInstance) qrisModalInstance.show();
 
                             // Mulai Polling status pembayaran setiap 2 detik
                             startPaymentPolling(res.order_id);
+
+                            // Setup manual refresh status button
+                            var refreshBtn = document.getElementById("btn-refresh-status");
+                            if (refreshBtn) {
+                                // Clone & replace to remove old event listeners
+                                var newRefreshBtn = refreshBtn.cloneNode(true);
+                                refreshBtn.parentNode.replaceChild(newRefreshBtn, refreshBtn);
+                                
+                                newRefreshBtn.addEventListener("click", function() {
+                                    newRefreshBtn.innerHTML = '<i class="spinner-border spinner-border-sm me-1"></i>Checking...';
+                                    fetch(API_URL + "/api/payment/status/" + res.order_id)
+                                        .then(function(r) { return r.json(); })
+                                        .then(function(checkRes) {
+                                            if (checkRes.success && checkRes.status === "success") {
+                                                handlePaymentSuccess();
+                                            } else {
+                                                showToast("Pembayaran belum diterima.");
+                                            }
+                                        })
+                                        .finally(function() {
+                                            newRefreshBtn.innerHTML = '<i class="bi bi-arrow-clockwise me-1"></i>Refresh Status';
+                                        });
+                                });
+                            }
                         } else {
                             showToast("Gagal membuat invoice.", "error");
                         }
@@ -2829,6 +2995,29 @@
             });
         }
 
+        function handlePaymentSuccess() {
+            if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+            if (paymentTimerInterval) clearInterval(paymentTimerInterval);
+            
+            var statusBadge = document.getElementById("payment-status-badge");
+            if (statusBadge) {
+                statusBadge.style.background = "#dcfce7";
+                statusBadge.style.color = "#15803d";
+                statusBadge.style.border = "1px solid rgba(21, 128, 61, 0.15)";
+                statusBadge.innerHTML = "PAID";
+            }
+            
+            document.getElementById("payment-status-text").innerHTML = '<i class="bi bi-patch-check-fill text-success me-1"></i>Pembayaran Sukses!';
+            document.getElementById("payment-status-text").className = "text-success fw-bold";
+            
+            // Tutup modal setelah 2.5 detik
+            setTimeout(function() {
+                if (qrisModalInstance) qrisModalInstance.hide();
+                showToast("Selamat! Lisensi DOWNLOADER MENU Anda telah aktif.");
+                fetchSettings();
+            }, 2500);
+        }
+
         function startPaymentPolling(orderId) {
             if (paymentPollingInterval) clearInterval(paymentPollingInterval);
             paymentPollingInterval = setInterval(function() {
@@ -2836,17 +3025,7 @@
                     .then(function(r) { return r.json(); })
                     .then(function(res) {
                         if (res.success && res.status === "success") {
-                            clearInterval(paymentPollingInterval);
-                            document.getElementById("payment-status-text").innerHTML = '<i class="bi bi-patch-check-fill text-success me-1"></i>Pembayaran Sukses!';
-                            document.getElementById("payment-status-text").className = "text-success";
-                            
-                            // Tutup modal setelah 2 detik
-                            setTimeout(function() {
-                                if (qrisModalInstance) qrisModalInstance.hide();
-                                showToast("Selamat! Lisensi DOWNLOADER MENU Anda telah aktif.");
-                                // Fetch settings untuk update status badge
-                                fetchSettings();
-                            }, 2500);
+                            handlePaymentSuccess();
                         }
                     });
             }, 2000);
@@ -2856,9 +3035,8 @@
         var closeQrisBtn = document.getElementById("btn-close-qris-modal");
         if (closeQrisBtn) {
             closeQrisBtn.addEventListener("click", function() {
-                if (paymentPollingInterval) {
-                    clearInterval(paymentPollingInterval);
-                }
+                if (paymentPollingInterval) clearInterval(paymentPollingInterval);
+                if (paymentTimerInterval) clearInterval(paymentTimerInterval);
             });
         }
 
