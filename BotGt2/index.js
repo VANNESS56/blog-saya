@@ -85,6 +85,13 @@ app.get('/config', serveIndex);
 app.get('/triggers', serveIndex);
 app.get('/pairing', serveIndex);
 app.get('/changelog', serveIndex);
+app.get('/pricing', serveIndex);
+app.get('/faq', serveIndex);
+app.get('/mass', serveIndex);
+app.get('/filter-command', serveIndex);
+app.get('/script', serveIndex);
+app.get('/galeri-script', serveIndex);
+app.get('/statistik', serveIndex);
 
 // Broadcast helper for Socket.io
 function broadcastUpdate(channel, data) {
@@ -680,4 +687,13 @@ async function startBot() {
 
 dbReady.then(() => {
     startBot();
+});
+
+// Global error handlers to prevent unhandled crashes
+process.on('uncaughtException', (err) => {
+    console.error(chalk.red('[CRASH PREVENTION] Uncaught Exception:'), err.message);
+});
+
+process.on('unhandledRejection', (reason) => {
+    console.error(chalk.red('[CRASH PREVENTION] Unhandled Rejection:'), reason?.message || reason);
 });

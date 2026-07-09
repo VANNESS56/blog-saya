@@ -790,70 +790,294 @@
                         <p>Atur isi menu yang muncul saat user ketik {prefix}menu. Pakai variable seperti {pushname} untuk teks dinamis.</p>
                     </div>
 
-                    <div class="content-card">
-                        <div class="card-section-header">
-                            <h2>Edit Menu</h2>
-                            <p>Tulis template menu di sini. Variable yang dikenali ditandai <span class="ws-badge-variable-success">{seperti ini}</span>. Variable tidak dikenali ditandai <span class="ws-badge-variable-error">{merah}</span>.</p>
-                        </div>
-
-                        <div class="ws-menu-editor-grid">
-                            <!-- Left: Editor & Buttons -->
-                            <div>
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted fw-bold">Header Title Menu (Judul Atas)</label>
-                                    <input type="text" class="ws-input mb-3" id="input-menu-title" placeholder="Contoh: BOT KUCAI AKUN">
+                    <div class="ws-menu-editor-grid">
+                        <!-- Left: Editor & Buttons -->
+                        <div>
+                            <!-- Card: Header Title -->
+                            <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                                <div class="card-section-header">
+                                    <h2><i class="bi bi-type-h1 me-2 text-primary"></i>Header Title Menu</h2>
+                                    <p>Judul yang tampil di bagian paling atas pesan menu bot. Mendukung variable dinamis.</p>
                                 </div>
-                                
-                                <div class="mb-3">
-                                    <label class="form-label small text-muted fw-bold">Template Body Menu</label>
-                                    <textarea class="ws-editor-textarea" id="input-menu-body" rows="16" placeholder="Tulis menu di sini..."></textarea>
-                                </div>
-
-                                <div class="d-flex gap-2">
-                                    <button class="ws-btn-primary" id="btn-save-menu">
-                                        <i class="bi bi-save me-1"></i> Simpan Menu
-                                    </button>
-                                    <button class="btn btn-outline-secondary px-4 py-2" style="border-radius:12px; font-weight:600;" id="btn-reset-menu">
-                                        Reset ke Default
-                                    </button>
+                                <div class="ws-field">
+                                    <label for="input-menu-title">Judul Menu <span class="text-danger">*</span></label>
+                                    <input type="text" class="ws-input" id="input-menu-title" placeholder="Contoh: Halo kak {pushname}">
+                                    <p class="ws-field-hint">Muncul sebagai header utama saat user mengetik perintah menu.</p>
                                 </div>
                             </div>
 
-                            <!-- Right: Available Variables -->
-                            <div class="ws-variable-card">
-                                <div class="ws-variable-card-title">Variable yang Tersedia</div>
-                                <div class="ws-variable-card-subtitle">Klik variable untuk masukkan ke posisi kursor di editor.</div>
+                            <!-- Card: Template Body -->
+                            <div class="ws-config-card" style="margin-bottom: 1.25rem;">
+                                <div class="card-section-header">
+                                    <h2><i class="bi bi-body-text me-2 text-primary"></i>Template Body Menu</h2>
+                                    <p>Isi utama pesan menu. Variable yang dikenali ditandai <span class="ws-badge-variable-success">{seperti ini}</span>. Tidak dikenali ditandai <span class="ws-badge-variable-error">{merah}</span>.</p>
+                                </div>
+                                <div class="ws-field">
+                                    <label for="input-menu-body">Konten Menu</label>
+                                    <textarea class="ws-editor-textarea" id="input-menu-body" rows="16" placeholder="Tulis menu di sini..."></textarea>
+                                </div>
+                            </div>
 
-                                <div class="ws-variable-list">
-                                    <div class="ws-variable-item" data-var="{pushname}">
-                                        <div class="ws-variable-name">{pushname}</div>
-                                        <div class="ws-variable-desc">Nama pengguna WhatsApp pengirim</div>
-                                    </div>
-                                    <div class="ws-variable-item" data-var="{prefix}">
-                                        <div class="ws-variable-name">{prefix}</div>
-                                        <div class="ws-variable-desc">Prefix bot aktif</div>
-                                    </div>
-                                    <div class="ws-variable-item" data-var="{namebot}">
-                                        <div class="ws-variable-name">{namebot}</div>
-                                        <div class="ws-variable-desc">Nama bot aktif</div>
-                                    </div>
-                                    <div class="ws-variable-item" data-var="{ucapan}">
-                                        <div class="ws-variable-name">{ucapan}</div>
-                                        <div class="ws-variable-desc">Salam waktu (Pagi/Siang/Sore/Malam)</div>
-                                    </div>
-                                    <div class="ws-variable-item" data-var="{tanggal}">
-                                        <div class="ws-variable-name">{tanggal}</div>
-                                        <div class="ws-variable-desc">Tanggal hari ini</div>
-                                    </div>
-                                    <div class="ws-variable-item" data-var="{hari}">
-                                        <div class="ws-variable-name">{hari}</div>
-                                        <div class="ws-variable-desc">Nama hari ini (Senin/Selasa/...)</div>
-                                    </div>
+                            <!-- Action Buttons -->
+                            <div class="d-flex gap-2">
+                                <button class="ws-btn-primary" id="btn-save-menu">
+                                    <i class="bi bi-save me-1"></i> Simpan Menu
+                                </button>
+                                <button class="btn btn-outline-secondary px-4 py-2" style="border-radius:12px; font-weight:600;" id="btn-reset-menu">
+                                    Reset ke Default
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Right: Available Variables -->
+                        <div class="ws-variable-card">
+                            <div class="ws-variable-card-title">Variable yang Tersedia</div>
+                            <div class="ws-variable-card-subtitle">Klik variable untuk masukkan ke posisi kursor di editor.</div>
+
+                            <div class="ws-variable-list">
+                                <div class="ws-variable-item" data-var="{pushname}">
+                                    <div class="ws-variable-name">{pushname}</div>
+                                    <div class="ws-variable-desc">Nama pengguna WhatsApp pengirim</div>
+                                </div>
+                                <div class="ws-variable-item" data-var="{prefix}">
+                                    <div class="ws-variable-name">{prefix}</div>
+                                    <div class="ws-variable-desc">Prefix bot aktif</div>
+                                </div>
+                                <div class="ws-variable-item" data-var="{namebot}">
+                                    <div class="ws-variable-name">{namebot}</div>
+                                    <div class="ws-variable-desc">Nama bot aktif</div>
+                                </div>
+                                <div class="ws-variable-item" data-var="{ucapan}">
+                                    <div class="ws-variable-name">{ucapan}</div>
+                                    <div class="ws-variable-desc">Salam waktu (Pagi/Siang/Sore/Malam)</div>
+                                </div>
+                                <div class="ws-variable-item" data-var="{tanggal}">
+                                    <div class="ws-variable-name">{tanggal}</div>
+                                    <div class="ws-variable-desc">Tanggal hari ini</div>
+                                </div>
+                                <div class="ws-variable-item" data-var="{hari}">
+                                    <div class="ws-variable-name">{hari}</div>
+                                    <div class="ws-variable-desc">Nama hari ini (Senin/Selasa/...)</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                </div>
+            </section>
+
+            <!-- ========== PRICING (Coming Soon) ========== -->
+            <section id="pricing-section" class="d-none">
+                <div class="ws-coming-soon-wrapper">
+                    <div class="ws-coming-soon-icon"><i class="bi bi-currency-dollar"></i></div>
+                    <h2 class="ws-coming-soon-title">Pricing</h2>
+                    <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
+                    <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
+                </div>
+            </section>
+
+            <!-- ========== FAQ ========== -->
+            <section id="faq-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1>FAQ's</h1>
+                        <p>Pertanyaan yang sering ditanyakan seputar penggunaan Kucai Bot.</p>
+                    </div>
+
+                    <div class="ws-faq-list">
+
+                        <!-- FAQ 1 -->
+                        <div class="ws-faq-item open">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Bagaimana cara mengaktifkan bot WhatsApp?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    Untuk mengaktifkan bot WhatsApp, ikuti langkah berikut:
+                                    <ol>
+                                        <li>Buka halaman <strong>Dashboard</strong> lalu klik panel <strong>Kontrol Bot</strong>.</li>
+                                        <li>Masukkan nomor WhatsApp yang ingin digunakan sebagai bot.</li>
+                                        <li>Buka aplikasi <strong>WhatsApp</strong> di HP, lalu masuk ke <em>Linked Devices &gt; Link a Device</em>.</li>
+                                        <li>Masukkan kode pairing <strong>8 digit</strong> yang muncul di dashboard.</li>
+                                        <li>Tunggu hingga status berubah menjadi <strong>"Connected"</strong>.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 2 -->
+                        <div class="ws-faq-item">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Bagaimana kalau bot tiba-tiba offline?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    Jika bot tiba-tiba offline, pastikan:
+                                    <ol>
+                                        <li>Koneksi internet server / VPS kamu stabil.</li>
+                                        <li>Cek apakah sesi WhatsApp masih terhubung di HP (Linked Devices).</li>
+                                        <li>Klik <strong>"Hapus Sesi"</strong> lalu <strong>"Start"</strong> ulang untuk membuat koneksi baru.</li>
+                                        <li>Periksa <strong>Log Terminal</strong> untuk melihat pesan error yang muncul.</li>
+                                    </ol>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 3 -->
+                        <div class="ws-faq-item">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Apakah saya bisa pakai nomor WhatsApp utama untuk bot?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    Bisa, tapi <strong>tidak disarankan</strong>. Menggunakan nomor utama berisiko terkena <em>ban</em> dari WhatsApp jika bot melakukan spam atau aktivitas yang melanggar ketentuan layanan. Kami merekomendasikan menggunakan nomor WhatsApp terpisah khusus untuk bot.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 4 -->
+                        <div class="ws-faq-item">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Bagaimana cara menambahkan trigger / auto-reply?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    <ol>
+                                        <li>Buka halaman <strong>Command</strong> di sidebar.</li>
+                                        <li>Klik tombol <strong>"Add Trigger"</strong>.</li>
+                                        <li>Isi <em>Kata Kunci</em>, pilih <em>Mode Cocok</em> (Exact / Contains), lalu tulis <em>Teks Balasan</em>.</li>
+                                        <li>Klik <strong>Tambah Trigger</strong> untuk menyimpan.</li>
+                                    </ol>
+                                    Bot akan otomatis membalas pesan yang cocok dengan kata kunci yang kamu atur.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 5 -->
+                        <div class="ws-faq-item">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Apa itu prefix dan bagaimana cara mengubahnya?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    <strong>Prefix</strong> adalah karakter pemicu di depan perintah agar bot tahu kamu sedang memanggil bot. Contoh: jika prefix-nya <code>#</code>, maka user harus mengetik <code>#menu</code> untuk memanggil menu.
+                                    <br><br>
+                                    Untuk mengubahnya, buka halaman <strong>Config</strong> &gt; bagian <strong>Prefix Perintah</strong>. Kamu bisa mengatur mode Multi (banyak prefix), Single, atau Tanpa Prefix.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 6 -->
+                        <div class="ws-faq-item">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Bagaimana cara mengatur jadwal kerja bot?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    <ol>
+                                        <li>Buka halaman <strong>Config</strong>.</li>
+                                        <li>Scroll ke bagian <strong>Jadwal Kerja</strong>.</li>
+                                        <li>Aktifkan toggle <strong>"Aktifkan Jadwal Kerja"</strong>.</li>
+                                        <li>Atur jam mulai, jam selesai, dan pilih hari kerja.</li>
+                                        <li>Isi <strong>Pesan Offline</strong> yang akan dikirim di luar jadwal.</li>
+                                        <li>Klik <strong>Simpan Config</strong>.</li>
+                                    </ol>
+                                    Bot akan otomatis mengirim pesan offline dan berhenti merespon di luar jadwal yang ditentukan.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 7 -->
+                        <div class="ws-faq-item">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Apa itu variable di Menu Bot dan bagaimana cara pakainya?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    Variable adalah placeholder teks dinamis yang akan diganti otomatis saat pesan dikirim. Contoh:
+                                    <ul>
+                                        <li><code>{pushname}</code> &mdash; Diganti dengan nama pengirim pesan.</li>
+                                        <li><code>{namebot}</code> &mdash; Diganti dengan nama bot.</li>
+                                        <li><code>{ucapan}</code> &mdash; Diganti dengan salam waktu (Pagi/Siang/Sore/Malam).</li>
+                                    </ul>
+                                    Gunakan variable di halaman <strong>Menu</strong> dengan cara mengetik langsung atau klik dari panel <em>Variable yang Tersedia</em>.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FAQ 8 -->
+                        <div class="ws-faq-item">
+                            <div class="ws-faq-question" onclick="toggleWsFaq(this)">
+                                <span>Apakah data bot saya aman?</span>
+                                <i class="bi bi-chevron-down ws-faq-chevron"></i>
+                            </div>
+                            <div class="ws-faq-answer">
+                                <div class="ws-faq-answer-inner">
+                                    Ya. Semua data tersimpan secara <strong>lokal</strong> di database SQLite di server/VPS kamu sendiri. Kucai Bot tidak mengirim data apapun ke server pihak ketiga. Sesi WhatsApp dan konfigurasi bot hanya bisa diakses oleh admin yang login ke dashboard.
                                 </div>
                             </div>
                         </div>
 
                     </div>
+                </div>
+            </section>
+
+            <!-- ========== MASS (Coming Soon) ========== -->
+            <section id="mass-section" class="d-none">
+                <div class="ws-coming-soon-wrapper">
+                    <div class="ws-coming-soon-icon"><i class="bi bi-send-fill"></i></div>
+                    <h2 class="ws-coming-soon-title">Mass Broadcast</h2>
+                    <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
+                    <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
+                </div>
+            </section>
+
+            <!-- ========== FILTER COMMAND (Coming Soon) ========== -->
+            <section id="filter-command-section" class="d-none">
+                <div class="ws-coming-soon-wrapper">
+                    <div class="ws-coming-soon-icon"><i class="bi bi-funnel-fill"></i></div>
+                    <h2 class="ws-coming-soon-title">Filter Command</h2>
+                    <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
+                    <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
+                </div>
+            </section>
+
+            <!-- ========== SCRIPT (Coming Soon) ========== -->
+            <section id="script-section" class="d-none">
+                <div class="ws-coming-soon-wrapper">
+                    <div class="ws-coming-soon-icon"><i class="bi bi-code-slash"></i></div>
+                    <h2 class="ws-coming-soon-title">Script Editor</h2>
+                    <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
+                    <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
+                </div>
+            </section>
+
+            <!-- ========== GALERI SCRIPT (Coming Soon) ========== -->
+            <section id="galeri-script-section" class="d-none">
+                <div class="ws-coming-soon-wrapper">
+                    <div class="ws-coming-soon-icon"><i class="bi bi-globe2"></i></div>
+                    <h2 class="ws-coming-soon-title">Galeri Script</h2>
+                    <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
+                    <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
+                </div>
+            </section>
+
+            <!-- ========== STATISTIK (Coming Soon) ========== -->
+            <section id="statistik-section" class="d-none">
+                <div class="ws-coming-soon-wrapper">
+                    <div class="ws-coming-soon-icon"><i class="bi bi-bar-chart-fill"></i></div>
+                    <h2 class="ws-coming-soon-title">Statistik</h2>
+                    <p class="ws-coming-soon-desc">Halaman ini sedang dalam pengembangan dan akan segera hadir.</p>
+                    <span class="ws-coming-soon-badge"><i class="bi bi-clock-history me-1"></i>Segera Hadir</span>
                 </div>
             </section>
 
@@ -1086,7 +1310,7 @@
 
         // ===== SPA Navigation (Pretty URL Router) =====
         var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link");
-        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-section"];
+        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-section", "pricing-section", "faq-section", "mass-section", "filter-command-section", "script-section", "galeri-script-section", "statistik-section"];
 
         function showSectionByTarget(target, path) {
             // Update active state di sidebar
@@ -2460,6 +2684,21 @@
                 fetchPairingStatus();
             }
         }, 2000);
+        // ===== FAQ Accordion Toggle =====
+        window.toggleWsFaq = function(el) {
+            var item = el.closest('.ws-faq-item');
+            if (!item) return;
+            var isOpen = item.classList.contains('open');
+            // Close all FAQ items
+            document.querySelectorAll('.ws-faq-item').forEach(function(faq) {
+                faq.classList.remove('open');
+            });
+            // Toggle clicked one
+            if (!isOpen) {
+                item.classList.add('open');
+            }
+        };
+
         console.log("[Bot Kucai Panel] Ready.");
     });
     </script>
