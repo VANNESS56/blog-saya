@@ -613,6 +613,107 @@
                 </div>
             </section>
 
+            <!-- ========== CHANGELOG (Premium Timeline) ========== -->
+            <section id="changelog-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1>Changelog</h1>
+                        <p>Update terbaru, perbaikan bug, dan fitur baru di Kucai Bot.</p>
+                    </div>
+
+                    <!-- Vertical Timeline Wrapper -->
+                    <div class="ws-timeline-container" id="changelog-timeline-list">
+                        <!-- Loaded dynamically via JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- ========== DEVELOPER SECTION (/dev) ========== -->
+            <section id="dev-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header">
+                        <h1>Developer Center</h1>
+                        <p>Publish changelog baru secara langsung ke database SQLite panel.</p>
+                    </div>
+
+                    <div class="content-card" style="max-width: 700px;">
+                        <div class="card-section-header">
+                            <h2>Publish Changelog</h2>
+                            <p>Isi detail update di bawah ini untuk merilis changelog secara instan.</p>
+                        </div>
+
+                        <form id="dev-changelog-form">
+                            <div class="ws-field-grid">
+                                <div class="ws-field">
+                                    <label for="dev-version">Versi Rilis <span class="text-danger">*</span></label>
+                                    <input id="dev-version" type="text" class="ws-input" placeholder="Contoh: v4.11.0" required>
+                                </div>
+                                <div class="ws-field">
+                                    <label for="dev-date">Tanggal Rilis <span class="text-danger">*</span></label>
+                                    <input id="dev-date" type="text" class="ws-input" placeholder="Contoh: 28 Juni 2026" required>
+                                </div>
+                            </div>
+                            
+                            <div class="ws-field-grid" style="margin-top: 1rem;">
+                                <div class="ws-field">
+                                    <label for="dev-type">Tipe Rilis <span class="text-danger">*</span></label>
+                                    <select id="dev-type" class="ws-input">
+                                        <option value="IMPROVEMENT">IMPROVEMENT</option>
+                                        <option value="FITUR">FITUR</option>
+                                        <option value="BUGFIX">BUGFIX</option>
+                                    </select>
+                                </div>
+                                <div class="ws-field">
+                                    <label for="dev-title">Judul Update <span class="text-danger">*</span></label>
+                                    <input id="dev-title" type="text" class="ws-input" placeholder="Contoh: Indikator saat pindah halaman" required>
+                                </div>
+                            </div>
+
+                            <div class="ws-field" style="margin-top: 1rem;">
+                                <label for="dev-description">Deskripsi Ringkat <span class="text-danger">*</span></label>
+                                <textarea id="dev-description" class="ws-input" rows="3" placeholder="Tulis deskripsi singkat perihal update..." required></textarea>
+                            </div>
+
+                            <div class="ws-field" style="margin-top: 1rem;">
+                                <label for="dev-details">Poin Rincian Update (Satu poin per baris) <span class="text-danger">*</span></label>
+                                <textarea id="dev-details" class="ws-input font-monospace" rows="5" placeholder="Bar progress tipis di bagian atas saat berpindah halaman dashboard&#10;Hilang otomatis begitu halaman selesai dimuat" required></textarea>
+                            </div>
+
+                            <div class="mt-4 pt-2">
+                                <button type="submit" class="ws-btn-primary" id="btn-publish-changelog">
+                                    <i class="bi bi-send me-1"></i> Publish Update
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Manage Changelogs List -->
+                    <div class="content-card mt-4" style="max-width: 700px;">
+                        <div class="card-section-header">
+                            <h2>Kelola Changelog Terbit</h2>
+                            <p>Hapus atau kelola log riwayat yang telah dipublikasikan.</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table align-middle small mb-0">
+                                <thead>
+                                    <tr>
+                                        <th>Versi</th>
+                                        <th>Tipe</th>
+                                        <th>Judul</th>
+                                        <th class="text-end">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dev-changelog-table-body">
+                                    <!-- Loaded dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
             <!-- ========== PAIRING ========== -->
             <section id="pairing-section" class="d-none">
                 <div class="content-card" style="max-width:600px;">
@@ -985,7 +1086,7 @@
 
         // ===== SPA Navigation (Pretty URL Router) =====
         var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link");
-        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section"];
+        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-section"];
 
         function showSectionByTarget(target, path) {
             // Update active state di sidebar
@@ -1029,6 +1130,10 @@
         // Deteksi Route Awal saat page load
         function handleInitialRoute() {
             var currentPath = window.location.pathname;
+            if (currentPath === "/dev") {
+                showSectionByTarget("dev-section", "/dev");
+                return;
+            }
             var matchedLink = Array.from(menuLinks).find(function(l) {
                 return l.getAttribute("data-path") === currentPath;
             });
@@ -1802,6 +1907,10 @@
                     fetchTriggersOnly();
                 });
 
+                socket.on('changelogs-update', function() {
+                    fetchChangelogs();
+                });
+
                 socket.on('bot-settings-update', function(data) {
                     if (data) {
                         window.botSettings = data;
@@ -1817,6 +1926,141 @@
             } catch (err) {
                 console.error("Gagal menginisiasi WebSocket Socket.io:", err);
             }
+
+            // ===== Changelog Manager =====
+            var changelogTimeline = document.getElementById("changelog-timeline-list");
+            var devChangelogTable = document.getElementById("dev-changelog-table-body");
+            var devForm = document.getElementById("dev-changelog-form");
+
+            function fetchChangelogs() {
+                fetch(API_URL + "/api/changelogs")
+                    .then(function(r) { return r.json(); })
+                    .then(function(data) {
+                        renderChangelogsTimeline(data);
+                        renderDevChangelogsTable(data);
+                    });
+            }
+
+            function renderChangelogsTimeline(data) {
+                if (!changelogTimeline) return;
+                changelogTimeline.innerHTML = "";
+                if (!data || data.length === 0) {
+                    changelogTimeline.innerHTML = '<div class="text-center py-5 text-muted">Belum ada update log rilis.</div>';
+                    return;
+                }
+
+                data.forEach(function(item) {
+                    var timelineItem = document.createElement("div");
+                    timelineItem.className = "ws-timeline-item";
+                    
+                    var badgeClass = "ws-badge-improvement";
+                    if (item.type === "FITUR") badgeClass = "ws-badge-fitur";
+                    if (item.type === "BUGFIX") badgeClass = "ws-badge-bugfix";
+
+                    var latestBadge = item.is_latest ? '<span class="ws-badge-latest ms-2">Terbaru</span>' : '';
+
+                    var detailsHtml = "";
+                    if (Array.isArray(item.details) && item.details.length > 0) {
+                        detailsHtml += '<ul class="ws-timeline-details">';
+                        item.details.forEach(function(detail) {
+                            detailsHtml += '<li><i class="bi bi-check2 text-primary me-2"></i>' + detail + '</li>';
+                        });
+                        detailsHtml += '</ul>';
+                    }
+
+                    timelineItem.innerHTML = 
+                        '<div class="ws-timeline-badge-row">' +
+                            '<span class="' + badgeClass + '">' + item.type + '</span>' +
+                            '<span class="ws-timeline-version">' + item.version + '</span>' +
+                            '<span class="ws-timeline-date">' + item.date + '</span>' +
+                            latestBadge +
+                        '</div>' +
+                        '<h3 class="ws-timeline-title">' + item.title + '</h3>' +
+                        '<p class="ws-timeline-desc">' + item.description + '</p>' +
+                        detailsHtml;
+                    
+                    changelogTimeline.appendChild(timelineItem);
+                });
+            }
+
+            function renderDevChangelogsTable(data) {
+                if (!devChangelogTable) return;
+                devChangelogTable.innerHTML = "";
+                if (!data || data.length === 0) {
+                    devChangelogTable.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada rilis.</td></tr>';
+                    return;
+                }
+
+                data.forEach(function(item) {
+                    var tr = document.createElement("tr");
+                    tr.innerHTML = 
+                        '<td><strong>' + item.version + '</strong></td>' +
+                        '<td><span class="badge bg-secondary">' + item.type + '</span></td>' +
+                        '<td>' + item.title + '</td>' +
+                        '<td class="text-end">' +
+                            '<button class="btn btn-sm btn-outline-danger btn-delete-changelog" data-id="' + item.id + '"><i class="bi bi-trash"></i></button>' +
+                        '</td>';
+                    
+                    tr.querySelector(".btn-delete-changelog").addEventListener("click", function() {
+                        var id = this.getAttribute("data-id");
+                        if (confirm("Hapus rilis changelog ini?")) {
+                            fetch(API_URL + "/api/changelogs/" + id, { method: "DELETE" })
+                                .then(function(r) { return r.json(); })
+                                .then(function(res) {
+                                    if (res.success) {
+                                        showToast("Changelog berhasil dihapus!");
+                                        fetchChangelogs();
+                                    }
+                                });
+                        }
+                    });
+
+                    devChangelogTable.appendChild(tr);
+                });
+            }
+
+            if (devForm) {
+                devForm.addEventListener("submit", function(e) {
+                    e.preventDefault();
+                    var version = document.getElementById("dev-version").value.trim();
+                    var date = document.getElementById("dev-date").value.trim();
+                    var type = document.getElementById("dev-type").value;
+                    var title = document.getElementById("dev-title").value.trim();
+                    var description = document.getElementById("dev-description").value.trim();
+                    var details = document.getElementById("dev-details").value.trim().split("\n").filter(Boolean);
+
+                    var btn = document.getElementById("btn-publish-changelog");
+                    btn.setAttribute("disabled", "true");
+
+                    fetch(API_URL + "/api/changelogs", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            version: version,
+                            date: date,
+                            type: type,
+                            title: title,
+                            description: description,
+                            details: details
+                        })
+                    }).then(function(r) { return r.json(); }).then(function(res) {
+                        if (res.success) {
+                            showToast("Changelog baru berhasil dirilis!");
+                            devForm.reset();
+                            fetchChangelogs();
+                        } else {
+                            showToast("Gagal merilis changelog.", "error");
+                        }
+                    }).catch(function(err) {
+                        showToast("Error: " + err.message, "error");
+                    }).finally(function() {
+                        btn.removeAttribute("disabled");
+                    });
+                });
+            }
+
+            // Load changelogs at boot
+            fetchChangelogs();
 
             // Request Pair button (Start)
             document.getElementById("btn-request-pair").addEventListener("click", function() {

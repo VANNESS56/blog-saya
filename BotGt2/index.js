@@ -290,6 +290,69 @@ app.post('/api/connection/action', async (req, res) => {
     }
 });
 
+// GET Changelogs API
+app.get('/api/changelogs', async (req, res) => {
+    try {
+        const rows = await query.all("SELECT * FROM changelogs ORDER BY id DESC");
+        const mapped = rows.map(r => ({
+            id: r.id,
+            version: r.version,
+            date: r.date,
+            type: r.type,
+            title: r.title,
+            description: r.description,
+            details: JSON.parse(r.details || '[]'),
+            is_latest: !!r.is_latest
+        }));
+        res.json(mapped);
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
+// POST Publish Changelog API
+app.post('/api/changelogs', async (req, res) => {
+    const { version, date, type, title, description, details } = req.body;
+    try {
+        // Reset all latest indicator
+        await query.run("UPDATE changelogs SET is_latest = 0");
+        
+        await query.run(`
+            INSERT INTO changelogs (version, date, type, title, description, details, is_latest)
+            VALUES (?, ?, ?, ?, ?, ?, 1)
+        `, [
+            version,
+            date,
+            type.toUpperCase(),
+            title,
+            description,
+            JSON.stringify(details || [])
+        ]);
+        
+        // Broadcast changelog update
+        io.emit('changelogs-update');
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
+// DELETE Changelog API
+app.delete('/api/changelogs/:id', async (req, res) => {
+    try {
+        await query.run("DELETE FROM changelogs WHERE id = ?", [req.params.id]);
+        io.emit('changelogs-update');
+        res.json({ success: true });
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
+// Serve Dev (Publish Changelog) page link
+app.get('/dev', (req, res) => {
+    res.sendFile(path.join(__dirname, 'web', 'index.html'));
+});
+
 // Start Express server on port 3000
 const API_PORT = 3000;
 server.listen(API_PORT, () => {

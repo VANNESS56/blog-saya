@@ -121,6 +121,57 @@ function initTables() {
             )
         `);
 
+        // Table: changelogs
+        db.run(`
+            CREATE TABLE IF NOT EXISTS changelogs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                version TEXT NOT NULL,
+                date TEXT NOT NULL,
+                type TEXT NOT NULL, -- IMPROVEMENT, FITUR, BUGFIX
+                title TEXT NOT NULL,
+                description TEXT NOT NULL,
+                details TEXT, -- JSON array of strings
+                is_latest INTEGER DEFAULT 0
+            )
+        `);
+
+        // Insert default changelogs if table is empty
+        db.get("SELECT COUNT(*) as count FROM changelogs", [], (err, row) => {
+            if (!err && row.count === 0) {
+                db.run(`
+                    INSERT INTO changelogs (version, date, type, title, description, details, is_latest)
+                    VALUES 
+                    (
+                        'v4.11.0', 
+                        '28 Juni 2026', 
+                        'IMPROVEMENT', 
+                        'Indikator saat pindah halaman', 
+                        'Sekarang ada bar tipis di atas yang muncul saat halaman dimuat, jadi kamu tahu klikmu sudah masuk walau respon agak lambat.', 
+                        '["Bar progress tipis di bagian atas saat berpindah halaman dashboard", "Hilang otomatis begitu halaman selesai dimuat"]',
+                        1
+                    ),
+                    (
+                        'v4.10.2', 
+                        '21 Juni 2026', 
+                        'IMPROVEMENT', 
+                        'Peningkatan kecil', 
+                        'Beberapa penyempurnaan biar makin nyaman dipakai.', 
+                        '["Tambah template event antikudeta dengan variabel nama bot dan pelaku", "Filter dan pencarian di daftar kini diingat saat kamu kembali dari halaman detail", "Perbaikan tampilan di mobile (tombol pagination dan aksi header tidak lagi melebar)"]',
+                        0
+                    ),
+                    (
+                        'v4.10.1', 
+                        '19 Juni 2026', 
+                        'FITUR', 
+                        'Kelola sesi & perangkat login', 
+                        'Kelola dan pantau sesi perangkat WhatsApp yang terhubung secara realtime melalui panel.', 
+                        '["Lihat daftar perangkat aktif", "Tombol Hapus Sesi / logout sekali klik"]',
+                        0
+                    )
+                `);
+            }
+        });
+
         // Insert default connection if empty
         db.get("SELECT COUNT(*) as count FROM bot_connection WHERE id = 1", [], (err, row) => {
             if (!err && row.count === 0) {
