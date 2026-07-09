@@ -1397,6 +1397,31 @@
                             </div>
                         </form>
                     </div>
+
+                    <!-- History Changelog List Table -->
+                    <div class="ws-config-card p-4 mt-4">
+                        <div class="card-section-header mb-3">
+                            <h3 class="fs-6 fw-bold mb-1">Riwayat Rilis Changelog</h3>
+                            <p class="text-muted small">Daftar log update rilis yang sudah dipublikasikan ke client.</p>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="font-size:0.85rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Versi</th>
+                                        <th>Tipe</th>
+                                        <th>Judul Rilis</th>
+                                        <th class="text-end">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dev-changelog-table-body">
+                                    <tr>
+                                        <td colspan="4" class="text-center text-muted">Memuat data changelog...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -2679,7 +2704,7 @@
             // ===== Changelog Manager =====
             var changelogTimeline = document.getElementById("changelog-timeline-list");
             var devChangelogTable = document.getElementById("dev-changelog-table-body");
-            var devForm = document.getElementById("dev-changelog-form");
+            var devForm = document.getElementById("dev-add-changelog-form");
 
             function fetchChangelogs() {
                 fetch(API_URL + "/api/changelogs")
@@ -2736,7 +2761,7 @@
                 if (!devChangelogTable) return;
                 devChangelogTable.innerHTML = "";
                 if (!data || data.length === 0) {
-                    devChangelogTable.innerHTML = '<tr><td colspan="4" class="text-center text-muted">Belum ada rilis.</td></tr>';
+                    devChangelogTable.innerHTML = '<tr><td colspan="4" class="text-center text-muted py-3">Belum ada rilis update.</td></tr>';
                     return;
                 }
 
@@ -2771,14 +2796,14 @@
             if (devForm) {
                 devForm.addEventListener("submit", function(e) {
                     e.preventDefault();
-                    var version = document.getElementById("dev-version").value.trim();
-                    var date = document.getElementById("dev-date").value.trim();
-                    var type = document.getElementById("dev-type").value;
-                    var title = document.getElementById("dev-title").value.trim();
-                    var description = document.getElementById("dev-description").value.trim();
-                    var details = document.getElementById("dev-details").value.trim().split("\n").filter(Boolean);
+                    var version = document.getElementById("dev-changelog-version").value.trim();
+                    var date = document.getElementById("dev-changelog-date").value.trim();
+                    var type = document.getElementById("dev-changelog-type").value;
+                    var title = document.getElementById("dev-changelog-title").value.trim();
+                    var description = document.getElementById("dev-changelog-desc").value.trim();
+                    var details = document.getElementById("dev-changelog-details").value.trim().split("\n").filter(Boolean);
 
-                    var btn = document.getElementById("btn-publish-changelog");
+                    var btn = devForm.querySelector('button[type="submit"]');
                     btn.setAttribute("disabled", "true");
 
                     fetch(API_URL + "/api/changelogs", {
