@@ -93,6 +93,7 @@ app.get('/filter-command', serveIndex);
 app.get('/script', serveIndex);
 app.get('/galeri-script', serveIndex);
 app.get('/statistik', serveIndex);
+app.get('/invoice', serveIndex);
 
 // Broadcast helper for Socket.io
 function broadcastUpdate(channel, data) {
@@ -119,6 +120,16 @@ console.error = function(...args) {
 };
 
 // REST API Endpoints
+// Get Invoices / Transactions history
+app.get('/api/invoices', async (req, res) => {
+    try {
+        const rows = await query.all("SELECT * FROM transactions ORDER BY id DESC");
+        res.json(rows);
+    } catch (e) {
+        res.status(500).json({ success: false, error: e.message });
+    }
+});
+
 // Auth Endpoint
 app.post('/api/auth/login', async (req, res) => {
     const { identifier, token } = req.body;

@@ -106,7 +106,7 @@
             <a class="sidebar-link" data-target="ticket-section">
                 <i class="bi bi-ticket-detailed-fill"></i><span>Ticket</span>
             </a>
-            <a class="sidebar-link" data-target="invoice-section">
+            <a class="sidebar-link" data-target="invoice-section" data-path="/invoice">
                 <i class="bi bi-receipt"></i><span>Invoice</span>
             </a>
             <a class="sidebar-link" data-target="affiliate-section">
@@ -1333,6 +1333,50 @@
                 </div>
             </section>
 
+            <!-- ========== INVOICE (History Transaksi Pembelian) ========== -->
+            <section id="invoice-section" class="d-none">
+                <div class="ws-config-page">
+                    <!-- Page Header -->
+                    <div class="page-header d-flex justify-content-between align-items-center mb-4">
+                        <div>
+                            <h1>Daftar Invoice</h1>
+                            <p>Histori riwayat transaksi pembelian lisensi fitur premium Anda.</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm px-3 rounded-3" id="btn-refresh-invoices">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Refresh Transaksi
+                        </button>
+                    </div>
+
+                    <!-- Table List -->
+                    <div class="ws-config-card p-0 overflow-hidden">
+                        <div class="table-responsive">
+                            <table class="table table-hover align-middle mb-0" style="font-size: 0.85rem;">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted);">Nomor Invoice</th>
+                                        <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted);">Nama Fitur</th>
+                                        <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted);">Total Pembayaran</th>
+                                        <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted);">Metode</th>
+                                        <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted);">Status</th>
+                                        <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted);">Tanggal Transaksi</th>
+                                        <th style="padding: 1rem 1.5rem; font-weight: 700; color: var(--text-muted); text-align: right;">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="invoices-list-table">
+                                    <tr>
+                                        <td colspan="7" class="text-center py-4 text-muted">
+                                            <div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>
+                                            Memuat histori transaksi...
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
 
         </div>
     </main>
@@ -1562,7 +1606,7 @@
 
         // ===== SPA Navigation (Pretty URL Router) =====
         var menuLinks = document.querySelectorAll("#sidebar-menu .sidebar-link");
-        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-section", "pricing-section", "faq-section", "mass-section", "filter-command-section", "script-section", "galeri-script-section", "statistik-section"];
+        var allSections = ["dashboard-section", "triggers-section", "bot-settings-section", "pairing-section", "menu-section", "changelog-section", "dev-section", "pricing-section", "faq-section", "mass-section", "filter-command-section", "script-section", "galeri-script-section", "statistik-section", "invoice-section"];
 
         function showSectionByTarget(target, path) {
             // Update active state di sidebar
@@ -1610,12 +1654,20 @@
                 showSectionByTarget("dev-section", "/dev");
                 return;
             }
+            if (currentPath === "/invoice") {
+                showSectionByTarget("invoice-section", "/invoice");
+                fetchInvoices();
+                return;
+            }
             var matchedLink = Array.from(menuLinks).find(function(l) {
                 return l.getAttribute("data-path") === currentPath;
             });
             if (matchedLink) {
                 var target = matchedLink.getAttribute("data-target");
                 showSectionByTarget(target, currentPath);
+                if (target === "invoice-section") {
+                    fetchInvoices();
+                }
             } else {
                 // Fallback ke dashboard jika url root "/"
                 showSectionByTarget("dashboard-section", "/dashboard");
@@ -3040,105 +3092,200 @@
             });
         }
 
-        // Modifikasi fetchSettings / fillFormWithData agar update lisensi badge
-        function fetchSettings() {
-            fetch(API_URL + "/api/settings")
+        // ===== History Invoice / Transactions Logic =====
+        function fetchInvoices() {
+            var tableBody = document.getElementById("invoices-list-table");
+            if (!tableBody) return;
+
+            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted"><div class="spinner-border spinner-border-sm text-primary me-2" role="status"></div>Memuat histori transaksi...</td></tr>';
+            
+            fetch(API_URL + "/api/invoices")
                 .then(function(r) { return r.json(); })
                 .then(function(data) {
-                    window.botSettings = data;
-                    fillFormWithData(data);
-                    renderInfoBoard(data);
-                    updatePricingLicenseBadge(data.maker_menu_active);
-                });
-        }
-
-        // ===== Database Latency Ping =====
-        function pingDatabase() {
-            var startTime = performance.now();
-            fetch(API_URL + "/api/settings")
-                .then(function() {
-                    var latency = Math.round(performance.now() - startTime);
-                    var latencyEl = document.getElementById("network-latency");
-                    if (latencyEl) {
-                        latencyEl.textContent = latency + " ms";
-                        if (latency < 150) latencyEl.className = "stat-value text-success";
-                        else if (latency < 400) latencyEl.className = "stat-value text-warning";
-                        else latencyEl.className = "stat-value text-danger";
+                    tableBody.innerHTML = "";
+                    if (!data || data.length === 0) {
+                        tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-muted"><i class="bi bi-receipt-cutoff me-1"></i>Belum ada riwayat transaksi pembelian.</td></tr>';
+                        return;
                     }
+
+                    data.forEach(function(tx) {
+                        var tr = document.createElement("tr");
+                        
+                        // Formatting date
+                        var dateStr = "-";
+                        if (tx.created_at) {
+                            try {
+                                dateStr = new Date(tx.created_at).toLocaleDateString('id-ID', {
+                                    year: 'numeric',
+                                    month: 'long',
+                                    day: 'numeric',
+                                    hour: '2-digit',
+                                    minute: '2-digit'
+                                });
+                            } catch (e) {
+                                dateStr = tx.created_at;
+                            }
+                        }
+
+                        // Status badge styling
+                        var badgeClass = "bg-warning-subtle text-warning border-warning-subtle";
+                        var badgeText = "PENDING";
+                        if (tx.status === "success") {
+                            badgeClass = "bg-success-subtle text-success border-success-subtle";
+                            badgeText = "PAID";
+                        } else if (tx.status === "expired") {
+                            badgeClass = "bg-danger-subtle text-danger border-danger-subtle";
+                            badgeText = "EXPIRED";
+                        }
+
+                        tr.innerHTML = 
+                            '<td style="padding: 1rem 1.5rem;" class="font-monospace"><strong>' + tx.order_id + '</strong></td>' +
+                            '<td style="padding: 1rem 1.5rem;">Downloader Menu Premium</td>' +
+                            '<td style="padding: 1rem 1.5rem;" class="fw-bold text-primary">Rp ' + tx.amount.toLocaleString('id-ID') + '</td>' +
+                            '<td style="padding: 1rem 1.5rem;"><span class="badge bg-light text-dark border">QRIS</span></td>' +
+                            '<td style="padding: 1rem 1.5rem;"><span class="badge ' + badgeClass + ' border px-2.5 py-1">' + badgeText + '</span></td>' +
+                            '<td style="padding: 1rem 1.5rem;" class="text-muted">' + dateStr + '</td>' +
+                            '<td style="padding: 1rem 1.5rem;" class="text-end">' +
+                                (tx.status === "pending" ? '<button class="btn btn-xs btn-primary py-1 px-2.5 rounded-3" onclick="startPaymentPolling(\'' + tx.order_id + '\'); bootstrap.Modal.getInstance(document.getElementById(\'qrisPaymentModal\')).show();" style="font-size:0.75rem;"><i class="bi bi-qr-code me-1"></i>Bayar</button>' : '<button class="btn btn-xs btn-outline-secondary py-1 px-2.5 rounded-3" onclick="showInvoiceDetail(\'' + tx.order_id + '\')" style="font-size:0.75rem;"><i class="bi bi-eye me-1"></i>Detail</button>') +
+                            '</td>';
+                        
+                        tableBody.appendChild(tr);
+                    });
                 })
-                .catch(function() {
-                    var latencyEl = document.getElementById("network-latency");
-                    if (latencyEl) {
-                        latencyEl.textContent = "Offline";
-                        latencyEl.className = "stat-value text-danger";
-                    }
+                .catch(function(err) {
+                    console.error("Invoices fetch error:", err);
+                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-4 text-danger"><i class="bi bi-exclamation-triangle-fill me-1"></i>Gagal memuat histori transaksi: ' + err.message + '</td></tr>';
                 });
         }
 
-        // Update Profile Info in Sidebar Footer Dinamis
-        function initSidebarProfile() {
-            var identifier = localStorage.getItem("admin_identifier") || "-";
-            var ownerList = [];
-            if (window.botSettings) {
-                if (Array.isArray(window.botSettings.ownerNumbers)) ownerList = ownerList.concat(window.botSettings.ownerNumbers);
-                else if (Array.isArray(window.botSettings.owner_numbers)) ownerList = ownerList.concat(window.botSettings.owner_numbers);
-            }
-            if (DEFAULT_SETTINGS) {
-                if (Array.isArray(DEFAULT_SETTINGS.ownerNumbers)) ownerList = ownerList.concat(DEFAULT_SETTINGS.ownerNumbers);
-                else if (Array.isArray(DEFAULT_SETTINGS.owner_numbers)) ownerList = ownerList.concat(DEFAULT_SETTINGS.owner_numbers);
-            }
+        // Action view detail/re-open invoice modal
+        window.showInvoiceDetail = function(orderId) {
+            fetch(API_URL + "/api/payment/status/" + orderId)
+                .then(function(r) { return r.json(); })
+                .then(function(res) {
+                    // Cari record di database
+                    fetch(API_URL + "/api/invoices")
+                        .then(function(r) { return r.json(); })
+                        .then(function(invoices) {
+                            var invoice = invoices.find(function(i) { return i.order_id === orderId; });
+                            if (invoice) {
+                                document.getElementById("payment-invoice-id").textContent = invoice.order_id;
+                                document.getElementById("payment-customer-name").textContent = localStorage.getItem("admin_identifier") || "Pelanggan";
+                                document.getElementById("payment-customer-email").textContent = (localStorage.getItem("admin_identifier") || "pelanggan").includes("@") ? localStorage.getItem("admin_identifier") : (localStorage.getItem("admin_identifier") || "pelanggan") + "@gmail.com";
+                                
+                                var badge = document.getElementById("payment-status-badge");
+                                if (invoice.status === "success") {
+                                    badge.style.background = "#dcfce7";
+                                    badge.style.color = "#15803d";
+                                    badge.style.border = "1px solid rgba(21, 128, 61, 0.15)";
+                                    badge.innerHTML = "PAID";
+                                } else {
+                                    badge.style.background = "#fef3c7";
+                                    badge.style.color = "#d97706";
+                                    badge.style.border = "1px solid rgba(217, 119, 6, 0.15)";
+                                    badge.innerHTML = invoice.status.toUpperCase();
+                                }
 
-            var cleanIdentifier = identifier.trim().replace(/[^0-9]/g, '');
-            var isOwner = ownerList.some(function(num) {
-                var cleanNum = String(num).trim().replace(/[^0-9]/g, '');
-                return cleanNum === cleanIdentifier && cleanNum.length > 0;
-            });
+                                var qrContainer = document.getElementById("qris-qrcode-container");
+                                qrContainer.innerHTML = "";
+                                if (invoice.status === "pending" && invoice.qris_data) {
+                                    if (typeof QRCode === "undefined") {
+                                        var script = document.createElement("script");
+                                        script.src = "https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js";
+                                        script.onload = function() {
+                                            new QRCode(qrContainer, { text: invoice.qris_data, width: 220, height: 220 });
+                                        };
+                                        document.head.appendChild(script);
+                                    } else {
+                                        new QRCode(qrContainer, { text: invoice.qris_data, width: 220, height: 220 });
+                                    }
+                                } else {
+                                    qrContainer.innerHTML = '<div class="py-5 text-success"><i class="bi bi-patch-check-fill fs-1"></i><div class="mt-2 fw-bold">Transaksi Selesai</div></div>';
+                                }
 
-            var nameEl = document.getElementById("sidebar-user-name");
-            var roleEl = document.getElementById("sidebar-user-role");
-            var roleStatVal = document.getElementById("bot-role-text");
-
-            if (isOwner) {
-                nameEl.textContent = "Alvin Kucai";
-                roleEl.textContent = "Owner";
-                if (roleStatVal) roleStatVal.textContent = "Owner";
-            } else {
-                nameEl.textContent = identifier.substring(0, 12) + (identifier.length > 12 ? "..." : "");
-                roleEl.textContent = "Admin";
-                if (roleStatVal) roleStatVal.textContent = "Admin";
-            }
-        }
-
-        // Bind profile click to sidebar profile button
-        var sidebarProfileBtn = document.getElementById("sidebar-profile-btn");
-        if (sidebarProfileBtn) {
-            sidebarProfileBtn.addEventListener("click", function() {
-                document.getElementById("topbar-avatar-btn").click();
-            });
-        }
-
-        // ===== FAQ Accordion Toggle =====
-        window.toggleFaq = function(el) {
-            var item = el.closest('.faq-item');
-            if (!item) return;
-            var isOpen = item.classList.contains('open');
-            // Close all FAQ items
-            document.querySelectorAll('.faq-item').forEach(function(faq) {
-                faq.classList.remove('open');
-            });
-            // Toggle clicked one
-            if (!isOpen) {
-                item.classList.add('open');
-            }
+                                if (qrisModalInstance) qrisModalInstance.show();
+                            }
+                        });
+                });
         };
 
-        // ===== Sidebar Logout Button =====
-        var sidebarLogoutBtn = document.getElementById("sidebar-logout-btn");
-        if (sidebarLogoutBtn) {
-            sidebarLogoutBtn.addEventListener("click", function(e) {
-                e.stopPropagation(); // Prevent profile click
-                document.getElementById("web-logout-btn").click();
+        // Event listener click link invoice di sidebar & button refresh
+        document.querySelector('[data-target="invoice-section"]').addEventListener("click", function() {
+            fetchInvoices();
+        });
+        
+        var refreshInvoicesBtn = document.getElementById("btn-refresh-invoices");
+        if (refreshInvoicesBtn) {
+            refreshInvoicesBtn.addEventListener("click", function() {
+                fetchInvoices();
             });
+        }
+
+        // ===== Theme Toggle =====
+        var themeToggleBtn = document.getElementById("theme-toggle-btn");
+        var themeIcon = document.getElementById("theme-icon");
+
+        function setTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+            themeIcon.className = theme === "dark" ? "bi bi-sun" : "bi bi-moon";
+        }
+
+        themeToggleBtn.addEventListener("click", function() {
+            var current = document.documentElement.getAttribute("data-theme");
+            setTheme(current === "dark" ? "light" : "dark");
+        });
+
+        // ===== Fetch Web Settings (Maintenance & Popup) =====
+        function fetchWebSettings() {
+            fetch(API_URL + "/api/settings").then(function(r) { return r.json(); }).then(function(data) {
+                if (data) {
+                    // Cek Maintenance
+                    if (data.maintenance_mode) {
+                        var overlay = document.getElementById("maintenance-overlay");
+                        overlay.classList.remove("d-none");
+                        overlay.style.display = "flex";
+                        document.body.style.overflow = "hidden"; // Kunci scroll
+                        return; // Stop eksekusi, biarkan halaman blank kecuali maintenance
+                    }
+                    
+                    // Cek Popup
+                    if (data.popup_active) {
+                        window.Swal.fire({
+                            title: data.popup_title || "Pengumuman",
+                            html: data.popup_content || "",
+                            icon: "info",
+                            confirmButtonText: "Mengerti",
+                            confirmButtonColor: "#4f46e5",
+                            customClass: {
+                                popup: 'swal2-custom-popup',
+                                confirmButton: 'btn btn-primary px-4 py-2'
+                            },
+                            buttonsStyling: false
+                        });
+                    }
+
+                    // Cek Papan Informasi Statis
+                    renderInfoBoard(data);
+                }
+            }).catch(function(err) {
+                console.log("Web settings belum dikonfigurasi.");
+            });
+        }
+
+        function renderInfoBoard(data) {
+            var infoCard = document.getElementById("info-board-card");
+            if (!infoCard) return;
+            if (data && data.info_active) {
+                var infoTitleEl = document.getElementById("info-board-title");
+                var infoContentEl = document.getElementById("info-board-content");
+                
+                infoTitleEl.innerHTML = '<i class="bi bi-info-circle-fill me-2 text-primary"></i>' + (data.info_title || "Informasi");
+                infoContentEl.innerHTML = data.info_content || "";
+                infoCard.classList.remove("d-none");
+            } else {
+                infoCard.classList.add("d-none");
+            }
         }
 
         // ===== Boot =====
