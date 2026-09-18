@@ -20,6 +20,8 @@ export async function CidClassicTheme() {
 
   const { data: siteSettings } = await supabaseAdmin.from("site_settings").select("*");
   const waKucaidl = siteSettings?.find(s => s.key === "wa_kucaidl")?.value || "";
+  const socialDiscord = siteSettings?.find(s => s.key === "social_discord")?.value || "";
+  const socialIg = siteSettings?.find(s => s.key === "social_instagram")?.value || "";
 
   // Split logic: top 2 for featured, rest for regular
   const featuredProducts = products.slice(0, 2);
