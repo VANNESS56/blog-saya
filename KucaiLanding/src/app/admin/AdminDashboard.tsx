@@ -1282,6 +1282,9 @@ function ManageTheme() {
   const [socialIg, setSocialIg] = useState("");
   const [socialDiscord, setSocialDiscord] = useState("");
   const [waCta, setWaCta] = useState("");
+  const [heroTitle, setHeroTitle] = useState("");
+  const [heroSubtitle, setHeroSubtitle] = useState("");
+  const [heroDesc, setHeroDesc] = useState("");
   const [savingSettings, setSavingSettings] = useState(false);
 
   useEffect(() => {
@@ -1301,6 +1304,15 @@ function ManageTheme() {
         
         const waSetting = res.siteSettings.find((s: any) => s.key === "wa_cta");
         if (waSetting) setWaCta(waSetting.value);
+        
+        const titleSetting = res.siteSettings.find((s: any) => s.key === "hero_title");
+        if (titleSetting) setHeroTitle(titleSetting.value);
+        
+        const subtitleSetting = res.siteSettings.find((s: any) => s.key === "hero_subtitle");
+        if (subtitleSetting) setHeroSubtitle(subtitleSetting.value);
+        
+        const descSetting = res.siteSettings.find((s: any) => s.key === "hero_desc");
+        if (descSetting) setHeroDesc(descSetting.value);
       }
       setLoading(false);
     }
@@ -1330,7 +1342,10 @@ function ManageTheme() {
       const res = await adminApi("saveThemeSettings", { 
         social_instagram: socialIg, 
         social_discord: socialDiscord, 
-        wa_cta: waCta 
+        wa_cta: waCta,
+        hero_title: heroTitle,
+        hero_subtitle: heroSubtitle,
+        hero_desc: heroDesc
       });
       if (res.success) {
         Swal.fire({ icon: "success", title: "Berhasil", text: "Pengaturan lanjutan berhasil disimpan.", timer: 1500, showConfirmButton: false });
@@ -1482,6 +1497,39 @@ function ManageTheme() {
                   placeholder="628123456789"
                 />
                 <p className="text-xs text-gray-500 mt-1">Gunakan format 628... (Hanya angka)</p>
+              </div>
+
+              <div className="border-t border-gray-100 pt-4 mt-4">
+                <h4 className="font-bold text-gray-800 mb-3 text-sm">Teks Utama Beranda</h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">Judul (Baris 1)</label>
+                    <input 
+                      value={heroTitle} 
+                      onChange={e => setHeroTitle(e.target.value)} 
+                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors" 
+                      placeholder="Belanja Item GT"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">Sub-Judul (Baris 2 Berwarna)</label>
+                    <input 
+                      value={heroSubtitle} 
+                      onChange={e => setHeroSubtitle(e.target.value)} 
+                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors" 
+                      placeholder="Cepat, Aman, Otomatis"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-700 mb-1">Deskripsi Pendek</label>
+                    <textarea 
+                      value={heroDesc} 
+                      onChange={e => setHeroDesc(e.target.value)} 
+                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors min-h-[60px]" 
+                      placeholder="Proxy, akun, currency..."
+                    />
+                  </div>
+                </div>
               </div>
               
               <div className="pt-4 flex items-center gap-3 border-t border-gray-100 mt-6">

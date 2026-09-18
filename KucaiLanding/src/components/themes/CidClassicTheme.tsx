@@ -22,6 +22,10 @@ export async function CidClassicTheme() {
   const waKucaidl = siteSettings?.find(s => s.key === "wa_kucaidl")?.value || "";
   const socialDiscord = siteSettings?.find(s => s.key === "social_discord")?.value || "";
   const socialIg = siteSettings?.find(s => s.key === "social_instagram")?.value || "";
+  
+  const heroTitle = siteSettings?.find(s => s.key === "hero_title")?.value || "Belanja Item GT";
+  const heroSubtitle = siteSettings?.find(s => s.key === "hero_subtitle")?.value || "Cepat, Aman, Otomatis";
+  const heroDesc = siteSettings?.find(s => s.key === "hero_desc")?.value || "Proxy, akun, currency, dan item langka Growtopia. Bayar QRIS → produk terkirim otomatis ke kamu.";
 
   // Split logic: top 2 for featured, rest for regular
   const featuredProducts = products.slice(0, 2);
@@ -81,8 +85,8 @@ export async function CidClassicTheme() {
         <section className="hero" style={{ background: "radial-gradient(ellipse 60% 50% at 50% 0%, var(--gold-bg), transparent)" }}>
           <div className="wrap">
             <div className="eyebrow">🌿 KUCAIDL Digital Store</div>
-            <h1>Belanja Item GT<br/><span className="text-gold">Cepat, Aman, Otomatis</span></h1>
-            <p>Proxy, akun, currency, dan item langka Growtopia. Bayar QRIS → produk terkirim otomatis ke kamu.</p>
+            <h1>{heroTitle}<br/><span className="text-gold">{heroSubtitle}</span></h1>
+            <p>{heroDesc}</p>
             <div className="hero-actions">
               <Link href="#produk" className="btn btn-gold btn-lg">🛒 Lihat Semua Produk</Link>
               <Link href="/order" className="btn btn-ghost btn-lg">🔍 Lacak Pesanan</Link>

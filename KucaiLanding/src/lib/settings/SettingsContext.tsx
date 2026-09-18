@@ -9,6 +9,9 @@ interface SettingsContextType {
   socialIg: string;
   socialDiscord: string;
   waCta: string;
+  heroTitle: string;
+  heroSubtitle: string;
+  heroDesc: string;
   loading: boolean;
 }
 
@@ -20,6 +23,9 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   const [socialIg, setSocialIg] = useState<string>("");
   const [socialDiscord, setSocialDiscord] = useState<string>("");
   const [waCta, setWaCta] = useState<string>("6283163349669");
+  const [heroTitle, setHeroTitle] = useState<string>("Belanja Item GT");
+  const [heroSubtitle, setHeroSubtitle] = useState<string>("Cepat, Aman, Otomatis");
+  const [heroDesc, setHeroDesc] = useState<string>("Proxy, akun, currency, dan item langka Growtopia. Bayar QRIS → produk terkirim otomatis ke kamu.");
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
@@ -38,6 +44,12 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
               setSocialDiscord(setting.value);
             } else if (setting.key === "wa_cta") {
               setWaCta(setting.value);
+            } else if (setting.key === "hero_title") {
+              setHeroTitle(setting.value);
+            } else if (setting.key === "hero_subtitle") {
+              setHeroSubtitle(setting.value);
+            } else if (setting.key === "hero_desc") {
+              setHeroDesc(setting.value);
             }
           });
         }
@@ -61,7 +73,7 @@ export function SettingsProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SettingsContext.Provider value={{ waKucaidl, waKucaiakun, socialIg, socialDiscord, waCta, loading }}>
+    <SettingsContext.Provider value={{ waKucaidl, waKucaiakun, socialIg, socialDiscord, waCta, heroTitle, heroSubtitle, heroDesc, loading }}>
       {children}
     </SettingsContext.Provider>
   );
