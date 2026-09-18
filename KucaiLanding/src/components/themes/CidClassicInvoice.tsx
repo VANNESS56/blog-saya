@@ -32,7 +32,8 @@ export default function CidClassicInvoice({ invoice }: { invoice: string }) {
       const json = await res.json();
       
       if (res.ok) {
-        setOrderData(json);
+        setOrderData(json.order);
+        if (json.credentials_data) setCredentials(json.credentials_data);
         
         // Simpan credential jika ada (dari localstorage atau fetch)
         try {
@@ -42,17 +43,17 @@ export default function CidClassicInvoice({ invoice }: { invoice: string }) {
             setCredentials(item.credentials);
           }
           
-          if (json.payment_status === "paid" && item && item.status !== "paid") {
+          if (json.order.payment_status === "paid" && item && item.status !== "paid") {
             item.status = "paid";
             localStorage.setItem("kucaidl_history", JSON.stringify(history));
-          } else if (json.payment_status === "failed" && item && item.status !== "failed") {
+          } else if (json.order.payment_status === "failed" && item && item.status !== "failed") {
             item.status = "failed";
             localStorage.setItem("kucaidl_history", JSON.stringify(history));
           }
         } catch (e) {}
 
-        if (json.payment_status === "pending") {
-          const createdTime = new Date(json.created_at).getTime();
+        if (json.order.payment_status === "pending") {
+          const createdTime = new Date(json.order.created_at).getTime();
           const now = Date.now();
           const diff = Math.floor((now - createdTime) / 1000);
           const remaining = EXPIRY_SECONDS - diff;
