@@ -4,7 +4,9 @@ import CidClassicProductDetail from "@/components/themes/CidClassicProductDetail
 
 export const revalidate = 0; // Dynamic rendering
 
-export default async function ProductPageWrapper({ params }: { params: { id: string } }) {
+export default async function ProductPageWrapper({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  
   const { data } = await supabaseAdmin
     .from("site_settings")
     .select("value")
@@ -14,7 +16,7 @@ export default async function ProductPageWrapper({ params }: { params: { id: str
   const activeTheme = data?.value || "cid-dark";
 
   if (activeTheme === "cid-classic") {
-    return <CidClassicProductDetail productId={params.id} />;
+    return <CidClassicProductDetail productId={id} />;
   }
 
   return <ProductDetailClient />;

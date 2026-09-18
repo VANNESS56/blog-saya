@@ -18,18 +18,28 @@ export default function CidClassicProductDetail({ productId }: { productId: stri
 
   useEffect(() => {
     async function fetchProduct() {
-      const res = await fetch("/api/products");
-      const json = await res.json();
-      if (json.data) {
-        const found = json.data.find((p: any) => String(p.id) === String(productId));
-        if (found) {
-          setProduct(found);
-          setStockCount(found.stock_available || 0);
+      try {
+        const res = await fetch("/api/products");
+        if (!res.ok) throw new Error("Gagal mengambil data produk");
+        const json = await res.json();
+        if (json.data) {
+          const found = json.data.find((p: any) => String(p.id) === String(productId));
+          if (found) {
+            setProduct(found);
+            setStockCount(found.stock_available || 0);
+          }
         }
+      } catch (err) {
+        console.error("Fetch product error:", err);
+      } finally {
+        setLoading(false);
       }
+    }
+    if (productId) {
+      fetchProduct();
+    } else {
       setLoading(false);
     }
-    if (productId) fetchProduct();
   }, [productId]);
 
   const handleCheckout = async (e: React.FormEvent) => {
