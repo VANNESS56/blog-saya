@@ -1363,14 +1363,14 @@ function ManageTheme() {
   const themes = [
     {
       id: "cid-classic",
-      name: "CidGrowtopia Classic",
+      name: "Simple Theme",
       description: "Tema Original (HTML yang Anda rekomendasikan). Lengkap dengan Mobile Bottom Nav.",
       color1: "#08090a",
       color2: "#00ff66"
     },
     {
       id: "cid-dark",
-      name: "CidDark Premium",
+      name: "Default Theme",
       description: "Tema bawaan dengan nuansa hitam dan emas. Sangat elegan dan profesional.",
       color1: "#0c0805",
       color2: "#F59E0B"
