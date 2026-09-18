@@ -236,7 +236,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "saveThemeSettings": {
-        const { social_instagram, social_discord, wa_cta } = data;
+        const { social_instagram, social_discord, wa_cta, hero_title, hero_subtitle, hero_desc } = data;
         
         if (social_instagram !== undefined) {
           await supabaseAdmin.from("site_settings").upsert({
@@ -259,6 +259,30 @@ export async function POST(req: NextRequest) {
             key: "wa_cta",
             value: wa_cta,
             description: "WhatsApp Floating CTA (Phone Number)"
+          });
+        }
+
+        if (hero_title !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "hero_title",
+            value: hero_title,
+            description: "Judul Utama Hero (Baris 1)"
+          });
+        }
+
+        if (hero_subtitle !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "hero_subtitle",
+            value: hero_subtitle,
+            description: "Sub-judul Hero (Baris 2 Bewarna)"
+          });
+        }
+
+        if (hero_desc !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "hero_desc",
+            value: hero_desc,
+            description: "Deskripsi Pendek Hero"
           });
         }
         
