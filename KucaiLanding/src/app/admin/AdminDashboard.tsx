@@ -1374,20 +1374,6 @@ function ManageTheme() {
       description: "Tema bawaan dengan nuansa hitam dan emas. Sangat elegan dan profesional.",
       color1: "#0c0805",
       color2: "#F59E0B"
-    },
-    {
-      id: "minimalist",
-      name: "Minimalist Clean",
-      description: "Tema putih bersih, cocok untuk kesan startup, profesional dan rapi.",
-      color1: "#ffffff",
-      color2: "#2563eb"
-    },
-    {
-      id: "gaming",
-      name: "Cyberpunk Gaming",
-      description: "Nuansa gelap dengan aksen ungu neon. Cocok untuk toko item game.",
-      color1: "#09090b",
-      color2: "#8b5cf6"
     }
   ];
 
