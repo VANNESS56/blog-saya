@@ -38,6 +38,9 @@ function LiveChatInner() {
   const inputRef = useRef<HTMLInputElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStart = useRef({ x: 0, y: 0 });
 
   // Restore session from sessionStorage
   useEffect(() => {
@@ -207,18 +210,57 @@ function LiveChatInner() {
   const handleOpen = () => {
     setIsOpen(true);
     setUnread(0);
+    // Reset position when opened
+    setPosition({ x: 0, y: 0 });
+  };
+
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Don't drag if clicking buttons
+    if ((e.target as HTMLElement).closest("button")) return;
+    
+    setIsDragging(true);
+    dragStart.current = {
+      x: e.clientX - position.x,
+      y: e.clientY - position.y
+    };
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    setPosition({
+      x: e.clientX - dragStart.current.x,
+      y: e.clientY - dragStart.current.y
+    });
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    setIsDragging(false);
+    (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   };
 
   return (
-    <div className="fixed bottom-[85px] right-4 md:bottom-8 md:right-8 z-[51] flex flex-col items-end">
+    <div className="fixed bottom-[85px] right-4 md:bottom-8 md:right-8 z-[51] flex flex-col items-end pointer-events-none">
       {/* Chat Window */}
       {isOpen && (
         <div
-          className="mb-3 w-[340px] max-w-[calc(100vw-32px)] bg-[#111] border border-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col"
-          style={{ height: "420px" }}
+          className="mb-3 w-[340px] max-w-[calc(100vw-32px)] bg-[#111] border border-gray-800 rounded-2xl shadow-2xl overflow-hidden flex flex-col pointer-events-auto"
+          style={{ 
+            height: "420px",
+            transform: `translate(${position.x}px, ${position.y}px)`,
+            transition: isDragging ? "none" : "transform 0.2s ease-out",
+            touchAction: "none" // Prevent scrolling while dragging on mobile
+          }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-600 to-orange-600 shrink-0">
+          <div 
+            className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-600 to-orange-600 shrink-0 select-none cursor-grab active:cursor-grabbing"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+            onPointerCancel={handlePointerUp}
+          >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center">
                 <Image src="/icon.png" alt="Kucai" width={32} height={32} className="object-cover" />
@@ -368,7 +410,7 @@ function LiveChatInner() {
       {/* Floating Button */}
       <button
         onClick={handleOpen}
-        className="w-[52px] h-[52px] md:w-14 md:h-14 bg-amber-600 hover:bg-amber-700 text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(245,158,11,0.4)] hover:scale-110 transition-all duration-300 relative group overflow-hidden"
+        className="w-[52px] h-[52px] md:w-14 md:h-14 bg-amber-600 hover:bg-amber-700 text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(245,158,11,0.4)] hover:scale-110 transition-all duration-300 relative group overflow-hidden pointer-events-auto"
       >
         <div className="absolute inset-0 rounded-full border-2 border-amber-500/40 scale-100 group-hover:scale-125 transition-transform duration-500" />
         <Image src="/icon.png" alt="Chat" width={32} height={32} className="relative z-10 rounded-full" />
