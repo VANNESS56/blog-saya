@@ -36,7 +36,7 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#e5e5e5] text-gray-800 font-sans">
+    <div className="min-h-screen bg-[#d1d5db] text-gray-800 font-sans">
       {/* HEADER DESKTOP */}
       <header className="fixed top-0 left-0 right-0 h-[75px] bg-white shadow-sm z-40 flex items-center justify-between px-4 lg:px-8 transition-all duration-300 ml-0 lg:ml-72">
         <div className="flex items-center gap-4">
