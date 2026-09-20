@@ -171,7 +171,7 @@ function LiveChatInner() {
     await supabase.from("chat_messages").insert({
       session_id: sid,
       sender: "admin",
-      message: `*kalau jual akun , silahkan kirim ss spek akunnya :*\n- backpack\n- playtime hour\n- supporter / ssupporter\n- title ( kalau ada )\n- roles kalau level 5 keatas\n\n*kalau beli akun , silahkan klik beli dari website ya* 🥰`,
+      message: `*kalau jual akun , silahkan kirim ss spek akunnya :*\n・ backpack\n・ playtime hour\n・ supporter / ssupporter\n・ title ( kalau ada )\n・ roles kalau level 5 keatas\n\n*kalau beli akun , silahkan klik beli dari website ya* 🥰\n\n*-nanti admin mimin bales secepatnya ditunggu ya* 🤗`,
     });
   };
 
