@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 
@@ -1562,6 +1562,7 @@ interface ChatMsg {
   session_id: string;
   sender: string;
   message: string;
+  image_url?: string;
   created_at: string;
 }
 
@@ -1574,6 +1575,8 @@ function ManageLiveChat() {
   const [loading, setLoading] = useState(true);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const replyInputRef = useRef<HTMLInputElement>(null);
+  const adminFileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   // Fetch all sessions with latest message preview
   const fetchSessions = useCallback(async () => {
@@ -1802,7 +1805,10 @@ function ManageLiveChat() {
                           : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
                       }`}
                     >
-                      {msg.message}
+                      {(msg as any).image_url && (
+                        <img src={(msg as any).image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => window.open((msg as any).image_url, '_blank')} />
+                      )}
+                      {msg.message && <span>{msg.message}</span>}
                       <div
                         className={`text-[10px] mt-1 ${
                           msg.sender === "admin" ? "text-blue-200" : "text-gray-400"
@@ -1824,18 +1830,39 @@ function ManageLiveChat() {
                 onSubmit={handleSendReply}
                 className="shrink-0 px-4 py-3 border-t border-gray-100 bg-white flex items-center gap-3"
               >
+                <input type="file" ref={adminFileInputRef} accept="image/*" className="hidden" onChange={async (e) => {
+                  const file = e.target.files?.[0];
+                  if (!file || !activeSession) return;
+                  setUploading(true);
+                  try {
+                    const formData = new FormData();
+                    formData.append("file", file);
+                    const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+                    const result = await res.json();
+                    if (result.url) {
+                      await supabase.from("chat_messages").insert({ session_id: activeSession, sender: "admin", message: "", image_url: result.url });
+                      await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", activeSession);
+                    }
+                  } catch {}
+                  setUploading(false);
+                  if (adminFileInputRef.current) adminFileInputRef.current.value = "";
+                }} />
+                <button type="button" onClick={() => adminFileInputRef.current?.click()} disabled={uploading} className="w-10 h-10 shrink-0 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors border border-gray-200">
+                  <ImagePlus className="w-4 h-4" />
+                </button>
                 <input
                   ref={replyInputRef}
                   type="text"
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
-                  placeholder="Ketik balasan..."
+                  placeholder={uploading ? "Mengunggah gambar..." : "Ketik balasan..."}
                   className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
                   maxLength={500}
+                  disabled={uploading}
                 />
                 <button
                   type="submit"
-                  disabled={!reply.trim() || sending}
+                  disabled={!reply.trim() || sending || uploading}
                   className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors text-sm flex items-center gap-2"
                 >
                   Kirim

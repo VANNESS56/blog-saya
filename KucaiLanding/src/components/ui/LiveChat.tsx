@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Send, Headphones, Minus } from "lucide-react";
+import { X, Send, Headphones, Minus, ImagePlus } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { usePathname } from "next/navigation";
 
@@ -10,6 +10,7 @@ interface ChatMessage {
   session_id: string;
   sender: string;
   message: string;
+  image_url?: string;
   created_at: string;
 }
 
@@ -34,6 +35,8 @@ function LiveChatInner() {
   const [isBlocked, setIsBlocked] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [uploading, setUploading] = useState(false);
 
   // Restore session from sessionStorage
   useEffect(() => {
@@ -175,6 +178,31 @@ function LiveChatInner() {
     inputRef.current?.focus();
   };
 
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file || !sessionId || uploading) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+      const result = await res.json();
+
+      if (result.url) {
+        await supabase.from("chat_messages").insert({
+          session_id: sessionId,
+          sender: "customer",
+          message: "",
+          image_url: result.url,
+        });
+        await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+      }
+    } catch {}
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
   const handleOpen = () => {
     setIsOpen(true);
     setUnread(0);
@@ -271,7 +299,10 @@ function LiveChatInner() {
                           : "bg-white/10 text-gray-200 rounded-bl-md"
                       }`}
                     >
-                      {msg.message}
+                      {msg.image_url && (
+                        <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => window.open(msg.image_url, '_blank')} />
+                      )}
+                      {msg.message && <span>{msg.message}</span>}
                       <div
                         className={`text-[10px] mt-1 ${
                           msg.sender === "customer"
@@ -300,18 +331,28 @@ function LiveChatInner() {
                   onSubmit={handleSendMessage}
                   className="shrink-0 p-3 border-t border-white/10 flex items-center gap-2"
                 >
+                  <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    disabled={uploading}
+                    className="w-10 h-10 shrink-0 bg-white/10 hover:bg-white/20 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                  >
+                    <ImagePlus className="w-4 h-4" />
+                  </button>
                   <input
                     ref={inputRef}
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder="Ketik pesan..."
+                    placeholder={uploading ? "Mengunggah..." : "Ketik pesan..."}
                     className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
                     maxLength={500}
+                    disabled={uploading}
                   />
                   <button
                     type="submit"
-                    disabled={!newMessage.trim() || sending}
+                    disabled={!newMessage.trim() || sending || uploading}
                     className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
                   >
                     <Send className="w-4 h-4" />
