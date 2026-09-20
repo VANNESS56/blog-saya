@@ -743,6 +743,41 @@ function ManageOrders() {
     </div>
   );
 }
+const CustomSelect = ({ value, onChange, options, className }: { value: string, onChange: (val: string) => void, options: {value: string, label: string}[], className?: string }) => {
+  const [open, setOpen] = useState(false);
+  const selectedLabel = options.find(o => String(o.value) === String(value))?.label || "Pilih...";
+  
+  return (
+    <div className={`relative ${className || ""}`}>
+      <div 
+        onClick={() => setOpen(!open)}
+        className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors cursor-pointer flex justify-between items-center bg-[#140e0b]"
+      >
+        <span className="truncate">{selectedLabel}</span>
+        <span className="text-[10px] ml-2 opacity-70">▼</span>
+      </div>
+      {open && (
+        <>
+          <div className="fixed inset-0 z-[9998]" onClick={() => setOpen(false)}></div>
+          <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a120e] border border-amber-900/50 rounded-lg shadow-xl z-[9999] max-h-60 overflow-y-auto">
+            {options.map(opt => (
+              <div 
+                key={opt.value} 
+                className={`p-2.5 text-sm cursor-pointer hover:bg-amber-600 transition-colors ${String(value) === String(opt.value) ? 'bg-amber-600 text-white' : 'text-white/90'}`}
+                onClick={() => {
+                  onChange(opt.value);
+                  setOpen(false);
+                }}
+              >
+                {opt.label}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+    </div>
+  );
+};
 
 function ManageStock() {
   const [stock, setStock] = useState<any[]>([]);
@@ -788,9 +823,11 @@ function ManageStock() {
         <form onSubmit={handleAdd} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium text-white/70 mb-1">Pilih Produk</label>
-            <select value={productId} onChange={e=>setProductId(e.target.value)} className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90">
-              {products.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
-            </select>
+            <CustomSelect 
+              value={productId} 
+              onChange={setProductId} 
+              options={products.map(p => ({ value: p.id.toString(), label: p.title }))} 
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-white/70 mb-1">Data Akun (Email / Pass dll)</label>
@@ -962,11 +999,12 @@ function ManageProducts() {
         <form onSubmit={handleAdd} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
             <label className="block text-sm font-medium text-white/70 mb-1">Category</label>
-            <select value={category} onChange={e=>setCategory(e.target.value)} className={inputClass}>
-              <option value="AKUN">AKUN</option>
-              <option value="LAYANAN">LAYANAN</option>
-              <option value="ITEM">ITEM / DLL</option>
-            </select>
+            <CustomSelect 
+              value={category} 
+              onChange={setCategory} 
+              options={[{value:"AKUN",label:"AKUN"}, {value:"LAYANAN",label:"LAYANAN"}, {value:"ITEM",label:"ITEM / DLL"}]} 
+              className="w-full"
+            />
           </div>
           <div>
             <label className="block text-sm font-medium text-white/70 mb-1">Title (Product Name)</label>
@@ -1051,11 +1089,12 @@ function ManageProducts() {
 
               <div>
                 <label className="block text-sm font-semibold text-white/80 mb-1.5">Kategori</label>
-                <select value={editCategory} onChange={e => setEditCategory(e.target.value)} className={inputClass}>
-                  <option value="AKUN">AKUN</option>
-                  <option value="LAYANAN">LAYANAN</option>
-                  <option value="ITEM">ITEM / DLL</option>
-                </select>
+                <CustomSelect 
+                  value={editCategory} 
+                  onChange={setEditCategory} 
+                  options={[{value:"AKUN",label:"AKUN"}, {value:"LAYANAN",label:"LAYANAN"}, {value:"ITEM",label:"ITEM / DLL"}]} 
+                  className="w-full"
+                />
               </div>
 
               <div>
