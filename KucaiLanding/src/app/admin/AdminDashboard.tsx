@@ -1885,19 +1885,21 @@ function ManageLiveChat() {
                 onSubmit={handleSendReply}
                 className="shrink-0 px-4 py-3 border-t border-amber-900/20 bg-[#140e0b] flex items-center gap-3"
               >
-                <input type="file" ref={adminFileInputRef} accept="image/*" className="hidden" onChange={async (e) => {
-                  const file = e.target.files?.[0];
-                  if (!file || !activeSession) return;
+                <input type="file" ref={adminFileInputRef} accept="image/*" multiple className="hidden" onChange={async (e) => {
+                  const files = e.target.files;
+                  if (!files || files.length === 0 || !activeSession) return;
                   setUploading(true);
                   try {
-                    const formData = new FormData();
-                    formData.append("file", file);
-                    const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
-                    const result = await res.json();
-                    if (result.url) {
-                      await supabase.from("chat_messages").insert({ session_id: activeSession, sender: "admin", message: "", image_url: result.url });
-                      await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", activeSession);
+                    for (const file of Array.from(files)) {
+                      const formData = new FormData();
+                      formData.append("file", file);
+                      const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+                      const result = await res.json();
+                      if (result.url) {
+                        await supabase.from("chat_messages").insert({ session_id: activeSession, sender: "admin", message: "", image_url: result.url });
+                      }
                     }
+                    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", activeSession);
                   } catch {}
                   setUploading(false);
                   if (adminFileInputRef.current) adminFileInputRef.current.value = "";

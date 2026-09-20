@@ -207,25 +207,28 @@ function LiveChatInner() {
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file || !sessionId || uploading) return;
+    const files = e.target.files;
+    if (!files || files.length === 0 || !sessionId || uploading) return;
 
     setUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("file", file);
-      const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
-      const result = await res.json();
+      const fileArray = Array.from(files);
+      for (const file of fileArray) {
+        const formData = new FormData();
+        formData.append("file", file);
+        const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+        const result = await res.json();
 
-      if (result.url) {
-        await supabase.from("chat_messages").insert({
-          session_id: sessionId,
-          sender: "customer",
-          message: "",
-          image_url: result.url,
-        });
-        await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+        if (result.url) {
+          await supabase.from("chat_messages").insert({
+            session_id: sessionId,
+            sender: "customer",
+            message: "",
+            image_url: result.url,
+          });
+        }
       }
+      await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
     } catch {}
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -398,7 +401,7 @@ function LiveChatInner() {
                   onSubmit={handleSendMessage}
                   className="shrink-0 p-3 border-t border-white/10 flex items-center gap-2"
                 >
-                  <input type="file" ref={fileInputRef} accept="image/*" className="hidden" onChange={handleImageUpload} />
+                  <input type="file" ref={fileInputRef} accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}

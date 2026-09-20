@@ -51,6 +51,24 @@ export async function POST(req: NextRequest) {
           }
         }
 
+        // Cleanup old chats (> 7 days) to save database space
+        try {
+          const sevenDaysAgo = new Date();
+          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+          const { data: oldSessions } = await supabaseAdmin
+            .from("chat_sessions")
+            .select("id")
+            .lt("created_at", sevenDaysAgo.toISOString());
+            
+          if (oldSessions && oldSessions.length > 0) {
+            const oldIds = oldSessions.map((s: any) => s.id);
+            await supabaseAdmin.from("chat_messages").delete().in("session_id", oldIds);
+            await supabaseAdmin.from("chat_sessions").delete().in("id", oldIds);
+          }
+        } catch (e) {
+          console.error("Failed to cleanup old chats:", e);
+        }
+
         return NextResponse.json({
           accounts: accounts.count || 0,
           testimonials: testimonials.count || 0,
