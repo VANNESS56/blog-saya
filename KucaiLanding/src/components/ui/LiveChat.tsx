@@ -66,9 +66,9 @@ function LiveChatInner() {
     return () => window.removeEventListener("open-livechat", handleOpenLiveChat);
   }, []);
 
-  // Restore session from sessionStorage
+  // Restore session from localStorage
   useEffect(() => {
-    const saved = sessionStorage.getItem("kucaidl_chat");
+    const saved = localStorage.getItem("kucaidl_chat");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -169,7 +169,7 @@ function LiveChatInner() {
     const sid = data.id;
     setSessionId(sid);
     setNameSubmitted(true);
-    sessionStorage.setItem(
+    localStorage.setItem(
       "kucaidl_chat",
       JSON.stringify({ sessionId: sid, customerName: trimmed })
     );
