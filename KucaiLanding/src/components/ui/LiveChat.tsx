@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Send, Headphones, Minus, ImagePlus } from "lucide-react";
+import { X, Send, Minus, ImagePlus } from "lucide-react";
+import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { usePathname } from "next/navigation";
 
@@ -150,7 +151,7 @@ function LiveChatInner() {
     await supabase.from("chat_messages").insert({
       session_id: sid,
       sender: "admin",
-      message: `Hai ${trimmed}! 👋 Ada yang bisa kami bantu? Silakan ketik pertanyaan Anda.`,
+      message: `*kalau jual akun , silahkan kirim ss spek akunnya :*\n- backpack\n- playtime hour\n- supporter / ssupporter\n- title ( kalau ada )\n- roles kalau level 5 keatas\n\n*kalau beli akun , silahkan klik beli dari website ya* 🥰`,
     });
   };
 
@@ -209,7 +210,7 @@ function LiveChatInner() {
   };
 
   return (
-    <div className="fixed bottom-[85px] right-[72px] md:bottom-8 md:right-[80px] z-[51] flex flex-col items-end">
+    <div className="fixed bottom-[85px] right-4 md:bottom-8 md:right-8 z-[51] flex flex-col items-end">
       {/* Chat Window */}
       {isOpen && (
         <div
@@ -217,14 +218,14 @@ function LiveChatInner() {
           style={{ height: "420px" }}
         >
           {/* Header */}
-          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-700 shrink-0">
+          <div className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-600 to-orange-600 shrink-0">
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-                <Headphones className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center">
+                <Image src="/icon.png" alt="Kucai" width={32} height={32} className="object-cover" />
               </div>
               <div>
                 <p className="text-white text-sm font-bold leading-tight">
-                  KUCAIDL Support
+                  Kucai Account
                 </p>
                 <div className="flex items-center gap-1.5">
                   <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
@@ -251,8 +252,8 @@ function LiveChatInner() {
           {!nameSubmitted ? (
             /* Name Input Form */
             <div className="flex-1 flex flex-col items-center justify-center p-6">
-              <div className="w-14 h-14 rounded-full bg-blue-600/20 flex items-center justify-center mb-4">
-                <Headphones className="w-7 h-7 text-blue-400" />
+              <div className="w-14 h-14 rounded-full overflow-hidden bg-amber-600/20 flex items-center justify-center mb-4">
+                <Image src="/icon.png" alt="Kucai" width={56} height={56} className="object-cover" />
               </div>
               <h3 className="text-white font-bold text-lg mb-1">
                 Halo! 👋
@@ -273,7 +274,7 @@ function LiveChatInner() {
                 <button
                   type="submit"
                   disabled={!customerName.trim()}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+                  className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
                 >
                   Mulai Chat
                 </button>
@@ -367,10 +368,10 @@ function LiveChatInner() {
       {/* Floating Button */}
       <button
         onClick={handleOpen}
-        className="w-[52px] h-[52px] md:w-14 md:h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(37,99,235,0.4)] hover:scale-110 transition-all duration-300 relative group"
+        className="w-[52px] h-[52px] md:w-14 md:h-14 bg-amber-600 hover:bg-amber-700 text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(245,158,11,0.4)] hover:scale-110 transition-all duration-300 relative group overflow-hidden"
       >
-        <div className="absolute inset-0 rounded-full border-2 border-blue-500/40 scale-100 group-hover:scale-125 transition-transform duration-500" />
-        <Headphones className="w-6 h-6 md:w-7 md:h-7 relative z-10" />
+        <div className="absolute inset-0 rounded-full border-2 border-amber-500/40 scale-100 group-hover:scale-125 transition-transform duration-500" />
+        <Image src="/icon.png" alt="Chat" width={32} height={32} className="relative z-10 rounded-full" />
         {unread > 0 && (
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center z-20 animate-bounce">
             {unread}

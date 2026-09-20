@@ -82,7 +82,6 @@ import { LanguageProvider } from "@/lib/i18n/LanguageContext";
 import { SettingsProvider } from "@/lib/settings/SettingsContext";
 import { Analytics } from "@vercel/analytics/next";
 import { MobileNav } from "@/components/layout/MobileNav";
-import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { LiveChat } from "@/components/ui/LiveChat";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
@@ -114,7 +113,6 @@ export default async function RootLayout({
           <LanguageProvider>
             {children}
             <LiveChat />
-            <FloatingWhatsApp />
             <MobileNav />
           </LanguageProvider>
         </SettingsProvider>

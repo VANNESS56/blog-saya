@@ -103,7 +103,7 @@ export async function POST(req: Request) {
 
     const qrisString = pakasirData.payment.payment_number;
 
-    // 5. Save to Database
+  
     const { error: insertErr } = await supabaseAdmin.from("orders").insert({
       invoice_no: invoiceNo,
       product_id: productId,
