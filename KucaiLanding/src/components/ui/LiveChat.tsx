@@ -31,6 +31,7 @@ function LiveChatInner() {
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
   const [unread, setUnread] = useState(0);
+  const [isBlocked, setIsBlocked] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -60,6 +61,14 @@ function LiveChatInner() {
         .eq("session_id", sessionId)
         .order("created_at", { ascending: true });
       if (data) setMessages(data);
+
+      // Check if blocked
+      const { data: session } = await supabase
+        .from("chat_sessions")
+        .select("status")
+        .eq("id", sessionId)
+        .single();
+      if (session?.status === "blocked") setIsBlocked(true);
     }
     fetchMessages();
   }, [sessionId]);
@@ -282,27 +291,33 @@ function LiveChatInner() {
               </div>
 
               {/* Input Area */}
-              <form
-                onSubmit={handleSendMessage}
-                className="shrink-0 p-3 border-t border-white/10 flex items-center gap-2"
-              >
-                <input
-                  ref={inputRef}
-                  type="text"
-                  value={newMessage}
-                  onChange={(e) => setNewMessage(e.target.value)}
-                  placeholder="Ketik pesan..."
-                  className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
-                  maxLength={500}
-                />
-                <button
-                  type="submit"
-                  disabled={!newMessage.trim() || sending}
-                  className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
+              {isBlocked ? (
+                <div className="shrink-0 p-3 border-t border-white/10 text-center">
+                  <p className="text-red-400 text-xs font-medium">🚫 Sesi chat ini telah diblokir oleh admin.</p>
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSendMessage}
+                  className="shrink-0 p-3 border-t border-white/10 flex items-center gap-2"
                 >
-                  <Send className="w-4 h-4" />
-                </button>
-              </form>
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={newMessage}
+                    onChange={(e) => setNewMessage(e.target.value)}
+                    placeholder="Ketik pesan..."
+                    className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
+                    maxLength={500}
+                  />
+                  <button
+                    type="submit"
+                    disabled={!newMessage.trim() || sending}
+                    className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
+                  >
+                    <Send className="w-4 h-4" />
+                  </button>
+                </form>
+              )}
             </>
           )}
         </div>

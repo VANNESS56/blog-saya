@@ -1713,7 +1713,9 @@ function ManageLiveChat() {
                       })}
                     </span>
                   </div>
-                  <p className="text-xs text-gray-500 truncate">{s.lastMsg}</p>
+                  <p className={`text-xs truncate ${s.status === 'blocked' ? 'text-red-400' : 'text-gray-500'}`}>
+                    {s.status === 'blocked' ? '🚫 Diblokir' : s.lastMsg}
+                  </p>
                 </button>
               ))
             )}
@@ -1735,15 +1737,53 @@ function ManageLiveChat() {
                 <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
                   {activeSessionData?.customer_name?.charAt(0)?.toUpperCase() || "?"}
                 </div>
-                <div>
+                <div className="flex-1">
                   <p className="font-bold text-gray-800 text-sm">
                     {activeSessionData?.customer_name || "Customer"}
+                    {activeSessionData?.status === 'blocked' && (
+                      <span className="ml-2 text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-semibold">DIBLOKIR</span>
+                    )}
                   </p>
                   <p className="text-[10px] text-gray-400">
                     Mulai: {activeSessionData ? new Date(activeSessionData.created_at).toLocaleString("id-ID") : ""}
                   </p>
                 </div>
-              </div>
+                <div className="flex items-center gap-2 ml-auto">
+                  {activeSessionData?.status !== 'blocked' ? (
+                    <button
+                      onClick={async () => {
+                        if (!confirm(`Blokir ${activeSessionData?.customer_name}? Customer tidak bisa mengirim pesan lagi.`)) return;
+                        await supabase.from('chat_sessions').update({ status: 'blocked' }).eq('id', activeSession);
+                        fetchSessions();
+                      }}
+                      className="px-3 py-1.5 bg-red-50 hover:bg-red-100 text-red-600 text-xs font-semibold rounded-lg transition-colors border border-red-200"
+                    >
+                      🚫 Blokir
+                    </button>
+                  ) : (
+                    <button
+                      onClick={async () => {
+                        await supabase.from('chat_sessions').update({ status: 'active' }).eq('id', activeSession);
+                        fetchSessions();
+                      }}
+                      className="px-3 py-1.5 bg-green-50 hover:bg-green-100 text-green-600 text-xs font-semibold rounded-lg transition-colors border border-green-200"
+                    >
+                      ✅ Buka Blokir
+                    </button>
+                  )}
+                  <button
+                    onClick={async () => {
+                      if (!confirm(`Hapus seluruh percakapan dengan ${activeSessionData?.customer_name}?`)) return;
+                      await supabase.from('chat_sessions').delete().eq('id', activeSession);
+                      setActiveSession(null);
+                      setMessages([]);
+                      fetchSessions();
+                    }}
+                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-500 text-xs font-semibold rounded-lg transition-colors border border-gray-200"
+                  >
+                    🗑️ Hapus
+                  </button>
+                </div>
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50/50">
