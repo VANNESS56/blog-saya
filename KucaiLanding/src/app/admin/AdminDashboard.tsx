@@ -1784,6 +1784,7 @@ function ManageLiveChat() {
                     🗑️ Hapus
                   </button>
                 </div>
+              </div>
 
               {/* Messages */}
               <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50/50">
