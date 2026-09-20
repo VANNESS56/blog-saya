@@ -1566,6 +1566,23 @@ interface ChatMsg {
   created_at: string;
 }
 
+const renderMessageText = (text: string) => {
+  return text.split('\n').map((line, i, arr) => {
+    const parts = line.split(/(\*[^*]+\*)/g);
+    return (
+      <span key={i}>
+        {parts.map((part, j) => {
+          if (part.startsWith('*') && part.endsWith('*')) {
+            return <strong key={j} className="font-bold">{part.slice(1, -1)}</strong>;
+          }
+          return part;
+        })}
+        {i < arr.length - 1 && <br />}
+      </span>
+    );
+  });
+};
+
 function ManageLiveChat() {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSession, setActiveSession] = useState<string | null>(null);
@@ -1808,7 +1825,7 @@ function ManageLiveChat() {
                       {(msg as any).image_url && (
                         <img src={(msg as any).image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => window.open((msg as any).image_url, '_blank')} />
                       )}
-                      {msg.message && <span>{msg.message}</span>}
+                      {msg.message && <span>{renderMessageText(msg.message)}</span>}
                       <div
                         className={`text-[10px] mt-1 ${
                           msg.sender === "admin" ? "text-blue-200" : "text-gray-400"
