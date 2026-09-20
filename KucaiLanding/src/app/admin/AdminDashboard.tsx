@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 
