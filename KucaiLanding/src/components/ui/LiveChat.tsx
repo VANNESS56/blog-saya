@@ -56,6 +56,7 @@ function LiveChatInner() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
@@ -186,52 +187,53 @@ function LiveChatInner() {
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = newMessage.trim();
-    if (!trimmed || !sessionId || sending) return;
+    if ((!trimmed && selectedFiles.length === 0) || !sessionId || sending || uploading) return;
 
     setSending(true);
-    setNewMessage("");
 
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      sender: "customer",
-      message: trimmed,
-    });
-
-    // Update last_message_at on session
-    await supabase
-      .from("chat_sessions")
-      .update({ last_message_at: new Date().toISOString() })
-      .eq("id", sessionId);
+    if (selectedFiles.length > 0) {
+      setUploading(true);
+      try {
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file = selectedFiles[i];
+          const formData = new FormData();
+          formData.append("file", file);
+          const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+          const result = await res.json();
+          if (result.url) {
+            await supabase.from("chat_messages").insert({
+              session_id: sessionId,
+              sender: "customer",
+              message: i === 0 ? trimmed : "", // Text caption attached to first image
+              image_url: result.url,
+            });
+          }
+        }
+        await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+        setNewMessage("");
+        setSelectedFiles([]);
+      } catch {}
+      setUploading(false);
+    } else {
+      // Only text
+      await supabase.from("chat_messages").insert({
+        session_id: sessionId,
+        sender: "customer",
+        message: trimmed,
+      });
+      await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+      setNewMessage("");
+    }
 
     setSending(false);
     inputRef.current?.focus();
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0 || !sessionId || uploading) return;
-
-    setUploading(true);
-    try {
-      const fileArray = Array.from(files);
-      for (const file of fileArray) {
-        const formData = new FormData();
-        formData.append("file", file);
-        const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
-        const result = await res.json();
-
-        if (result.url) {
-          await supabase.from("chat_messages").insert({
-            session_id: sessionId,
-            sender: "customer",
-            message: "",
-            image_url: result.url,
-          });
-        }
-      }
-      await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
-    } catch {}
-    setUploading(false);
+    if (files && files.length > 0) {
+      setSelectedFiles(Array.from(files));
+    }
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
@@ -398,37 +400,51 @@ function LiveChatInner() {
                   <p className="text-red-400 text-xs font-medium">🚫 Sesi chat ini telah diblokir oleh admin.</p>
                 </div>
               ) : (
-                <form
-                  onSubmit={handleSendMessage}
-                  className="shrink-0 p-3 border-t border-white/10 flex items-center gap-2"
-                >
-                  <input type="file" ref={fileInputRef} accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    disabled={uploading}
-                    className="w-10 h-10 shrink-0 bg-white/10 hover:bg-white/20 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                <div className="shrink-0 flex flex-col border-t border-white/10">
+                  {selectedFiles.length > 0 && (
+                    <div className="flex gap-2 p-3 bg-white/5 overflow-x-auto border-b border-white/10">
+                      {selectedFiles.map((f, i) => (
+                        <div key={i} className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-white/20">
+                          <img src={URL.createObjectURL(f)} alt="" className="w-full h-full object-cover" />
+                          <button type="button" onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 hover:bg-red-500 transition-colors">
+                             <X className="w-3 h-3" />
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  <form
+                    onSubmit={handleSendMessage}
+                    className="p-3 flex items-center gap-2"
                   >
-                    <ImagePlus className="w-4 h-4" />
-                  </button>
-                  <input
-                    ref={inputRef}
-                    type="text"
-                    value={newMessage}
-                    onChange={(e) => setNewMessage(e.target.value)}
-                    placeholder={uploading ? "Mengunggah..." : "Ketik pesan..."}
-                    className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
-                    maxLength={500}
-                    disabled={uploading}
-                  />
-                  <button
-                    type="submit"
-                    disabled={!newMessage.trim() || sending || uploading}
-                    className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
-                  >
-                    <Send className="w-4 h-4" />
-                  </button>
-                </form>
+                    <input type="file" ref={fileInputRef} accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="w-10 h-10 shrink-0 bg-white/10 hover:bg-white/20 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                    >
+                      <ImagePlus className="w-4 h-4" />
+                    </button>
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder={uploading ? "Mengunggah..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik pesan...")}
+                      className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
+                      maxLength={500}
+                      disabled={uploading}
+                    />
+                    <button
+                      type="submit"
+                      disabled={(!newMessage.trim() && selectedFiles.length === 0) || sending || uploading}
+                      className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
+                  </form>
+                </div>
               )}
             </>
           )}

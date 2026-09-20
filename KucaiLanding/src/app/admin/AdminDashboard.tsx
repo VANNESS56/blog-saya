@@ -1595,6 +1595,7 @@ function ManageLiveChat() {
   const adminFileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [readSessions, setReadSessions] = useState<Record<string, string>>({});
 
   // Load read status from localStorage
@@ -1693,21 +1694,47 @@ function ManageLiveChat() {
   const handleSendReply = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = reply.trim();
-    if (!trimmed || !activeSession || sending) return;
+    if ((!trimmed && selectedFiles.length === 0) || !activeSession || sending || uploading) return;
 
     setSending(true);
-    setReply("");
 
-    await supabase.from("chat_messages").insert({
-      session_id: activeSession,
-      sender: "admin",
-      message: trimmed,
-    });
+    if (selectedFiles.length > 0) {
+      setUploading(true);
+      try {
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const file = selectedFiles[i];
+          const formData = new FormData();
+          formData.append("file", file);
+          const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+          const result = await res.json();
+          if (result.url) {
+            await supabase.from("chat_messages").insert({
+              session_id: activeSession,
+              sender: "admin",
+              message: i === 0 ? trimmed : "",
+              image_url: result.url,
+            });
+          }
+        }
+        await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", activeSession);
+        setReply("");
+        setSelectedFiles([]);
+      } catch {}
+      setUploading(false);
+    } else {
+      await supabase.from("chat_messages").insert({
+        session_id: activeSession,
+        sender: "admin",
+        message: trimmed,
+      });
 
-    await supabase
-      .from("chat_sessions")
-      .update({ last_message_at: new Date().toISOString() })
-      .eq("id", activeSession);
+      await supabase
+        .from("chat_sessions")
+        .update({ last_message_at: new Date().toISOString() })
+        .eq("id", activeSession);
+
+      setReply("");
+    }
 
     setSending(false);
     replyInputRef.current?.focus();
@@ -1882,50 +1909,52 @@ function ManageLiveChat() {
               </div>
 
               {/* Reply Input */}
-              <form
-                onSubmit={handleSendReply}
-                className="shrink-0 px-4 py-3 border-t border-amber-900/20 bg-[#140e0b] flex items-center gap-3"
-              >
-                <input type="file" ref={adminFileInputRef} accept="image/*" multiple className="hidden" onChange={async (e) => {
-                  const files = e.target.files;
-                  if (!files || files.length === 0 || !activeSession) return;
-                  setUploading(true);
-                  try {
-                    for (const file of Array.from(files)) {
-                      const formData = new FormData();
-                      formData.append("file", file);
-                      const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
-                      const result = await res.json();
-                      if (result.url) {
-                        await supabase.from("chat_messages").insert({ session_id: activeSession, sender: "admin", message: "", image_url: result.url });
-                      }
-                    }
-                    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", activeSession);
-                  } catch {}
-                  setUploading(false);
-                  if (adminFileInputRef.current) adminFileInputRef.current.value = "";
-                }} />
-                <button type="button" onClick={() => adminFileInputRef.current?.click()} disabled={uploading} className="w-10 h-10 shrink-0 bg-[#1a120e] hover:bg-gray-200 disabled:opacity-50 rounded-xl flex items-center justify-center text-white/50 hover:text-amber-500 transition-colors border border-amber-900/30">
-                  <ImagePlus className="w-4 h-4" />
-                </button>
-                <input
-                  ref={replyInputRef}
-                  type="text"
-                  value={reply}
-                  onChange={(e) => setReply(e.target.value)}
-                  placeholder={uploading ? "Mengunggah gambar..." : "Ketik balasan..."}
-                  className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
-                  maxLength={500}
-                  disabled={uploading}
-                />
-                <button
-                  type="submit"
-                  disabled={!reply.trim() || sending || uploading}
-                  className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors text-sm flex items-center gap-2"
+              <div className="shrink-0 flex flex-col border-t border-amber-900/20 bg-[#140e0b]">
+                {selectedFiles.length > 0 && (
+                  <div className="flex gap-2 p-3 border-b border-amber-900/20 overflow-x-auto">
+                    {selectedFiles.map((f, i) => (
+                      <div key={i} className="relative w-16 h-16 shrink-0 rounded-lg overflow-hidden border border-amber-900/30">
+                        <img src={URL.createObjectURL(f)} alt="" className="w-full h-full object-cover" />
+                        <button type="button" onClick={() => setSelectedFiles(prev => prev.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-black/60 text-white rounded-full p-0.5 hover:bg-red-500 transition-colors">
+                           <X className="w-3 h-3" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                <form
+                  onSubmit={handleSendReply}
+                  className="px-4 py-3 flex items-center gap-3"
                 >
-                  Kirim
-                </button>
-              </form>
+                  <input type="file" ref={adminFileInputRef} accept="image/*" multiple className="hidden" onChange={(e) => {
+                    const files = e.target.files;
+                    if (files && files.length > 0) {
+                      setSelectedFiles(Array.from(files));
+                    }
+                    if (adminFileInputRef.current) adminFileInputRef.current.value = "";
+                  }} />
+                  <button type="button" onClick={() => adminFileInputRef.current?.click()} disabled={uploading} className="w-10 h-10 shrink-0 bg-[#1a120e] hover:bg-gray-200 disabled:opacity-50 rounded-xl flex items-center justify-center text-white/50 hover:text-amber-500 transition-colors border border-amber-900/30">
+                    <ImagePlus className="w-4 h-4" />
+                  </button>
+                  <input
+                    ref={replyInputRef}
+                    type="text"
+                    value={reply}
+                    onChange={(e) => setReply(e.target.value)}
+                    placeholder={uploading ? "Mengunggah gambar..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik balasan...")}
+                    className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
+                    maxLength={500}
+                    disabled={uploading}
+                  />
+                  <button
+                    type="submit"
+                    disabled={(!reply.trim() && selectedFiles.length === 0) || sending || uploading}
+                    className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors text-sm flex items-center gap-2"
+                  >
+                    Kirim
+                  </button>
+                </form>
+              </div>
             </>
           )}
         </div>
