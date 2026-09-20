@@ -59,6 +59,13 @@ function LiveChatInner() {
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
 
+  // Listen for custom event to open chat
+  useEffect(() => {
+    const handleOpenLiveChat = () => setIsOpen(true);
+    window.addEventListener("open-livechat", handleOpenLiveChat);
+    return () => window.removeEventListener("open-livechat", handleOpenLiveChat);
+  }, []);
+
   // Restore session from sessionStorage
   useEffect(() => {
     const saved = sessionStorage.getItem("kucaidl_chat");

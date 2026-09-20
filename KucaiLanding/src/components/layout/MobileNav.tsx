@@ -35,9 +35,9 @@ export function MobileNav() {
   };
 
   const navItems = [
-    { name: "BELI/JUAL\nDL", href: "/#home", path: "/", hash: "#home", icon: Home },
-    { name: "Stock Akun", href: "/#products", path: "/", hash: "#products", icon: ShoppingBag },
-    { name: "BELI/JUAL\nAKUN", href: "/order", path: "/order", hash: "", icon: FileText },
+    { name: "BELI/JUAL\nDL", href: "/#home", path: "/", hash: "#home", icon: Home, action: "link" },
+    { name: "Stock Akun", href: "/#products", path: "/", hash: "#products", icon: ShoppingBag, action: "link" },
+    { name: "BELI/JUAL\nAKUN", href: "#", path: "", hash: "", icon: FileText, action: "chat" },
   ];
 
   return (
@@ -51,6 +51,12 @@ export function MobileNav() {
             <Link
               key={item.name}
               href={item.href}
+              onClick={(e) => {
+                if (item.action === "chat") {
+                  e.preventDefault();
+                  window.dispatchEvent(new Event("open-livechat"));
+                }
+              }}
               className={`flex flex-col items-center justify-center w-full py-1.5 px-2 rounded-full transition-all duration-300 ${
                 active 
                   ? "bg-amber-500/10 text-amber-500" 
