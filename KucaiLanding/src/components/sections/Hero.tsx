@@ -133,7 +133,7 @@ export function Hero() {
                 `}</style>
                 <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
                   onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
-                  className="relative overflow-hidden w-full sm:w-[220px] h-[95px] rounded-[18px] bg-gradient-to-r from-amber-500 to-amber-600 shadow-[0_8px_24px_rgba(245,158,11,0.3)] hover:scale-105 hover:-translate-y-1 transition-all group border border-amber-400/50 flex flex-col justify-center px-6">
+                  className="relative overflow-hidden w-full sm:w-[220px] h-[95px] rounded-[18px] bg-gradient-to-r from-blue-500 to-blue-600 shadow-[0_8px_24px_rgba(59,130,246,0.4)] hover:scale-105 hover:-translate-y-1 transition-all group border border-blue-400/50 flex flex-col justify-center px-6">
                   
                   {punches.map(p => (
                     <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
@@ -157,7 +157,7 @@ export function Hero() {
 
                 <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
                   onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
-                  className="relative overflow-hidden w-full sm:w-[220px] h-[95px] rounded-[18px] bg-gradient-to-r from-[#4d2c16] to-[#3a2010] shadow-[0_8px_24px_rgba(30,15,5,0.5)] hover:scale-105 hover:-translate-y-1 transition-all group border border-orange-900/50 flex flex-col justify-center px-6">
+                  className="relative overflow-hidden w-full sm:w-[220px] h-[95px] rounded-[18px] bg-gradient-to-r from-blue-800 to-indigo-950 shadow-[0_8px_24px_rgba(30,58,138,0.5)] hover:scale-105 hover:-translate-y-1 transition-all group border border-blue-800/50 flex flex-col justify-center px-6">
                   
                   {punches.map(p => (
                     <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
