@@ -280,7 +280,7 @@ function LiveChatInner() {
           >
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center">
-                <Image src="/icon.png" alt="Kucai" width={32} height={32} className="object-cover" />
+                <Image src="/kucaiaccount.jpeg" alt="Kucai" width={32} height={32} className="object-cover" />
               </div>
               <div>
                 <p className="text-white text-sm font-bold leading-tight">
@@ -312,7 +312,7 @@ function LiveChatInner() {
             /* Name Input Form */
             <div className="flex-1 flex flex-col items-center justify-center p-6">
               <div className="w-14 h-14 rounded-full overflow-hidden bg-amber-600/20 flex items-center justify-center mb-4">
-                <Image src="/icon.png" alt="Kucai" width={56} height={56} className="object-cover" />
+                <Image src="/kucaiaccount.jpeg" alt="Kucai" width={56} height={56} className="object-cover" />
               </div>
               <h3 className="text-white font-bold text-lg mb-1">
                 Halo! 👋
@@ -430,7 +430,7 @@ function LiveChatInner() {
         className="w-[52px] h-[52px] md:w-14 md:h-14 bg-amber-600 hover:bg-amber-700 text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(245,158,11,0.4)] hover:scale-110 transition-all duration-300 relative group overflow-hidden pointer-events-auto"
       >
         <div className="absolute inset-0 rounded-full border-2 border-amber-500/40 scale-100 group-hover:scale-125 transition-transform duration-500" />
-        <Image src="/icon.png" alt="Chat" width={32} height={32} className="relative z-10 rounded-full" />
+        <Image src="/kucaiaccount.jpeg" alt="Chat" width={32} height={32} className="relative z-10 rounded-full" />
         {unread > 0 && (
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center z-20 animate-bounce">
             {unread}
