@@ -36,29 +36,29 @@ export function AdminDashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#d1d5db] text-gray-800 font-sans">
+    <div className="min-h-screen bg-[#0c0805] text-white/90 font-sans">
       {/* HEADER DESKTOP */}
-      <header className="fixed top-0 left-0 right-0 h-[75px] bg-white shadow-sm z-40 flex items-center justify-between px-4 lg:px-8 transition-all duration-300 ml-0 lg:ml-72">
+      <header className="fixed top-0 left-0 right-0 h-[75px] bg-[#140e0b] shadow-[0_4px_20px_rgba(0,0,0,0.3)] z-40 flex items-center justify-between px-4 lg:px-8 transition-all duration-300 ml-0 lg:ml-72">
         <div className="flex items-center gap-4">
-          <button suppressHydrationWarning className="lg:hidden p-2 text-gray-600" onClick={() => setSidebarOpen(!isSidebarOpen)}>
+          <button suppressHydrationWarning className="lg:hidden p-2 text-white/70" onClick={() => setSidebarOpen(!isSidebarOpen)}>
             <Menu className="w-6 h-6" />
           </button>
-          <div className="hidden md:flex items-center bg-gray-100 rounded-lg px-3 py-2 w-64 border border-gray-200">
+          <div className="hidden md:flex items-center bg-[#1a120e] rounded-lg px-3 py-2 w-64 border border-amber-900/30">
             <Search className="w-4 h-4 text-gray-400 mr-2" />
-            <input suppressHydrationWarning type="text" placeholder="Search for data & reports..." className="bg-transparent border-none outline-none text-sm w-full text-gray-700" />
+            <input suppressHydrationWarning type="text" placeholder="Search for data & reports..." className="bg-transparent border-none outline-none text-sm w-full text-white/80" />
           </div>
         </div>
         <div className="flex items-center gap-6">
-          <button suppressHydrationWarning className="relative text-gray-500 hover:text-blue-600">
+          <button suppressHydrationWarning className="relative text-white/50 hover:text-amber-500">
             <Bell className="w-6 h-6" />
             <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
           </button>
           <div className="flex items-center gap-3 border-l pl-6">
             <div className="text-right hidden sm:block">
-              <p className="text-sm font-bold text-gray-800">Admin</p>
-              <p className="text-xs text-gray-500">Superadmin</p>
+              <p className="text-sm font-bold text-white/90">Admin</p>
+              <p className="text-xs text-white/50">Superadmin</p>
             </div>
-            <div className="w-10 h-10 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-600 font-bold">
+            <div className="w-10 h-10 rounded-full bg-amber-900/40 border border-amber-500/30 flex items-center justify-center text-amber-500 font-bold">
               A
             </div>
           </div>
@@ -66,10 +66,10 @@ export function AdminDashboard() {
       </header>
 
       {/* SIDEBAR */}
-      <aside className={`fixed top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-50 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
-        <div className="h-[75px] shrink-0 flex items-center justify-center border-b border-gray-100 px-8">
-          <h1 className="text-2xl font-black text-blue-600 tracking-tight flex items-center gap-2">
-            Kucai<span className="text-gray-800 font-normal">DL</span>
+      <aside className={`fixed top-0 left-0 h-screen w-72 bg-[#140e0b] border-r border-amber-900/30 z-50 transition-transform duration-300 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 flex flex-col`}>
+        <div className="h-[75px] shrink-0 flex items-center justify-center border-b border-amber-900/20 px-8">
+          <h1 className="text-2xl font-black text-amber-500 tracking-tight flex items-center gap-2">
+            Kucai<span className="text-white/90 font-normal">DL</span>
           </h1>
         </div>
         <div className="p-6 flex-1 overflow-y-auto">
@@ -77,7 +77,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("dashboard")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'dashboard' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'dashboard' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <LayoutDashboard className="w-5 h-5" /> Dashboard
               </button>
@@ -86,7 +86,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("testimonials")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'testimonials' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'testimonials' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <Star className="w-5 h-5" /> Testimonials
               </button>
@@ -94,7 +94,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("reputations")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'reputations' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'reputations' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <MessageSquare className="w-5 h-5" /> Reputations
               </button>
@@ -102,7 +102,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("settings")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'settings' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'settings' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <Settings className="w-5 h-5" /> Settings (Prices)
               </button>
@@ -110,7 +110,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("orders")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <ShoppingCart className="w-5 h-5" /> Orders
               </button>
@@ -118,7 +118,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("stock")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'stock' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'stock' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <Database className="w-5 h-5" /> Digital Stock
               </button>
@@ -126,7 +126,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("products")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'products' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'products' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <Package className="w-5 h-5" /> Digital Products
               </button>
@@ -134,7 +134,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("profile")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'profile' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'profile' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <User className="w-5 h-5" /> Pengaturan Profile
               </button>
@@ -142,7 +142,7 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("theme")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'theme' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'theme' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <Palette className="w-5 h-5" /> Website Theme
               </button>
@@ -150,13 +150,13 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("livechat")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'livechat' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'livechat' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
                 <Headphones className="w-5 h-5" /> Live Chat
               </button>
             </li>
           </ul>
-          <hr className="my-6 border-gray-100" />
+          <hr className="my-6 border-amber-900/20" />
           <button suppressHydrationWarning 
             onClick={handleLogout}
             className="w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium text-red-500 hover:bg-red-50 transition-colors"
@@ -164,10 +164,10 @@ export function AdminDashboard() {
             <LogOut className="w-5 h-5" /> Logout
           </button>
         </div>
-        <div className="p-5 border-t border-gray-100 text-center shrink-0">
+        <div className="p-5 border-t border-amber-900/20 text-center shrink-0">
           <p className="text-[12px] text-gray-400 font-medium tracking-wide">
             &copy; {new Date().getFullYear()} KUCAIDL.<br/>
-            Created with <span className="text-red-500">❤️</span> By <strong className="text-gray-500">VannessWangsaff</strong>
+            Created with <span className="text-red-500">❤️</span> By <strong className="text-white/50">VannessWangsaff</strong>
           </p>
         </div>
       </aside>
@@ -182,8 +182,8 @@ export function AdminDashboard() {
         <div className="p-6 md:p-8 max-w-[1200px] mx-auto">
           {/* Breadcrumb / Title */}
           <div className="mb-8">
-            <h2 className="text-3xl font-bold text-gray-800 capitalize mb-1">Manage {activeTab}</h2>
-            <p className="text-sm text-gray-500">Overview & statistics</p>
+            <h2 className="text-3xl font-bold text-white/90 capitalize mb-1">Manage {activeTab}</h2>
+            <p className="text-sm text-white/50">Overview & statistics</p>
           </div>
 
           <div className="space-y-6">
@@ -230,31 +230,31 @@ function DashboardOverview() {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {/* Pengunjung Web */}
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
-        <div className="bg-blue-50 text-blue-600 p-4 rounded-lg"><LayoutDashboard className="w-8 h-8" /></div>
+      <div className="bg-[#140e0b] p-6 rounded-xl border border-amber-900/20 shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex items-center gap-4">
+        <div className="bg-amber-500/10 text-amber-500 p-4 rounded-lg"><LayoutDashboard className="w-8 h-8" /></div>
         <div>
-          <p className="text-sm text-gray-500 font-medium">Pengunjung Web</p>
-          <h4 className="text-2xl font-bold text-gray-800">{stats.visitors.toLocaleString('id-ID')}</h4>
+          <p className="text-sm text-white/50 font-medium">Pengunjung Web</p>
+          <h4 className="text-2xl font-bold text-white/90">{stats.visitors.toLocaleString('id-ID')}</h4>
         </div>
       </div>
       
 
       
       {/* Jumlah Testimoni */}
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+      <div className="bg-[#140e0b] p-6 rounded-xl border border-amber-900/20 shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex items-center gap-4">
         <div className="bg-amber-50 text-amber-600 p-4 rounded-lg"><Star className="w-8 h-8" /></div>
         <div>
-          <p className="text-sm text-gray-500 font-medium">Jumlah Testimoni</p>
-          <h4 className="text-2xl font-bold text-gray-800">{stats.testimonials}</h4>
+          <p className="text-sm text-white/50 font-medium">Jumlah Testimoni</p>
+          <h4 className="text-2xl font-bold text-white/90">{stats.testimonials}</h4>
         </div>
       </div>
       
       {/* Rate BGL */}
-      <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm flex items-center gap-4">
+      <div className="bg-[#140e0b] p-6 rounded-xl border border-amber-900/20 shadow-[0_4px_20px_rgba(0,0,0,0.3)] flex items-center gap-4">
         <div className="bg-purple-50 text-purple-600 p-4 rounded-lg"><MessageSquare className="w-8 h-8" /></div>
         <div>
-          <p className="text-sm text-gray-500 font-medium">Rate BGL / DL</p>
-          <h4 className="text-[17px] font-bold text-gray-800">
+          <p className="text-sm text-white/50 font-medium">Rate BGL / DL</p>
+          <h4 className="text-[17px] font-bold text-white/90">
             Rp {stats.bglRate.toLocaleString('id-ID')} / Rp {stats.dlRate.toLocaleString('id-ID')}
           </h4>
         </div>
@@ -314,40 +314,40 @@ function ManageAccounts() {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Add New Account</h3>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Add New Account</h3>
         </div>
         <form onSubmit={handleAdd} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Title</label>
-            <input suppressHydrationWarning value={title} onChange={e=>setTitle(e.target.value)} required className="w-full border border-gray-300 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <label className="block text-sm font-medium text-white/70 mb-1">Title</label>
+            <input suppressHydrationWarning value={title} onChange={e=>setTitle(e.target.value)} required className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Price (IDR)</label>
-            <input suppressHydrationWarning type="number" value={price} onChange={e=>setPrice(e.target.value)} required className="w-full border border-gray-300 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <label className="block text-sm font-medium text-white/70 mb-1">Price (IDR)</label>
+            <input suppressHydrationWarning type="number" value={price} onChange={e=>setPrice(e.target.value)} required className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Image (Upload File)</label>
-            <input suppressHydrationWarning type="file" accept="image/*" onChange={e=>setImageFile(e.target.files?.[0] || null)} className="w-full border border-gray-300 p-[7px] rounded text-sm text-gray-800 bg-white" />
+            <label className="block text-sm font-medium text-white/70 mb-1">Image (Upload File)</label>
+            <input suppressHydrationWarning type="file" accept="image/*" onChange={e=>setImageFile(e.target.files?.[0] || null)} className="w-full border border-amber-900/50 p-[7px] rounded text-sm text-white/90 bg-[#140e0b]" />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
-            <input suppressHydrationWarning value={description} onChange={e=>setDescription(e.target.value)} className="w-full border border-gray-300 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <label className="block text-sm font-medium text-white/70 mb-1">Description</label>
+            <input suppressHydrationWarning value={description} onChange={e=>setDescription(e.target.value)} className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" />
           </div>
           <div className="md:col-span-2">
-            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-sm hover:bg-blue-600 transition-colors font-medium text-sm">Submit Form</button>
+            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-amber-600 transition-colors font-medium text-sm">Submit Form</button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Accounts Table</h3>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Accounts Table</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="bg-gray-50 text-xs text-gray-700 uppercase">
+          <table className="w-full text-left text-sm text-white/70">
+            <thead className="bg-[#0c0805] text-xs text-white/80 uppercase">
               <tr>
                 <th className="px-6 py-3 font-medium">Title</th>
                 <th className="px-6 py-3 font-medium">Price</th>
@@ -362,7 +362,7 @@ function ManageAccounts() {
                 <tr><td colSpan={4} className="px-6 py-4 text-center">No data available in table</td></tr>
               ) : (
                 accounts.map(acc => (
-                  <tr key={acc.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                  <tr key={acc.id} className="border-b border-gray-50 hover:bg-[#0c0805]/50">
                     <td className="px-6 py-4 font-medium text-gray-900">{acc.title}</td>
                     <td className="px-6 py-4">Rp {acc.price.toLocaleString()}</td>
                     <td className="px-6 py-4">
@@ -424,28 +424,28 @@ function ManageTestimonials() {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Add Testimonial</h3>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Add Testimonial</h3>
         </div>
         <form onSubmit={handleAdd} className="p-6 grid grid-cols-1 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Screenshot (Upload File)</label>
-            <input suppressHydrationWarning type="file" accept="image/*" onChange={e=>setImageFile(e.target.files?.[0] || null)} required className="w-full border border-gray-300 p-[7px] rounded text-sm text-gray-800 bg-white" />
+            <label className="block text-sm font-medium text-white/70 mb-1">Screenshot (Upload File)</label>
+            <input suppressHydrationWarning type="file" accept="image/*" onChange={e=>setImageFile(e.target.files?.[0] || null)} required className="w-full border border-amber-900/50 p-[7px] rounded text-sm text-white/90 bg-[#140e0b]" />
           </div>
           <div>
-            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-sm hover:bg-blue-600 transition-colors font-medium text-sm">Submit Testimonial</button>
+            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-amber-600 transition-colors font-medium text-sm">Submit Testimonial</button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Testimonials Table</h3>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Testimonials Table</h3>
         </div>
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-600">
-            <thead className="bg-gray-50 text-xs text-gray-700 uppercase">
+          <table className="w-full text-left text-sm text-white/70">
+            <thead className="bg-[#0c0805] text-xs text-white/80 uppercase">
               <tr>
                 <th className="px-6 py-3 font-medium">Image</th>
                 <th className="px-6 py-3 font-medium text-right">Action</th>
@@ -458,12 +458,12 @@ function ManageTestimonials() {
                 <tr><td colSpan={2} className="px-6 py-4 text-center">No data available in table</td></tr>
               ) : (
                 testimonials.map(t => (
-                  <tr key={t.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                  <tr key={t.id} className="border-b border-gray-50 hover:bg-[#0c0805]/50">
                     <td className="px-6 py-4">
                       {t.image_url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <a href={t.image_url} target="_blank" rel="noreferrer">
-                          <img src={t.image_url} alt="" className="w-12 h-12 object-cover rounded shadow-sm border border-gray-200" />
+                          <img src={t.image_url} alt="" className="w-12 h-12 object-cover rounded shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/30" />
                         </a>
                       ) : '-'}
                     </td>
@@ -506,13 +506,13 @@ function ManageReputations() {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800">Reputations Data Table</h3>
+    <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+      <div className="px-6 py-4 border-b border-amber-900/20">
+        <h3 className="text-lg font-semibold text-white/90">Reputations Data Table</h3>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm text-gray-600">
-          <thead className="bg-gray-50 text-xs text-gray-700 uppercase">
+        <table className="w-full text-left text-sm text-white/70">
+          <thead className="bg-[#0c0805] text-xs text-white/80 uppercase">
             <tr>
               <th className="px-6 py-3 font-medium">Buyer</th>
               <th className="px-6 py-3 font-medium">Message</th>
@@ -527,7 +527,7 @@ function ManageReputations() {
               <tr><td colSpan={4} className="px-6 py-4 text-center">No data available in table</td></tr>
             ) : (
               reputations.map(rep => (
-                <tr key={rep.id} className="border-b border-gray-50 hover:bg-gray-50/50">
+                <tr key={rep.id} className="border-b border-gray-50 hover:bg-[#0c0805]/50">
                   <td className="px-6 py-4 font-medium text-gray-900">{rep.buyer_name}</td>
                   <td className="px-6 py-4 max-w-[200px] truncate">{rep.message}</td>
                   <td className="px-6 py-4">
@@ -634,54 +634,54 @@ function ManageSettings() {
   if (loading) return <div>Loading...</div>;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100">
-        <h3 className="text-lg font-semibold text-gray-800">Manage Settings</h3>
+    <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+      <div className="px-6 py-4 border-b border-amber-900/20">
+        <h3 className="text-lg font-semibold text-white/90">Manage Settings</h3>
       </div>
       <form onSubmit={handleSave} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Buy Price (BGL)</label>
+          <label className="block text-sm font-medium text-white/70 mb-1">Buy Price (BGL)</label>
           <div className="relative">
-            <span className="absolute left-3 top-2.5 text-gray-500 text-sm">Rp</span>
-            <input suppressHydrationWarning type="number" value={buyBgl} onChange={e=>setBuyBgl(e.target.value)} required className="w-full border border-gray-300 pl-10 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <span className="absolute left-3 top-2.5 text-white/50 text-sm">Rp</span>
+            <input suppressHydrationWarning type="number" value={buyBgl} onChange={e=>setBuyBgl(e.target.value)} required className="w-full border border-amber-900/50 pl-10 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" />
           </div>
-          <p className="text-xs text-gray-500 mt-1">Harga Beli User (Harga Jual Anda)</p>
+          <p className="text-xs text-white/50 mt-1">Harga Beli User (Harga Jual Anda)</p>
         </div>
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">Buy Price (DL)</label>
+          <label className="block text-sm font-medium text-white/70 mb-1">Buy Price (DL)</label>
           <div className="relative">
-            <span className="absolute left-3 top-2.5 text-gray-500 text-sm">Rp</span>
-            <input suppressHydrationWarning type="number" value={buyDl} onChange={e=>setBuyDl(e.target.value)} required className="w-full border border-gray-300 pl-10 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <span className="absolute left-3 top-2.5 text-white/50 text-sm">Rp</span>
+            <input suppressHydrationWarning type="number" value={buyDl} onChange={e=>setBuyDl(e.target.value)} required className="w-full border border-amber-900/50 pl-10 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" />
           </div>
-          <p className="text-xs text-gray-500 mt-1">Harga Beli DL User (Harga Jual Anda)</p>
+          <p className="text-xs text-white/50 mt-1">Harga Beli DL User (Harga Jual Anda)</p>
         </div>
-        <div className="md:col-span-2 border-t border-gray-100 pt-4">
-          <label className="block text-sm font-medium text-gray-600 mb-1">Sell Price (BGL)</label>
+        <div className="md:col-span-2 border-t border-amber-900/20 pt-4">
+          <label className="block text-sm font-medium text-white/70 mb-1">Sell Price (BGL)</label>
           <div className="relative">
-            <span className="absolute left-3 top-2.5 text-gray-500 text-sm">Rp</span>
-            <input suppressHydrationWarning type="number" value={sellBgl} onChange={e=>setSellBgl(e.target.value)} required className="w-full border border-gray-300 pl-10 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" />
+            <span className="absolute left-3 top-2.5 text-white/50 text-sm">Rp</span>
+            <input suppressHydrationWarning type="number" value={sellBgl} onChange={e=>setSellBgl(e.target.value)} required className="w-full border border-amber-900/50 pl-10 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" />
           </div>
-          <p className="text-xs text-gray-500 mt-1">Harga Jual User (Harga Beli Anda). DL Sell Price otomatis: Rp {sellBgl ? Math.floor(Number(sellBgl)/100).toLocaleString('id-ID') : 0}</p>
+          <p className="text-xs text-white/50 mt-1">Harga Jual User (Harga Beli Anda). DL Sell Price otomatis: Rp {sellBgl ? Math.floor(Number(sellBgl)/100).toLocaleString('id-ID') : 0}</p>
         </div>
 
-        <div className="md:col-span-2 border-t border-gray-100 pt-4">
-          <h4 className="font-semibold text-gray-700 mb-4">Pengaturan WhatsApp</h4>
+        <div className="md:col-span-2 border-t border-amber-900/20 pt-4">
+          <h4 className="font-semibold text-white/80 mb-4">Pengaturan WhatsApp</h4>
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">WhatsApp KUCAIDL</label>
-          <input suppressHydrationWarning type="text" value={waKucaidl} onChange={e=>setWaKucaidl(e.target.value)} required className="w-full border border-gray-300 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="628..." />
-          <p className="text-xs text-gray-500 mt-1">Nomor untuk transaksi DL/BGL (Format: 628...)</p>
+          <label className="block text-sm font-medium text-white/70 mb-1">WhatsApp KUCAIDL</label>
+          <input suppressHydrationWarning type="text" value={waKucaidl} onChange={e=>setWaKucaidl(e.target.value)} required className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="628..." />
+          <p className="text-xs text-white/50 mt-1">Nomor untuk transaksi DL/BGL (Format: 628...)</p>
         </div>
         
         <div>
-          <label className="block text-sm font-medium text-gray-600 mb-1">WhatsApp KucaiAkun</label>
-          <input suppressHydrationWarning type="text" value={waKucaiakun} onChange={e=>setWaKucaiakun(e.target.value)} required className="w-full border border-gray-300 p-2.5 rounded text-sm text-gray-800 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 outline-none transition-all" placeholder="628..." />
-          <p className="text-xs text-gray-500 mt-1">Nomor untuk transaksi Jual/Beli Akun (Format: 628...)</p>
+          <label className="block text-sm font-medium text-white/70 mb-1">WhatsApp KucaiAkun</label>
+          <input suppressHydrationWarning type="text" value={waKucaiakun} onChange={e=>setWaKucaiakun(e.target.value)} required className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="628..." />
+          <p className="text-xs text-white/50 mt-1">Nomor untuk transaksi Jual/Beli Akun (Format: 628...)</p>
         </div>
 
         <div className="md:col-span-2 mt-2">
-          <button suppressHydrationWarning type="submit" disabled={saving} className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-sm hover:bg-blue-600 transition-colors font-medium text-sm disabled:opacity-50">
+          <button suppressHydrationWarning type="submit" disabled={saving} className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-amber-600 transition-colors font-medium text-sm disabled:opacity-50">
             {saving ? "Saving..." : "Save Settings"}
           </button>
         </div>
@@ -708,13 +708,13 @@ function ManageOrders() {
   }, []);
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-      <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-gray-800">Semua Pesanan</h3>
+    <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+      <div className="px-6 py-4 border-b border-amber-900/20 flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-white/90">Semua Pesanan</h3>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-left text-sm">
-          <thead className="bg-gray-50 text-gray-600">
+          <thead className="bg-[#0c0805] text-white/70">
             <tr>
               <th className="px-6 py-3 font-medium">Invoice</th>
               <th className="px-6 py-3 font-medium">Customer WA</th>
@@ -725,8 +725,8 @@ function ManageOrders() {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {loading ? <tr><td colSpan={5} className="p-4 text-center">Loading...</td></tr> : orders.map(order => (
-              <tr key={order.id} className="hover:bg-gray-50">
-                <td className="px-6 py-4 font-mono text-xs text-blue-600">{order.invoice_no}</td>
+              <tr key={order.id} className="hover:bg-[#0c0805]">
+                <td className="px-6 py-4 font-mono text-xs text-amber-500">{order.invoice_no}</td>
                 <td className="px-6 py-4">{order.customer_wa}</td>
                 <td className="px-6 py-4">{order.digital_products?.title || '-'}</td>
                 <td className="px-6 py-4">
@@ -781,31 +781,31 @@ function ManageStock() {
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-6">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Tambah Stok Akun Digital</h3>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden mb-6">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Tambah Stok Akun Digital</h3>
         </div>
         <form onSubmit={handleAdd} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Pilih Produk</label>
-            <select value={productId} onChange={e=>setProductId(e.target.value)} className="w-full border border-gray-300 p-2.5 rounded text-sm text-gray-800">
+            <label className="block text-sm font-medium text-white/70 mb-1">Pilih Produk</label>
+            <select value={productId} onChange={e=>setProductId(e.target.value)} className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90">
               {products.map(p => <option key={p.id} value={p.id}>{p.title}</option>)}
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Data Akun (Email / Pass dll)</label>
-            <input suppressHydrationWarning value={credentials} onChange={e=>setCredentials(e.target.value)} required className="w-full border border-gray-300 p-2.5 rounded text-sm text-gray-800" placeholder="Email: xxx | Pass: yyy" />
+            <label className="block text-sm font-medium text-white/70 mb-1">Data Akun (Email / Pass dll)</label>
+            <input suppressHydrationWarning value={credentials} onChange={e=>setCredentials(e.target.value)} required className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90" placeholder="Email: xxx | Pass: yyy" />
           </div>
           <div className="md:col-span-2">
-            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-sm hover:bg-blue-600 transition-colors font-medium text-sm">Tambah Stok</button>
+            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-amber-600 transition-colors font-medium text-sm">Tambah Stok</button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+            <thead className="bg-[#0c0805] text-white/70">
               <tr>
                 <th className="px-6 py-3 font-medium">Produk</th>
                 <th className="px-6 py-3 font-medium">Data Akun</th>
@@ -815,7 +815,7 @@ function ManageStock() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? <tr><td colSpan={4} className="p-4 text-center">Loading...</td></tr> : stock.map(s => (
-                <tr key={s.id} className="hover:bg-gray-50">
+                <tr key={s.id} className="hover:bg-[#0c0805]">
                   <td className="px-6 py-4">{s.digital_products?.title}</td>
                   <td className="px-6 py-4 font-mono text-xs">{s.credentials_data}</td>
                   <td className="px-6 py-4">
@@ -951,17 +951,17 @@ function ManageProducts() {
     }
   };
 
-  const inputClass = "w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors";
+  const inputClass = "w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors";
 
   return (
     <>
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden mb-6">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Add New Digital Product</h3>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden mb-6">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Add New Digital Product</h3>
         </div>
         <form onSubmit={handleAdd} className="p-6 grid grid-cols-1 md:grid-cols-2 gap-5">
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Category</label>
+            <label className="block text-sm font-medium text-white/70 mb-1">Category</label>
             <select value={category} onChange={e=>setCategory(e.target.value)} className={inputClass}>
               <option value="AKUN">AKUN</option>
               <option value="LAYANAN">LAYANAN</option>
@@ -969,31 +969,31 @@ function ManageProducts() {
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Title (Product Name)</label>
+            <label className="block text-sm font-medium text-white/70 mb-1">Title (Product Name)</label>
             <input suppressHydrationWarning value={title} onChange={e=>setTitle(e.target.value)} required className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Price (IDR)</label>
+            <label className="block text-sm font-medium text-white/70 mb-1">Price (IDR)</label>
             <input suppressHydrationWarning type="number" value={price} onChange={e=>setPrice(e.target.value)} required className={inputClass} />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600 mb-1">Product Image (Upload)</label>
-            <input suppressHydrationWarning type="file" accept="image/*" onChange={e=>setImageFile(e.target.files?.[0] || null)} className={inputClass + " p-[7px] bg-white"} />
+            <label className="block text-sm font-medium text-white/70 mb-1">Product Image (Upload)</label>
+            <input suppressHydrationWarning type="file" accept="image/*" onChange={e=>setImageFile(e.target.files?.[0] || null)} className={inputClass + " p-[7px] bg-[#140e0b]"} />
           </div>
           <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-600 mb-1">Description</label>
+            <label className="block text-sm font-medium text-white/70 mb-1">Description</label>
             <textarea suppressHydrationWarning rows={3} value={description} onChange={e=>setDescription(e.target.value)} className={inputClass} />
           </div>
           <div className="md:col-span-2">
-            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded-lg shadow-sm hover:bg-blue-600 transition-colors font-medium text-sm">Create Product</button>
+            <button suppressHydrationWarning type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-amber-600 transition-colors font-medium text-sm">Create Product</button>
           </div>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+            <thead className="bg-[#0c0805] text-white/70">
               <tr>
                 <th className="px-6 py-3 font-medium">Kategori</th>
                 <th className="px-6 py-3 font-medium">Judul Produk</th>
@@ -1004,22 +1004,22 @@ function ManageProducts() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? <tr><td colSpan={5} className="p-4 text-center">Loading...</td></tr> : products.map(p => (
-                <tr key={p.id} className="hover:bg-gray-50">
+                <tr key={p.id} className="hover:bg-[#0c0805]">
                   <td className="px-6 py-4">
-                    <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded">{p.category}</span>
+                    <span className="px-2 py-1 bg-[#1a120e] text-white/70 text-xs font-bold rounded">{p.category}</span>
                   </td>
-                  <td className="px-6 py-4 font-semibold text-gray-800">{p.title}</td>
+                  <td className="px-6 py-4 font-semibold text-white/90">{p.title}</td>
                   <td className="px-6 py-4 text-emerald-600 font-mono font-bold">Rp {p.price.toLocaleString("id-ID")}</td>
                   <td className="px-6 py-4">
                     {p.icon && p.icon.startsWith("http") ? (
                       <img src={p.icon} alt={p.title} className="w-10 h-10 object-cover rounded" />
                     ) : (
-                      <span className="text-gray-500 text-xs">No image</span>
+                      <span className="text-white/50 text-xs">No image</span>
                     )}
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center gap-2">
-                      <button suppressHydrationWarning onClick={() => openEdit(p)} className="text-blue-500 hover:text-blue-700 text-xs font-medium bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded transition-colors">Edit</button>
+                      <button suppressHydrationWarning onClick={() => openEdit(p)} className="text-amber-400 hover:text-blue-700 text-xs font-medium bg-amber-500/10 hover:bg-amber-900/40 px-3 py-1.5 rounded transition-colors">Edit</button>
                       <button suppressHydrationWarning onClick={() => handleDelete(p.id)} className="text-red-500 hover:text-red-700 text-xs font-medium bg-red-50 hover:bg-red-100 px-3 py-1.5 rounded transition-colors">Delete</button>
                     </div>
                   </td>
@@ -1034,23 +1034,23 @@ function ManageProducts() {
       {editProduct && (
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" onClick={() => setEditProduct(null)}>
           <div 
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
+            className="bg-[#140e0b] rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 sticky top-0 bg-white rounded-t-2xl z-10">
-              <h3 className="text-lg font-bold text-gray-800">Edit Produk</h3>
-              <button onClick={() => setEditProduct(null)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors text-xl">&times;</button>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-amber-900/20 sticky top-0 bg-[#140e0b] rounded-t-2xl z-10">
+              <h3 className="text-lg font-bold text-white/90">Edit Produk</h3>
+              <button onClick={() => setEditProduct(null)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#1a120e] text-gray-400 hover:text-white/70 transition-colors text-xl">&times;</button>
             </div>
             
             <div className="p-6 space-y-4">
               {editIcon && editIcon.startsWith("http") && (
                 <div className="flex justify-center">
-                  <img src={editIcon} alt="Preview" className="w-24 h-24 object-cover rounded-xl border border-gray-200" />
+                  <img src={editIcon} alt="Preview" className="w-24 h-24 object-cover rounded-xl border border-amber-900/30" />
                 </div>
               )}
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Kategori</label>
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">Kategori</label>
                 <select value={editCategory} onChange={e => setEditCategory(e.target.value)} className={inputClass}>
                   <option value="AKUN">AKUN</option>
                   <option value="LAYANAN">LAYANAN</option>
@@ -1059,38 +1059,38 @@ function ManageProducts() {
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Judul Produk</label>
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">Judul Produk</label>
                 <input value={editTitle} onChange={e => setEditTitle(e.target.value)} className={inputClass} />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Harga (IDR)</label>
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">Harga (IDR)</label>
                 <input type="number" value={editPrice} onChange={e => setEditPrice(e.target.value)} className={inputClass} />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Deskripsi</label>
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">Deskripsi</label>
                 <textarea rows={3} value={editDesc} onChange={e => setEditDesc(e.target.value)} className={inputClass} />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Ganti Gambar (Upload)</label>
-                <input type="file" accept="image/*" onChange={e => setEditImageFile(e.target.files?.[0] || null)} className={inputClass + " p-[7px] bg-white"} />
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">Ganti Gambar (Upload)</label>
+                <input type="file" accept="image/*" onChange={e => setEditImageFile(e.target.files?.[0] || null)} className={inputClass + " p-[7px] bg-[#140e0b]"} />
                 <p className="text-xs text-gray-400 mt-1">Kosongkan jika tidak ingin mengganti gambar.</p>
               </div>
             </div>
 
-            <div className="flex items-center gap-3 px-6 py-4 border-t border-gray-100 bg-gray-50 rounded-b-2xl sticky bottom-0">
+            <div className="flex items-center gap-3 px-6 py-4 border-t border-amber-900/20 bg-[#0c0805] rounded-b-2xl sticky bottom-0">
               <button
                 onClick={handleEditSave}
                 disabled={saving}
-                className="flex-1 bg-[#4272d7] hover:bg-blue-600 disabled:bg-blue-300 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
+                className="flex-1 bg-[#4272d7] hover:bg-amber-600 disabled:bg-blue-300 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
               >
                 {saving ? "Menyimpan..." : "Simpan Perubahan"}
               </button>
               <button
                 onClick={() => setEditProduct(null)}
-                className="px-5 py-2.5 border border-gray-300 text-gray-600 hover:bg-gray-100 font-medium rounded-lg transition-colors text-sm"
+                className="px-5 py-2.5 border border-amber-900/50 text-white/70 hover:bg-[#1a120e] font-medium rounded-lg transition-colors text-sm"
               >
                 Batal
               </button>
@@ -1191,48 +1191,48 @@ function ManageProfile() {
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Ubah Kredensial Login</h3>
-          <p className="text-sm text-gray-500">Ubah username dan password untuk keamanan akun Anda.</p>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Ubah Kredensial Login</h3>
+          <p className="text-sm text-white/50">Ubah username dan password untuk keamanan akun Anda.</p>
         </div>
         <form onSubmit={handleUpdateCredentials} className="p-6 space-y-4">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Username Baru</label>
+            <label className="block text-sm font-medium text-white/80 mb-1">Username Baru</label>
             <input 
               type="text" 
               value={username} 
               onChange={e => setUsername(e.target.value)} 
               required
-              className="w-full md:w-1/2 border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm outline-none transition-colors" 
+              className="w-full md:w-1/2 border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm outline-none transition-colors" 
               placeholder="Masukkan username baru..."
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
+            <label className="block text-sm font-medium text-white/80 mb-1">Password Baru</label>
             <input 
               type="password" 
               value={password} 
               onChange={e => setPassword(e.target.value)} 
               required
-              className="w-full md:w-1/2 border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm outline-none transition-colors" 
+              className="w-full md:w-1/2 border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm outline-none transition-colors" 
               placeholder="Masukkan password baru..."
             />
           </div>
-          <button type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded-lg shadow-sm hover:bg-blue-600 transition-colors text-sm font-medium">
+          <button type="submit" className="bg-[#4272d7] text-white px-5 py-2.5 rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-amber-600 transition-colors text-sm font-medium">
             Simpan Perubahan
           </button>
         </form>
       </div>
 
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Perangkat Aktif (Sesi)</h3>
-          <p className="text-sm text-gray-500">Daftar perangkat yang saat ini sedang login ke Dashboard Admin.</p>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Perangkat Aktif (Sesi)</h3>
+          <p className="text-sm text-white/50">Daftar perangkat yang saat ini sedang login ke Dashboard Admin.</p>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm">
-            <thead className="bg-gray-50 text-gray-600">
+            <thead className="bg-[#0c0805] text-white/70">
               <tr>
                 <th className="px-6 py-3 font-medium">IP Address</th>
                 <th className="px-6 py-3 font-medium">Device Info</th>
@@ -1243,22 +1243,22 @@ function ManageProfile() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {loading ? (
-                <tr><td colSpan={5} className="p-6 text-center text-gray-500">Memuat data...</td></tr>
+                <tr><td colSpan={5} className="p-6 text-center text-white/50">Memuat data...</td></tr>
               ) : sessions.length === 0 ? (
-                <tr><td colSpan={5} className="p-6 text-center text-gray-500">Belum ada sesi aktif.</td></tr>
+                <tr><td colSpan={5} className="p-6 text-center text-white/50">Belum ada sesi aktif.</td></tr>
               ) : (
                 sessions.map(s => {
                   const isCurrent = s.token_hash === currentSession;
                   return (
-                    <tr key={s.id} className={isCurrent ? "bg-blue-50/30" : "hover:bg-gray-50 transition-colors"}>
-                      <td className="px-6 py-4 font-medium text-gray-800">{s.ip_address}</td>
-                      <td className="px-6 py-4 text-gray-600 max-w-[200px] sm:max-w-xs truncate" title={s.device_info}>{s.device_info}</td>
-                      <td className="px-6 py-4 text-gray-500">{new Date(s.created_at).toLocaleString('id-ID')}</td>
+                    <tr key={s.id} className={isCurrent ? "bg-amber-500/10/30" : "hover:bg-[#0c0805] transition-colors"}>
+                      <td className="px-6 py-4 font-medium text-white/90">{s.ip_address}</td>
+                      <td className="px-6 py-4 text-white/70 max-w-[200px] sm:max-w-xs truncate" title={s.device_info}>{s.device_info}</td>
+                      <td className="px-6 py-4 text-white/50">{new Date(s.created_at).toLocaleString('id-ID')}</td>
                       <td className="px-6 py-4">
                         {isCurrent ? (
                           <span className="px-2 py-1 bg-green-100 text-green-700 text-xs font-bold rounded">Sesi Ini</span>
                         ) : (
-                          <span className="px-2 py-1 bg-gray-100 text-gray-600 text-xs font-bold rounded">Aktif</span>
+                          <span className="px-2 py-1 bg-[#1a120e] text-white/70 text-xs font-bold rounded">Aktif</span>
                         )}
                       </td>
                       <td className="px-6 py-4">
@@ -1386,14 +1386,14 @@ function ManageTheme() {
     }
   ];
 
-  if (loading) return <p className="text-gray-500">Memuat pengaturan tema...</p>;
+  if (loading) return <p className="text-white/50">Memuat pengaturan tema...</p>;
 
   return (
     <div className="space-y-6">
-      <div className="bg-white rounded-lg shadow-sm border border-gray-100 overflow-hidden">
-        <div className="px-6 py-4 border-b border-gray-100">
-          <h3 className="text-lg font-semibold text-gray-800">Pilih Tema Website</h3>
-          <p className="text-sm text-gray-500">Pilih template visual untuk halaman depan (Front-end) website Anda.</p>
+      <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+        <div className="px-6 py-4 border-b border-amber-900/20">
+          <h3 className="text-lg font-semibold text-white/90">Pilih Tema Website</h3>
+          <p className="text-sm text-white/50">Pilih template visual untuk halaman depan (Front-end) website Anda.</p>
         </div>
         <div className="p-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -1402,33 +1402,33 @@ function ManageTheme() {
                 key={t.id} 
                 className={`relative border-2 rounded-xl p-5 cursor-pointer transition-all duration-200 ${
                   activeTheme === t.id 
-                    ? "border-blue-500 bg-blue-50 shadow-md transform -translate-y-1" 
-                    : "border-gray-200 hover:border-blue-300 hover:shadow"
+                    ? "border-amber-500 bg-amber-500/10 shadow-[0_8px_30px_rgba(0,0,0,0.4)] transform -translate-y-1" 
+                    : "border-amber-900/30 hover:border-blue-300 hover:shadow"
                 }`}
                 onClick={() => handleSaveTheme(t.id)}
               >
                 {activeTheme === t.id && (
-                  <div className="absolute top-3 right-3 bg-blue-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+                  <div className="absolute top-3 right-3 bg-amber-500/100 text-white text-xs font-bold px-2 py-1 rounded-full">
                     Aktif
                   </div>
                 )}
                 
                 {/* Visual Preview Placeholder */}
-                <div className="w-full h-32 rounded-lg mb-4 flex overflow-hidden shadow-inner border border-gray-200">
+                <div className="w-full h-32 rounded-lg mb-4 flex overflow-hidden shadow-inner border border-amber-900/30">
                   <div className="flex-1" style={{ backgroundColor: t.color1 }}></div>
                   <div className="w-12" style={{ backgroundColor: t.color2 }}></div>
                 </div>
                 
-                <h4 className="font-bold text-gray-800 text-lg mb-1">{t.name}</h4>
-                <p className="text-sm text-gray-500 leading-relaxed">{t.description}</p>
+                <h4 className="font-bold text-white/90 text-lg mb-1">{t.name}</h4>
+                <p className="text-sm text-white/50 leading-relaxed">{t.description}</p>
                 
                 <div className="mt-4 flex items-center gap-2">
                   <button 
                     onClick={() => handleSaveTheme(t.id)}
                     className={`flex-1 py-2 rounded-lg font-medium text-sm transition-colors ${
                       activeTheme === t.id 
-                        ? "bg-blue-500 text-white" 
-                        : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                        ? "bg-amber-500/100 text-white" 
+                        : "bg-[#1a120e] text-white/70 hover:bg-gray-200"
                     }`}
                   >
                     {activeTheme === t.id ? "Tema Digunakan" : "Gunakan Tema Ini"}
@@ -1437,7 +1437,7 @@ function ManageTheme() {
                   {activeTheme === t.id && (
                     <button 
                       onClick={(e) => { e.stopPropagation(); setShowThemeSettings(true); }}
-                      className="p-2 rounded-lg bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors"
+                      className="p-2 rounded-lg bg-[#1a120e] text-white/70 hover:bg-gray-200 transition-colors"
                       title="Pengaturan Lanjutan Tema"
                     >
                       <Settings className="w-5 h-5" />
@@ -1454,84 +1454,84 @@ function ManageTheme() {
       {showThemeSettings && (
         <div className="fixed inset-0 bg-black/50 z-[9999] flex items-center justify-center p-4" onClick={() => setShowThemeSettings(false)}>
           <div 
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg"
+            className="bg-[#140e0b] rounded-2xl shadow-2xl w-full max-w-lg"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100 bg-white rounded-t-2xl">
-              <h3 className="text-lg font-bold text-gray-800">Pengaturan Lanjutan Tema</h3>
-              <button onClick={() => setShowThemeSettings(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 text-gray-400 hover:text-gray-600 transition-colors text-xl">&times;</button>
+            <div className="flex items-center justify-between px-6 py-4 border-b border-amber-900/20 bg-[#140e0b] rounded-t-2xl">
+              <h3 className="text-lg font-bold text-white/90">Pengaturan Lanjutan Tema</h3>
+              <button onClick={() => setShowThemeSettings(false)} className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-[#1a120e] text-gray-400 hover:text-white/70 transition-colors text-xl">&times;</button>
             </div>
             
             <form onSubmit={handleSaveThemeSettings} className="p-6 space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Link Instagram (Navbar)</label>
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">Link Instagram (Navbar)</label>
                 <input 
                   value={socialIg} 
                   onChange={e => setSocialIg(e.target.value)} 
-                  className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors" 
+                  className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors" 
                   placeholder="https://instagram.com/..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Link Discord (Navbar)</label>
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">Link Discord (Navbar)</label>
                 <input 
                   value={socialDiscord} 
                   onChange={e => setSocialDiscord(e.target.value)} 
-                  className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors" 
+                  className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors" 
                   placeholder="https://discord.gg/..."
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">WhatsApp CTA (Floating Button)</label>
+                <label className="block text-sm font-semibold text-white/80 mb-1.5">WhatsApp CTA (Floating Button)</label>
                 <input 
                   value={waCta} 
                   onChange={e => setWaCta(e.target.value)} 
-                  className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors" 
+                  className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors" 
                   placeholder="628123456789"
                 />
-                <p className="text-xs text-gray-500 mt-1">Gunakan format 628... (Hanya angka)</p>
+                <p className="text-xs text-white/50 mt-1">Gunakan format 628... (Hanya angka)</p>
               </div>
 
-              <div className="border-t border-gray-100 pt-4 mt-4">
-                <h4 className="font-bold text-gray-800 mb-3 text-sm">Teks Utama Beranda</h4>
+              <div className="border-t border-amber-900/20 pt-4 mt-4">
+                <h4 className="font-bold text-white/90 mb-3 text-sm">Teks Utama Beranda</h4>
                 <div className="space-y-3">
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Judul (Baris 1)</label>
+                    <label className="block text-xs font-semibold text-white/80 mb-1">Judul (Baris 1)</label>
                     <input 
                       value={heroTitle} 
                       onChange={e => setHeroTitle(e.target.value)} 
-                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors" 
+                      className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors" 
                       placeholder="Belanja Item GT"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Sub-Judul (Baris 2 Berwarna)</label>
+                    <label className="block text-xs font-semibold text-white/80 mb-1">Sub-Judul (Baris 2 Berwarna)</label>
                     <input 
                       value={heroSubtitle} 
                       onChange={e => setHeroSubtitle(e.target.value)} 
-                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors" 
+                      className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors" 
                       placeholder="Cepat, Aman, Otomatis"
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-semibold text-gray-700 mb-1">Deskripsi Pendek</label>
+                    <label className="block text-xs font-semibold text-white/80 mb-1">Deskripsi Pendek</label>
                     <textarea 
                       value={heroDesc} 
                       onChange={e => setHeroDesc(e.target.value)} 
-                      className="w-full border border-gray-300 focus:border-blue-500 focus:ring-1 focus:ring-blue-500/30 p-2.5 rounded-lg text-sm text-gray-800 outline-none transition-colors min-h-[60px]" 
+                      className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors min-h-[60px]" 
                       placeholder="Proxy, akun, currency..."
                     />
                   </div>
                 </div>
               </div>
               
-              <div className="pt-4 flex items-center gap-3 border-t border-gray-100 mt-6">
+              <div className="pt-4 flex items-center gap-3 border-t border-amber-900/20 mt-6">
                 <button
                   type="submit"
                   disabled={savingSettings}
-                  className="flex-1 bg-[#4272d7] hover:bg-blue-600 disabled:bg-blue-300 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
+                  className="flex-1 bg-[#4272d7] hover:bg-amber-600 disabled:bg-blue-300 text-white font-semibold py-2.5 rounded-lg transition-colors text-sm"
                 >
                   {savingSettings ? "Menyimpan..." : "Simpan Pengaturan"}
                 </button>
@@ -1697,16 +1697,16 @@ function ManageLiveChat() {
 
   const activeSessionData = sessions.find((s) => s.id === activeSession);
 
-  if (loading) return <p className="text-gray-500">Memuat data chat...</p>;
+  if (loading) return <p className="text-white/50">Memuat data chat...</p>;
 
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: "500px" }}>
+    <div className="bg-[#140e0b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: "500px" }}>
       <div className="flex h-full">
         {/* Left Panel — Session List */}
-        <div className="w-[320px] shrink-0 border-r border-gray-100 flex flex-col">
-          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
-            <h3 className="font-bold text-gray-800 text-sm">Percakapan</h3>
-            <p className="text-xs text-gray-500">{sessions.length} sesi chat</p>
+        <div className="w-[320px] shrink-0 border-r border-amber-900/20 flex flex-col">
+          <div className="px-4 py-3 border-b border-amber-900/20 bg-[#0c0805]">
+            <h3 className="font-bold text-white/90 text-sm">Percakapan</h3>
+            <p className="text-xs text-white/50">{sessions.length} sesi chat</p>
           </div>
           <div className="flex-1 overflow-y-auto">
             {sessions.length === 0 ? (
@@ -1718,12 +1718,12 @@ function ManageLiveChat() {
                 <button
                   key={s.id}
                   onClick={() => setActiveSession(s.id)}
-                  className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-blue-50 transition-colors ${
-                    activeSession === s.id ? "bg-blue-50 border-l-4 border-l-blue-500" : ""
+                  className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-amber-500/10 transition-colors ${
+                    activeSession === s.id ? "bg-amber-500/10 border-l-4 border-l-blue-500" : ""
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-gray-800 text-sm truncate">
+                    <span className="font-semibold text-white/90 text-sm truncate">
                       {s.customer_name}
                     </span>
                     <span className="text-[10px] text-gray-400 shrink-0 ml-2">
@@ -1733,7 +1733,7 @@ function ManageLiveChat() {
                       })}
                     </span>
                   </div>
-                  <p className={`text-xs truncate ${s.status === 'blocked' ? 'text-red-400' : 'text-gray-500'}`}>
+                  <p className={`text-xs truncate ${s.status === 'blocked' ? 'text-red-400' : 'text-white/50'}`}>
                     {s.status === 'blocked' ? '🚫 Diblokir' : s.lastMsg}
                   </p>
                 </button>
@@ -1753,12 +1753,12 @@ function ManageLiveChat() {
           ) : (
             <>
               {/* Chat Header */}
-              <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center gap-3 shrink-0">
-                <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
+              <div className="px-5 py-3 border-b border-amber-900/20 bg-[#0c0805] flex items-center gap-3 shrink-0">
+                <div className="w-9 h-9 rounded-full bg-amber-900/40 flex items-center justify-center text-amber-500 font-bold text-sm">
                   {activeSessionData?.customer_name?.charAt(0)?.toUpperCase() || "?"}
                 </div>
                 <div className="flex-1">
-                  <p className="font-bold text-gray-800 text-sm">
+                  <p className="font-bold text-white/90 text-sm">
                     {activeSessionData?.customer_name || "Customer"}
                     {activeSessionData?.status === 'blocked' && (
                       <span className="ml-2 text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-semibold">DIBLOKIR</span>
@@ -1799,7 +1799,7 @@ function ManageLiveChat() {
                       setMessages([]);
                       fetchSessions();
                     }}
-                    className="px-3 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-500 text-xs font-semibold rounded-lg transition-colors border border-gray-200"
+                    className="px-3 py-1.5 bg-[#0c0805] hover:bg-[#1a120e] text-white/50 text-xs font-semibold rounded-lg transition-colors border border-amber-900/30"
                   >
                     🗑️ Hapus
                   </button>
@@ -1807,7 +1807,7 @@ function ManageLiveChat() {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50/50">
+              <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-[#0c0805]/50">
                 {messages.map((msg) => (
                   <div
                     key={msg.id}
@@ -1816,10 +1816,10 @@ function ManageLiveChat() {
                     }`}
                   >
                     <div
-                      className={`max-w-[70%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                      className={`max-w-[70%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-[0_4px_20px_rgba(0,0,0,0.3)] ${
                         msg.sender === "admin"
-                          ? "bg-blue-600 text-white rounded-br-md"
-                          : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
+                          ? "bg-amber-600 text-white rounded-br-md"
+                          : "bg-[#140e0b] text-white/90 border border-amber-900/30 rounded-bl-md"
                       }`}
                     >
                       {(msg as any).image_url && (
@@ -1828,7 +1828,7 @@ function ManageLiveChat() {
                       {msg.message && <span>{renderMessageText(msg.message)}</span>}
                       <div
                         className={`text-[10px] mt-1 ${
-                          msg.sender === "admin" ? "text-blue-200" : "text-gray-400"
+                          msg.sender === "admin" ? "text-amber-200" : "text-gray-400"
                         }`}
                       >
                         {new Date(msg.created_at).toLocaleTimeString("id-ID", {
@@ -1845,7 +1845,7 @@ function ManageLiveChat() {
               {/* Reply Input */}
               <form
                 onSubmit={handleSendReply}
-                className="shrink-0 px-4 py-3 border-t border-gray-100 bg-white flex items-center gap-3"
+                className="shrink-0 px-4 py-3 border-t border-amber-900/20 bg-[#140e0b] flex items-center gap-3"
               >
                 <input type="file" ref={adminFileInputRef} accept="image/*" className="hidden" onChange={async (e) => {
                   const file = e.target.files?.[0];
@@ -1864,7 +1864,7 @@ function ManageLiveChat() {
                   setUploading(false);
                   if (adminFileInputRef.current) adminFileInputRef.current.value = "";
                 }} />
-                <button type="button" onClick={() => adminFileInputRef.current?.click()} disabled={uploading} className="w-10 h-10 shrink-0 bg-gray-100 hover:bg-gray-200 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-500 hover:text-blue-600 transition-colors border border-gray-200">
+                <button type="button" onClick={() => adminFileInputRef.current?.click()} disabled={uploading} className="w-10 h-10 shrink-0 bg-[#1a120e] hover:bg-gray-200 disabled:opacity-50 rounded-xl flex items-center justify-center text-white/50 hover:text-amber-500 transition-colors border border-amber-900/30">
                   <ImagePlus className="w-4 h-4" />
                 </button>
                 <input
@@ -1873,14 +1873,14 @@ function ManageLiveChat() {
                   value={reply}
                   onChange={(e) => setReply(e.target.value)}
                   placeholder={uploading ? "Mengunggah gambar..." : "Ketik balasan..."}
-                  className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
+                  className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
                   maxLength={500}
                   disabled={uploading}
                 />
                 <button
                   type="submit"
                   disabled={!reply.trim() || sending || uploading}
-                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors text-sm flex items-center gap-2"
+                  className="px-5 py-2.5 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors text-sm flex items-center gap-2"
                 >
                   Kirim
                 </button>
