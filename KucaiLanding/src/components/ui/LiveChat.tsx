@@ -371,7 +371,7 @@ function LiveChatInner() {
                       }`}
                     >
                       {msg.image_url && (
-                        <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => setPreviewImage(msg.image_url)} />
+                        <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => setPreviewImage(msg.image_url || null)} />
                       )}
                       {msg.message && <span>{renderMessageText(msg.message)}</span>}
                       <div
