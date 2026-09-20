@@ -56,7 +56,7 @@ export function Hero() {
                 <strong className="block text-[14px] text-white leading-tight mb-0.5">KUCAIDL</strong>
                 <span className="block text-[11px] text-gray-400">Jual Beli BGL & DL</span>
                 <div className="flex items-center gap-1.5 mt-2">
-                  <strong className="text-[11px] text-white">2,4 rb <span className="font-normal text-gray-400">pengikut</span></strong>
+                  <strong className="text-[11px] text-white">3,8 rb <span className="font-normal text-gray-400">pengikut</span></strong>
                   <span className="text-[8px] font-bold tracking-widest text-emerald-400/80 bg-emerald-500/10 border border-emerald-500/20 px-2 py-0.5 rounded-full uppercase">TEREKAM</span>
                 </div>
               </div>
@@ -78,7 +78,7 @@ export function Hero() {
                 <strong className="block text-[14px] text-white leading-tight mb-0.5">KUCAI ACCOUNT</strong>
                 <span className="block text-[11px] text-gray-400">Jual Beli Akun GT</span>
                 <div className="flex items-center gap-1.5 mt-2">
-                  <strong className="text-[11px] text-white">1,2 rb <span className="font-normal text-gray-400">pengikut</span></strong>
+                  <strong className="text-[11px] text-white">1,5 rb <span className="font-normal text-gray-400">pengikut</span></strong>
                   <span className="text-[8px] font-bold tracking-widest text-amber-400/80 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase">TERDAFTAR</span>
                 </div>
               </div>
