@@ -13,16 +13,19 @@ export function Hero() {
   const [gtStats, setGtStats] = useState({ online: "Loading...", wotd: "Loading..." });
   const [punches, setPunches] = useState<{id: number, x: number, y: number}[]>([]);
 
-  const handlePunch = (e: React.MouseEvent) => {
+  const handlePunchAndNavigate = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
+    e.preventDefault();
     const rect = e.currentTarget.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
     const id = Date.now();
     
     setPunches(prev => [...prev, { id, x, y }]);
+    
     setTimeout(() => {
+      window.open(url, '_blank', 'noopener,noreferrer');
       setPunches(prev => prev.filter(p => p.id !== id));
-    }, 400);
+    }, 400); // Wait for animation to almost finish before opening tab
   };
 
   useEffect(() => {
@@ -129,8 +132,7 @@ export function Hero() {
                   }
                 `}</style>
                 <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
-                  target="_blank" rel="noopener noreferrer"
-                  onClick={handlePunch}
+                  onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
                   className="relative overflow-hidden w-full sm:w-[220px] h-[95px] rounded-[18px] bg-gradient-to-r from-amber-500 to-amber-600 shadow-[0_8px_24px_rgba(245,158,11,0.3)] hover:scale-105 hover:-translate-y-1 transition-all group border border-amber-400/50 flex flex-col justify-center px-6">
                   
                   {punches.map(p => (
@@ -154,8 +156,7 @@ export function Hero() {
                 </a>
 
                 <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
-                  target="_blank" rel="noopener noreferrer"
-                  onClick={handlePunch}
+                  onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
                   className="relative overflow-hidden w-full sm:w-[220px] h-[95px] rounded-[18px] bg-gradient-to-r from-[#4d2c16] to-[#3a2010] shadow-[0_8px_24px_rgba(30,15,5,0.5)] hover:scale-105 hover:-translate-y-1 transition-all group border border-orange-900/50 flex flex-col justify-center px-6">
                   
                   {punches.map(p => (
