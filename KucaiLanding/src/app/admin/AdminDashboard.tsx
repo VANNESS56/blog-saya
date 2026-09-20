@@ -1594,6 +1594,7 @@ function ManageLiveChat() {
   const replyInputRef = useRef<HTMLInputElement>(null);
   const adminFileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [readSessions, setReadSessions] = useState<Record<string, string>>({});
 
   // Load read status from localStorage
@@ -1861,7 +1862,7 @@ function ManageLiveChat() {
                       }`}
                     >
                       {(msg as any).image_url && (
-                        <img src={(msg as any).image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => window.open((msg as any).image_url, '_blank')} />
+                        <img src={(msg as any).image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => setPreviewImage((msg as any).image_url)} />
                       )}
                       {msg.message && <span>{renderMessageText(msg.message)}</span>}
                       <div
@@ -1929,6 +1930,21 @@ function ManageLiveChat() {
           )}
         </div>
       </div>
+
+      {/* Image Preview Modal */}
+      {previewImage && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4" onClick={() => setPreviewImage(null)}>
+          <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center">
+            <button
+              onClick={() => setPreviewImage(null)}
+              className="absolute top-4 right-4 text-white hover:text-amber-500 bg-black/50 w-10 h-10 flex items-center justify-center rounded-full transition-colors z-10 text-xl font-bold"
+            >
+              ✕
+            </button>
+            <img src={previewImage} alt="Preview" className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()} />
+          </div>
+        </div>
+      )}
     </div>
   );
 }
