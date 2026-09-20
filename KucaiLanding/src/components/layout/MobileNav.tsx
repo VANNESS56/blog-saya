@@ -35,9 +35,9 @@ export function MobileNav() {
   };
 
   const navItems = [
-    { name: "Home", href: "/#home", path: "/", hash: "#home", icon: Home },
-    { name: "Produk", href: "/#products", path: "/", hash: "#products", icon: ShoppingBag },
-    { name: "Lacak Pesanan", href: "/order", path: "/order", hash: "", icon: FileText },
+    { name: "BELI/JUAL\nDL", href: "/#home", path: "/", hash: "#home", icon: Home },
+    { name: "Stock Akun", href: "/#products", path: "/", hash: "#products", icon: ShoppingBag },
+    { name: "BELI/JUAL\nAKUN", href: "/order", path: "/order", hash: "", icon: FileText },
   ];
 
   return (
@@ -58,7 +58,7 @@ export function MobileNav() {
               }`}
             >
               <Icon className={`w-5 h-5 mb-1 ${active ? "text-amber-500" : ""}`} strokeWidth={active ? 2.5 : 2} />
-              <span className={`text-[10px] font-medium tracking-wide ${active ? "font-bold" : ""}`}>
+              <span className={`text-[10px] font-medium tracking-wide text-center leading-tight ${active ? "font-bold" : ""}`} style={{ whiteSpace: "pre-line" }}>
                 {item.name}
               </span>
             </Link>
