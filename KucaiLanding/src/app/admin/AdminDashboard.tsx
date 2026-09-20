@@ -1741,29 +1741,34 @@ function ManageLiveChat() {
                       setActiveSession(s.id);
                       markAsRead(s.id, s.last_message_at);
                     }}
-                    className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-amber-500/10 transition-colors ${
+                    className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-amber-500/10 transition-colors flex gap-3 ${
                       activeSession === s.id ? "bg-amber-500/10 border-l-4 border-l-blue-500" : ""
                     }`}
                   >
-                    <div className="flex items-center justify-between mb-1">
-                      <span className={`font-semibold text-sm truncate ${isUnread ? 'text-amber-400 font-bold' : 'text-white/90'}`}>
-                        {s.customer_name}
-                      </span>
-                      <div className="flex items-center gap-2 shrink-0 ml-2">
-                        {isUnread && (
-                          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
-                        )}
-                        <span className={`text-[10px] ${isUnread ? 'text-amber-400 font-bold' : 'text-gray-400'}`}>
-                          {new Date(s.last_message_at).toLocaleTimeString("id-ID", {
-                            hour: "2-digit",
-                            minute: "2-digit",
-                          })}
-                        </span>
-                      </div>
+                    <div className="w-10 h-10 shrink-0 rounded-full bg-amber-900/40 flex items-center justify-center text-amber-500 font-bold text-sm mt-0.5">
+                      {s.customer_name?.charAt(0)?.toUpperCase() || "?"}
                     </div>
-                    <p className={`text-xs truncate ${s.status === 'blocked' ? 'text-red-400' : (isUnread ? 'text-white/80 font-medium' : 'text-white/50')}`}>
-                      {s.status === 'blocked' ? '🚫 Diblokir' : s.lastMsg}
-                    </p>
+                    <div className="flex-1 overflow-hidden">
+                      <div className="flex items-center justify-between mb-1">
+                        <span className={`font-semibold text-sm truncate ${isUnread ? 'text-amber-400 font-bold' : 'text-white/90'}`}>
+                          {s.customer_name}
+                        </span>
+                        <div className="flex items-center gap-2 shrink-0 ml-2">
+                          {isUnread && (
+                            <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                          )}
+                          <span className={`text-[10px] ${isUnread ? 'text-amber-400 font-bold' : 'text-gray-400'}`}>
+                            {new Date(s.last_message_at).toLocaleTimeString("id-ID", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })}
+                          </span>
+                        </div>
+                      </div>
+                      <p className={`text-xs truncate ${s.status === 'blocked' ? 'text-red-400' : (isUnread ? 'text-white/80 font-medium' : 'text-white/50')}`}>
+                        {s.status === 'blocked' ? '🚫 Diblokir' : s.lastMsg}
+                      </p>
+                    </div>
                   </button>
                 );
               })
