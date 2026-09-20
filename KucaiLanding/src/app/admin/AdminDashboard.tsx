@@ -1594,6 +1594,23 @@ function ManageLiveChat() {
   const replyInputRef = useRef<HTMLInputElement>(null);
   const adminFileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
+  const [readSessions, setReadSessions] = useState<Record<string, string>>({});
+
+  // Load read status from localStorage
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("kucaidl_read_sessions");
+      if (stored) setReadSessions(JSON.parse(stored));
+    } catch {}
+  }, []);
+
+  const markAsRead = (sessionId: string, lastMessageAt: string) => {
+    setReadSessions(prev => {
+      const next = { ...prev, [sessionId]: lastMessageAt };
+      localStorage.setItem("kucaidl_read_sessions", JSON.stringify(next));
+      return next;
+    });
+  };
 
   // Fetch all sessions with latest message preview
   const fetchSessions = useCallback(async () => {
@@ -1714,30 +1731,42 @@ function ManageLiveChat() {
                 Belum ada percakapan masuk.
               </div>
             ) : (
-              sessions.map((s) => (
-                <button
-                  key={s.id}
-                  onClick={() => setActiveSession(s.id)}
-                  className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-amber-500/10 transition-colors ${
-                    activeSession === s.id ? "bg-amber-500/10 border-l-4 border-l-blue-500" : ""
-                  }`}
-                >
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="font-semibold text-white/90 text-sm truncate">
-                      {s.customer_name}
-                    </span>
-                    <span className="text-[10px] text-gray-400 shrink-0 ml-2">
-                      {new Date(s.last_message_at).toLocaleTimeString("id-ID", {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </span>
-                  </div>
-                  <p className={`text-xs truncate ${s.status === 'blocked' ? 'text-red-400' : 'text-white/50'}`}>
-                    {s.status === 'blocked' ? '🚫 Diblokir' : s.lastMsg}
-                  </p>
-                </button>
-              ))
+              sessions.map((s) => {
+                const isUnread = s.lastMsg && !s.lastMsg.startsWith("Anda:") && (!readSessions[s.id] || new Date(s.last_message_at).getTime() > new Date(readSessions[s.id]).getTime());
+                
+                return (
+                  <button
+                    key={s.id}
+                    onClick={() => {
+                      setActiveSession(s.id);
+                      markAsRead(s.id, s.last_message_at);
+                    }}
+                    className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-amber-500/10 transition-colors ${
+                      activeSession === s.id ? "bg-amber-500/10 border-l-4 border-l-blue-500" : ""
+                    }`}
+                  >
+                    <div className="flex items-center justify-between mb-1">
+                      <span className={`font-semibold text-sm truncate ${isUnread ? 'text-amber-400 font-bold' : 'text-white/90'}`}>
+                        {s.customer_name}
+                      </span>
+                      <div className="flex items-center gap-2 shrink-0 ml-2">
+                        {isUnread && (
+                          <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                        )}
+                        <span className={`text-[10px] ${isUnread ? 'text-amber-400 font-bold' : 'text-gray-400'}`}>
+                          {new Date(s.last_message_at).toLocaleTimeString("id-ID", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })}
+                        </span>
+                      </div>
+                    </div>
+                    <p className={`text-xs truncate ${s.status === 'blocked' ? 'text-red-400' : (isUnread ? 'text-white/80 font-medium' : 'text-white/50')}`}>
+                      {s.status === 'blocked' ? '🚫 Diblokir' : s.lastMsg}
+                    </p>
+                  </button>
+                );
+              })
             )}
           </div>
         </div>
@@ -1794,6 +1823,7 @@ function ManageLiveChat() {
                   <button
                     onClick={async () => {
                       if (!confirm(`Hapus seluruh percakapan dengan ${activeSessionData?.customer_name}?`)) return;
+                      await supabase.from('chat_messages').delete().eq('session_id', activeSession);
                       await supabase.from('chat_sessions').delete().eq('id', activeSession);
                       setActiveSession(null);
                       setMessages([]);
