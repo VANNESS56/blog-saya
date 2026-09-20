@@ -437,8 +437,11 @@ function LiveChatInner() {
         className="h-[52px] md:h-14 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-[20px] flex items-center gap-3 shadow-[0_8px_24px_rgba(245,158,11,0.4)] hover:scale-105 transition-all duration-300 relative group overflow-hidden pointer-events-auto"
       >
         <div className="absolute inset-0 rounded-[20px] border-2 border-amber-500/40 scale-100 group-hover:scale-105 transition-transform duration-500" />
-        <span className="relative z-10 font-bold text-sm">Live Chat</span>
-        <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Chat" width={32} height={32} className="relative z-10 rounded-full w-8 h-8 object-cover" />
+        <div className="relative z-10 flex flex-col items-end text-right leading-none">
+          <span className="font-black text-[13px] tracking-wide">Jual Akun?</span>
+          <span className="text-[10px] font-bold text-white/90 mt-1 uppercase tracking-wider">Klik Disini</span>
+        </div>
+        <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Chat" width={36} height={36} className="relative z-10 rounded-full w-9 h-9 object-cover border-2 border-amber-400/50 shadow-md" />
         {unread > 0 && (
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center z-20 animate-bounce">
             {unread}
