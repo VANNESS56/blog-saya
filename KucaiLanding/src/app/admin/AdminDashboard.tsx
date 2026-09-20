@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 
@@ -26,7 +26,7 @@ async function adminUpload(file: File, folder: string): Promise<string | null> {
 }
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat">("dashboard");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const router = useRouter();
 
@@ -147,6 +147,14 @@ export function AdminDashboard() {
                 <Palette className="w-5 h-5" /> Website Theme
               </button>
             </li>
+            <li>
+              <button suppressHydrationWarning 
+                onClick={() => setActiveTab("livechat")}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'livechat' ? 'text-blue-600 bg-blue-50' : 'text-gray-600 hover:text-blue-600 hover:bg-gray-50'}`}
+              >
+                <Headphones className="w-5 h-5" /> Live Chat
+              </button>
+            </li>
           </ul>
           <hr className="my-6 border-gray-100" />
           <button suppressHydrationWarning 
@@ -189,6 +197,7 @@ export function AdminDashboard() {
             {activeTab === "products" && <ManageProducts />}
             {activeTab === "profile" && <ManageProfile />}
             {activeTab === "theme" && <ManageTheme />}
+            {activeTab === "livechat" && <ManageLiveChat />}
           </div>
           
           <footer className="mt-12 pb-4">
@@ -1531,6 +1540,270 @@ function ManageTheme() {
           </div>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── LIVE CHAT MANAGEMENT ───
+import { supabase } from "@/lib/supabase";
+
+interface ChatSession {
+  id: string;
+  customer_name: string;
+  status: string;
+  last_message_at: string;
+  created_at: string;
+  lastMsg?: string;
+  unreadCount?: number;
+}
+
+interface ChatMsg {
+  id: number;
+  session_id: string;
+  sender: string;
+  message: string;
+  created_at: string;
+}
+
+function ManageLiveChat() {
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [activeSession, setActiveSession] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMsg[]>([]);
+  const [reply, setReply] = useState("");
+  const [sending, setSending] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const replyInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch all sessions with latest message preview
+  const fetchSessions = useCallback(async () => {
+    const { data: sessionsData } = await supabase
+      .from("chat_sessions")
+      .select("*")
+      .order("last_message_at", { ascending: false });
+
+    if (sessionsData) {
+      // Get last message for each session
+      const withPreviews = await Promise.all(
+        sessionsData.map(async (s: ChatSession) => {
+          const { data: lastMsgs } = await supabase
+            .from("chat_messages")
+            .select("message, sender")
+            .eq("session_id", s.id)
+            .order("created_at", { ascending: false })
+            .limit(1);
+
+          return {
+            ...s,
+            lastMsg: lastMsgs?.[0]
+              ? `${lastMsgs[0].sender === "admin" ? "Anda: " : ""}${lastMsgs[0].message}`
+              : "Belum ada pesan",
+          };
+        })
+      );
+      setSessions(withPreviews);
+    }
+    setLoading(false);
+  }, []);
+
+  useEffect(() => {
+    fetchSessions();
+
+    // Subscribe to new sessions & messages
+    const ch = supabase
+      .channel("admin-livechat")
+      .on("postgres_changes", { event: "*", schema: "public", table: "chat_sessions" }, () => fetchSessions())
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, (payload: any) => {
+        const msg = payload.new as ChatMsg;
+        // Update messages if viewing the right session
+        setMessages((prev) => {
+          if (prev.length > 0 && prev[0]?.session_id === msg.session_id) {
+            if (prev.find((m) => m.id === msg.id)) return prev;
+            return [...prev, msg];
+          }
+          return prev;
+        });
+        // Refresh sessions for preview
+        fetchSessions();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(ch); };
+  }, [fetchSessions]);
+
+  // Fetch messages for selected session
+  useEffect(() => {
+    if (!activeSession) return;
+
+    async function fetchMsgs() {
+      const { data } = await supabase
+        .from("chat_messages")
+        .select("*")
+        .eq("session_id", activeSession)
+        .order("created_at", { ascending: true });
+      if (data) setMessages(data);
+    }
+    fetchMsgs();
+    setTimeout(() => replyInputRef.current?.focus(), 100);
+  }, [activeSession]);
+
+  // Auto-scroll
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
+
+  const handleSendReply = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = reply.trim();
+    if (!trimmed || !activeSession || sending) return;
+
+    setSending(true);
+    setReply("");
+
+    await supabase.from("chat_messages").insert({
+      session_id: activeSession,
+      sender: "admin",
+      message: trimmed,
+    });
+
+    await supabase
+      .from("chat_sessions")
+      .update({ last_message_at: new Date().toISOString() })
+      .eq("id", activeSession);
+
+    setSending(false);
+    replyInputRef.current?.focus();
+  };
+
+  const activeSessionData = sessions.find((s) => s.id === activeSession);
+
+  if (loading) return <p className="text-gray-500">Memuat data chat...</p>;
+
+  return (
+    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: "500px" }}>
+      <div className="flex h-full">
+        {/* Left Panel — Session List */}
+        <div className="w-[320px] shrink-0 border-r border-gray-100 flex flex-col">
+          <div className="px-4 py-3 border-b border-gray-100 bg-gray-50">
+            <h3 className="font-bold text-gray-800 text-sm">Percakapan</h3>
+            <p className="text-xs text-gray-500">{sessions.length} sesi chat</p>
+          </div>
+          <div className="flex-1 overflow-y-auto">
+            {sessions.length === 0 ? (
+              <div className="p-6 text-center text-gray-400 text-sm">
+                Belum ada percakapan masuk.
+              </div>
+            ) : (
+              sessions.map((s) => (
+                <button
+                  key={s.id}
+                  onClick={() => setActiveSession(s.id)}
+                  className={`w-full text-left px-4 py-3 border-b border-gray-50 hover:bg-blue-50 transition-colors ${
+                    activeSession === s.id ? "bg-blue-50 border-l-4 border-l-blue-500" : ""
+                  }`}
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="font-semibold text-gray-800 text-sm truncate">
+                      {s.customer_name}
+                    </span>
+                    <span className="text-[10px] text-gray-400 shrink-0 ml-2">
+                      {new Date(s.last_message_at).toLocaleTimeString("id-ID", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </span>
+                  </div>
+                  <p className="text-xs text-gray-500 truncate">{s.lastMsg}</p>
+                </button>
+              ))
+            )}
+          </div>
+        </div>
+
+        {/* Right Panel — Chat */}
+        <div className="flex-1 flex flex-col">
+          {!activeSession ? (
+            <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
+              <Headphones className="w-12 h-12 mb-4 text-gray-300" />
+              <p className="text-sm font-medium">Pilih percakapan untuk memulai</p>
+              <p className="text-xs mt-1">Klik sesi di panel sebelah kiri</p>
+            </div>
+          ) : (
+            <>
+              {/* Chat Header */}
+              <div className="px-5 py-3 border-b border-gray-100 bg-gray-50 flex items-center gap-3 shrink-0">
+                <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold text-sm">
+                  {activeSessionData?.customer_name?.charAt(0)?.toUpperCase() || "?"}
+                </div>
+                <div>
+                  <p className="font-bold text-gray-800 text-sm">
+                    {activeSessionData?.customer_name || "Customer"}
+                  </p>
+                  <p className="text-[10px] text-gray-400">
+                    Mulai: {activeSessionData ? new Date(activeSessionData.created_at).toLocaleString("id-ID") : ""}
+                  </p>
+                </div>
+              </div>
+
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto p-5 space-y-3 bg-gray-50/50">
+                {messages.map((msg) => (
+                  <div
+                    key={msg.id}
+                    className={`flex ${
+                      msg.sender === "admin" ? "justify-end" : "justify-start"
+                    }`}
+                  >
+                    <div
+                      className={`max-w-[70%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
+                        msg.sender === "admin"
+                          ? "bg-blue-600 text-white rounded-br-md"
+                          : "bg-white text-gray-800 border border-gray-200 rounded-bl-md"
+                      }`}
+                    >
+                      {msg.message}
+                      <div
+                        className={`text-[10px] mt-1 ${
+                          msg.sender === "admin" ? "text-blue-200" : "text-gray-400"
+                        }`}
+                      >
+                        {new Date(msg.created_at).toLocaleTimeString("id-ID", {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+
+              {/* Reply Input */}
+              <form
+                onSubmit={handleSendReply}
+                className="shrink-0 px-4 py-3 border-t border-gray-100 bg-white flex items-center gap-3"
+              >
+                <input
+                  ref={replyInputRef}
+                  type="text"
+                  value={reply}
+                  onChange={(e) => setReply(e.target.value)}
+                  placeholder="Ketik balasan..."
+                  className="flex-1 bg-gray-100 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-800 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
+                  maxLength={500}
+                />
+                <button
+                  type="submit"
+                  disabled={!reply.trim() || sending}
+                  className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white font-semibold rounded-xl transition-colors text-sm flex items-center gap-2"
+                >
+                  Kirim
+                </button>
+              </form>
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
