@@ -172,7 +172,7 @@ function LiveChatInner() {
   };
 
   return (
-    <div className="fixed bottom-[85px] right-[80px] md:bottom-8 md:right-[100px] z-50 flex flex-col items-end">
+    <div className="fixed bottom-[85px] right-[72px] md:bottom-8 md:right-[80px] z-[51] flex flex-col items-end">
       {/* Chat Window */}
       {isOpen && (
         <div

@@ -1,22 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { X } from "lucide-react";
+import { useState } from "react";
 import { useSettings } from "@/lib/settings/SettingsContext";
 
 export function FloatingWhatsApp() {
   const { waKucaidl, waCta } = useSettings();
-  const [showPopup, setShowPopup] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    // Show popup after 3 seconds
-    const timer = setTimeout(() => {
-      setShowPopup(true);
-      setTimeout(() => setIsVisible(true), 50); // for transition
-    }, 3000);
-    return () => clearTimeout(timer);
-  }, []);
 
   const activeWa = waCta || waKucaidl;
   if (!activeWa) return null;
@@ -24,42 +12,13 @@ export function FloatingWhatsApp() {
   const waUrl = `https://wa.me/${activeWa}?text=Halo%20KUCAIDL,%20ada%20yang%20ingin%20saya%20tanyakan...`;
 
   return (
-    <div className="fixed bottom-[85px] right-4 md:bottom-8 md:right-8 z-50 flex flex-col items-end">
-      {/* Popup Message */}
-      <div 
-        className={`mb-4 bg-[#1a1a1a] border border-gray-800 rounded-xl p-4 shadow-2xl relative w-[250px] transition-all duration-500 origin-bottom-right ${
-          showPopup && isVisible ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 translate-y-4 pointer-events-none"
-        }`}
-      >
-        <button 
-          onClick={(e) => {
-            e.preventDefault();
-            setIsVisible(false);
-            setTimeout(() => setShowPopup(false), 500);
-          }}
-          className="absolute top-2.5 right-2.5 text-gray-500 hover:text-white transition-colors"
-        >
-          <X className="w-4 h-4" />
-        </button>
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-green-500 text-[10px] font-bold tracking-wider uppercase">
-            Customer Support
-          </span>
-        </div>
-        <p className="text-white text-sm font-medium leading-snug">
-          Hai Kak ada yg bisa saya bantu
-        </p>
-      </div>
-
-      {/* WhatsApp Button */}
+    <div className="fixed bottom-[85px] right-4 md:bottom-8 md:right-8 z-50">
       <a 
         href={waUrl}
         target="_blank"
         rel="noopener noreferrer"
         className="w-[52px] h-[52px] md:w-14 md:h-14 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-full flex items-center justify-center shadow-[0_8px_24px_rgba(37,211,102,0.4)] hover:scale-110 transition-all duration-300 relative group"
       >
-        {/* Glow effect */}
         <div className="absolute inset-0 rounded-full border-2 border-[#25D366]/40 scale-100 group-hover:scale-125 transition-transform duration-500" />
         
         <svg 
