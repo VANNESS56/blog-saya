@@ -235,6 +235,19 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
       }
 
+      // ─── Live Chat ───
+      case "deleteChatSession": {
+        if (!data?.id) return NextResponse.json({ error: "Session ID required" }, { status: 400 });
+        
+        // Delete messages first to prevent foreign key errors
+        await supabaseAdmin.from("chat_messages").delete().eq("session_id", data.id);
+        // Then delete the session
+        const { error } = await supabaseAdmin.from("chat_sessions").delete().eq("id", data.id);
+        
+        if (error) return NextResponse.json({ error: error.message }, { status: 400 });
+        return NextResponse.json({ success: true });
+      }
+
       case "saveThemeSettings": {
         const { social_instagram, social_discord, wa_cta, hero_title, hero_subtitle, hero_desc } = data;
         

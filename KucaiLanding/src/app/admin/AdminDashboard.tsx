@@ -1823,8 +1823,11 @@ function ManageLiveChat() {
                   <button
                     onClick={async () => {
                       if (!confirm(`Hapus seluruh percakapan dengan ${activeSessionData?.customer_name}?`)) return;
-                      await supabase.from('chat_messages').delete().eq('session_id', activeSession);
-                      await supabase.from('chat_sessions').delete().eq('id', activeSession);
+                      const res = await adminApi("deleteChatSession", { id: activeSession });
+                      if (res.error) {
+                        alert("Gagal menghapus percakapan: " + res.error);
+                        return;
+                      }
                       setActiveSession(null);
                       setMessages([]);
                       fetchSessions();
