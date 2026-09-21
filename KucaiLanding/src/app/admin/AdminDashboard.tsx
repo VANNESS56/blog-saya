@@ -745,21 +745,35 @@ function ManageOrders() {
 }
 const CustomSelect = ({ value, onChange, options, className }: { value: string, onChange: (val: string) => void, options: {value: string, label: string}[], className?: string }) => {
   const [open, setOpen] = useState(false);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const [pos, setPos] = useState({ top: 0, left: 0, width: 0 });
   const selectedLabel = options.find(o => String(o.value) === String(value))?.label || "Pilih...";
+
+  const handleOpen = () => {
+    if (triggerRef.current) {
+      const rect = triggerRef.current.getBoundingClientRect();
+      setPos({ top: rect.bottom + 4, left: rect.left, width: rect.width });
+    }
+    setOpen(!open);
+  };
   
   return (
     <div className={`relative ${className || ""}`}>
       <div 
-        onClick={() => setOpen(!open)}
+        ref={triggerRef}
+        onClick={handleOpen}
         className="w-full border border-amber-900/50 focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 p-2.5 rounded-lg text-sm text-white/90 outline-none transition-colors cursor-pointer flex justify-between items-center bg-[#140e0b]"
       >
         <span className="truncate">{selectedLabel}</span>
-        <span className="text-[10px] ml-2 opacity-70">▼</span>
+        <span className={`text-[10px] ml-2 opacity-70 transition-transform ${open ? 'rotate-180' : ''}`}>▼</span>
       </div>
       {open && (
         <>
           <div className="fixed inset-0 z-[9998]" onClick={() => setOpen(false)}></div>
-          <div className="absolute top-full left-0 right-0 mt-1 bg-[#1a120e] border border-amber-900/50 rounded-lg shadow-xl z-[9999] max-h-60 overflow-y-auto">
+          <div 
+            className="fixed bg-[#1a120e] border border-amber-900/50 rounded-lg shadow-2xl z-[9999] max-h-72 overflow-y-auto"
+            style={{ top: pos.top, left: pos.left, width: pos.width }}
+          >
             {options.map(opt => (
               <div 
                 key={opt.value} 
