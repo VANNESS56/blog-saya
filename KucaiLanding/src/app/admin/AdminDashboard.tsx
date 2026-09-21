@@ -1998,7 +1998,8 @@ function ManageLiveChat() {
                   <input type="file" ref={adminFileInputRef} accept="image/*" multiple className="hidden" onChange={(e) => {
                     const files = e.target.files;
                     if (files && files.length > 0) {
-                      setSelectedFiles(prev => [...prev, ...Array.from(files)]);
+                      const newFiles = Array.from(files);
+                      setSelectedFiles(prev => [...prev, ...newFiles]);
                     }
                     if (adminFileInputRef.current) adminFileInputRef.current.value = "";
                   }} />

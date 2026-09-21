@@ -302,7 +302,8 @@ function LiveChatInner() {
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
-      setSelectedFiles(prev => [...prev, ...Array.from(files)]);
+      const newFiles = Array.from(files);
+      setSelectedFiles(prev => [...prev, ...newFiles]);
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
