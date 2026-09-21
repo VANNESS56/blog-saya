@@ -19,10 +19,10 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Validate file size (max 2MB for chat)
-    if (file.size > 2 * 1024 * 1024) {
+    // Validate file size (max 5MB for chat)
+    if (file.size > 5 * 1024 * 1024) {
       return NextResponse.json(
-        { error: "File size must be under 2MB" },
+        { error: "Ukuran file maksimal 5MB" },
         { status: 400 }
       );
     }

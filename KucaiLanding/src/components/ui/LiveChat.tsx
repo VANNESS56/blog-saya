@@ -207,6 +207,8 @@ function LiveChatInner() {
               message: i === 0 ? trimmed : "", // Text caption attached to first image
               image_url: result.url,
             });
+          } else if (result.error) {
+            alert(`Gagal mengirim foto: ${result.error}`);
           }
         }
         await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
