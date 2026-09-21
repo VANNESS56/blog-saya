@@ -247,7 +247,8 @@ export default function InvoiceClient() {
                 
                 {credentials ? (
                   <div className="text-left bg-background border border-border rounded-lg p-4">
-                    <p className="text-muted-foreground text-sm mb-2 font-bold">Data Akun Anda:</p>
+                    <p className="text-muted-foreground text-sm mb-1 font-bold">Data Akun Anda:</p>
+                    <p className="text-xs text-muted-foreground mb-3 italic">Salin link nya ke google ya untuk change gmail ke kamu.</p>
                     <pre className="text-primary font-mono text-sm whitespace-pre-wrap break-all p-3 bg-card rounded border border-border">
                       {credentials}
                     </pre>

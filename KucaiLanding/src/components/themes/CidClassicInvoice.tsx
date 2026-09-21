@@ -206,7 +206,8 @@ export default function CidClassicInvoice({ invoice }: { invoice: string }) {
                 <div style={{ marginTop: '20px' }}>
                   {credentials ? (
                     <div style={{ textAlign: 'left', background: 'var(--surface-2)', padding: '20px', borderRadius: '4px', border: '1px solid var(--gem-dim)' }}>
-                      <div className="text-gem" style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '10px' }}>Data Akun Anda:</div>
+                      <div className="text-gem" style={{ fontSize: '12px', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '4px' }}>Data Akun Anda:</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-dim)', marginBottom: '12px', fontStyle: 'italic' }}>Salin link nya ke google ya untuk change gmail ke kamu.</div>
                       <pre className="mono" style={{ background: 'var(--bg)', padding: '16px', borderRadius: '4px', border: '1px solid var(--border)', color: 'var(--text)', whiteSpace: 'pre-wrap', wordBreak: 'break-all', fontSize: '13px' }}>
                         {credentials}
                       </pre>
