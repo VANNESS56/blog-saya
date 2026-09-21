@@ -1650,13 +1650,18 @@ function ManageLiveChat() {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [readSessions, setReadSessions] = useState<Record<string, string>>({});
+  const notifAudioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Load read status from localStorage
+  // Load read status from localStorage + request notification permission
   useEffect(() => {
     try {
       const stored = localStorage.getItem("kucaidl_read_sessions");
       if (stored) setReadSessions(JSON.parse(stored));
     } catch {}
+    if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+    notifAudioRef.current = new Audio("/notif.mp3");
   }, []);
 
   const markAsRead = (sessionId: string, lastMessageAt: string) => {
@@ -1707,6 +1712,17 @@ function ManageLiveChat() {
       .on("postgres_changes", { event: "*", schema: "public", table: "chat_sessions" }, () => fetchSessions())
       .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, (payload: any) => {
         const msg = payload.new as ChatMsg;
+        // Browser notification for customer messages
+        if (msg.sender !== "admin") {
+          try { notifAudioRef.current?.play().catch(() => {}); } catch {}
+          if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+            new Notification("💬 Chat Baru Masuk!", {
+              body: msg.message || "Pelanggan mengirim gambar",
+              icon: "/icon.png",
+              tag: "kucai-chat-" + msg.id,
+            });
+          }
+        }
         // Update messages if viewing the right session
         setMessages((prev) => {
           if (prev.length > 0 && prev[0]?.session_id === msg.session_id) {
