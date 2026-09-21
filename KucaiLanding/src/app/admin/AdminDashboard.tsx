@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 
@@ -1817,7 +1817,7 @@ function ManageLiveChat() {
     <div className="bg-[#140e0b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: "500px" }}>
       <div className="flex h-full">
         {/* Left Panel — Session List */}
-        <div className="w-[320px] shrink-0 border-r border-amber-900/20 flex flex-col">
+        <div className={`${activeSession ? 'hidden md:flex' : 'flex'} w-full md:w-[320px] shrink-0 border-r border-amber-900/20 flex-col`}>
           <div className="px-4 py-3 border-b border-amber-900/20 bg-[#0c0805]">
             <h3 className="font-bold text-white/90 text-sm">Percakapan</h3>
             <p className="text-xs text-white/50">{sessions.length} sesi chat</p>
@@ -1874,7 +1874,7 @@ function ManageLiveChat() {
         </div>
 
         {/* Right Panel — Chat */}
-        <div className="flex-1 flex flex-col">
+        <div className={`${!activeSession ? 'hidden md:flex' : 'flex'} flex-1 flex-col w-full`}>
           {!activeSession ? (
             <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
               <Headphones className="w-12 h-12 mb-4 text-gray-300" />
@@ -1885,6 +1885,12 @@ function ManageLiveChat() {
             <>
               {/* Chat Header */}
               <div className="px-5 py-3 border-b border-amber-900/20 bg-[#0c0805] flex items-center gap-3 shrink-0">
+                <button
+                  onClick={() => setActiveSession(null)}
+                  className="md:hidden flex items-center justify-center w-8 h-8 mr-1 bg-amber-900/20 text-amber-500 rounded-full hover:bg-amber-900/40"
+                >
+                  <ArrowLeft className="w-5 h-5" />
+                </button>
                 <div className="w-9 h-9 rounded-full bg-amber-900/40 flex items-center justify-center text-amber-500 font-bold text-sm">
                   {activeSessionData?.customer_name?.charAt(0)?.toUpperCase() || "?"}
                 </div>
