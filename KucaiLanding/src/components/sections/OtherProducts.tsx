@@ -48,7 +48,7 @@ export function OtherProducts() {
           <div>
             <p className="text-amber-500 text-xs font-bold tracking-[0.3em] uppercase font-mono mb-2">KATALOG</p>
             <h2 className="text-white text-3xl md:text-4xl font-black uppercase tracking-wide">
-              SEMUA PRODUK
+              STOCK AKUN READY KIRIM
             </h2>
             <p className="text-gray-500 mt-2 text-sm">
               {products.length} produk tersedia — Sistem pengiriman otomatis
