@@ -439,8 +439,8 @@ function LiveChatInner() {
                     <div
                       className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                         msg.sender === "customer"
-                          ? "bg-blue-600 text-white rounded-br-md"
-                          : "bg-white/10 text-gray-200 rounded-bl-md"
+                          ? "bg-amber-600 text-white rounded-br-md"
+                          : "bg-[#1f1611] border border-amber-900/30 text-gray-200 rounded-bl-md"
                       }`}
                     >
                       {msg.image_url && (
@@ -450,7 +450,7 @@ function LiveChatInner() {
                       <div
                         className={`text-[10px] mt-1 ${
                           msg.sender === "customer"
-                            ? "text-blue-200"
+                            ? "text-amber-200"
                             : "text-gray-500"
                         }`}
                       >
@@ -503,14 +503,14 @@ function LiveChatInner() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder={uploading ? "Mengunggah..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik pesan...")}
-                      className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
+                      className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
                       maxLength={500}
                       disabled={uploading}
                     />
                     <button
                       type="submit"
                       disabled={(!newMessage.trim() && selectedFiles.length === 0) || sending || uploading}
-                      className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
+                      className="w-10 h-10 shrink-0 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
                     >
                       <Send className="w-4 h-4" />
                     </button>

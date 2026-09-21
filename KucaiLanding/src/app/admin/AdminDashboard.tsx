@@ -2012,7 +2012,7 @@ function ManageLiveChat() {
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
                     placeholder={uploading ? "Mengunggah gambar..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik balasan...")}
-                    className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
+                    className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-gray-400 outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
                     maxLength={500}
                     disabled={uploading}
                   />
