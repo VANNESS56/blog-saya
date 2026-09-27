@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { username, password } = await req.json();
+    const { username, password, rememberMe } = await req.json();
 
     if (await verifyCredentials(username, password)) {
       const token = createSessionToken();
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
         secure: process.env.NODE_ENV === "production",
         sameSite: "strict",
         path: "/",
-        maxAge: 60 * 60 * 24, // 24 hours
+        maxAge: rememberMe ? 60 * 60 * 24 * 30 : 60 * 60 * 24, // 30 days or 24 hours
       });
       return NextResponse.json({ success: true });
     }

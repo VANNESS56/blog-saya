@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 export function AdminLogin() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -19,7 +20,7 @@ export function AdminLogin() {
       const res = await fetch("/api/admin/auth", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, password }),
+        body: JSON.stringify({ username, password, rememberMe }),
       });
 
       if (res.ok) {
@@ -73,6 +74,18 @@ export function AdminLogin() {
           
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
           
+          <div className="flex items-center mt-2 mb-2">
+            <input
+              id="remember"
+              type="checkbox"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+              className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2 cursor-pointer"
+            />
+            <label htmlFor="remember" className="ml-2 text-sm font-medium text-gray-700 cursor-pointer">
+              Remember me (30 days)
+            </label>
+          </div>
           <div className="pt-2">
             <button
               suppressHydrationWarning
