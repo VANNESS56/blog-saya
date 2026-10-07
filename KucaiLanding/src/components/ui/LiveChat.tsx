@@ -156,6 +156,7 @@ function LiveChatInner() {
   const [chatSettings, setChatSettings] = useState<{ buy_rate_text: string; sell_rate_text: string; qris_image_url: string } | null>(null);
   const [quickReplyUsed, setQuickReplyUsed] = useState(false);
   const [copiedNumber, setCopiedNumber] = useState(false);
+  const [chatMode, setChatMode] = useState<"buy" | "sell" | null>(null);
 
   // Listen for custom event to open chat
   useEffect(() => {
@@ -299,6 +300,7 @@ function LiveChatInner() {
   const handleQuickReplyBuy = async () => {
     if (!sessionId || sending || quickReplyUsed) return;
     setQuickReplyUsed(true);
+    setChatMode("buy");
     setSending(true);
     const buyText = chatSettings?.buy_rate_text || "";
     const qrisUrl = chatSettings?.qris_image_url || "";
@@ -344,6 +346,7 @@ function LiveChatInner() {
   const handleQuickReplySell = async () => {
     if (!sessionId || sending || quickReplyUsed) return;
     setQuickReplyUsed(true);
+    setChatMode("sell");
     setSending(true);
 
     const sellText = chatSettings?.sell_rate_text || `MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n🌍 WORLD : POSZIO\n🔐 OWNER : deleteALVIN\n\n-> masuk portal <-`;
@@ -695,7 +698,7 @@ function LiveChatInner() {
                         className="w-full flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 border border-white/10 border-dashed rounded-xl text-gray-300 hover:text-white text-sm font-semibold transition-colors"
                       >
                         <ImagePlus className="w-4 h-4" />
-                        Kirim Foto Bukti Transfer / Akun
+                        {chatMode === "sell" ? "Upload / Pilih Foto Bukti" : "Kirim Foto Bukti Transfer"}
                       </button>
                     </div>
                   )}
