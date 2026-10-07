@@ -346,7 +346,7 @@ function LiveChatInner() {
     setQuickReplyUsed(true);
     setSending(true);
 
-    const sellText = chatSettings?.sell_rate_text || `*Silahkan kirim SS spek akun kamu ya kak:*\n・ backpack\n・ playtime hour\n・ supporter / ssupporter\n・ title ( kalau ada )\n・ roles kalau level 5 keatas\n\n*-nanti admin mimin bales secepatnya ditunggu ya* 🤗`;
+    const sellText = chatSettings?.sell_rate_text || `MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n🌍 WORLD : POSZIO\n🔐 OWNER : deleteALVIN\n\n-> masuk portal <-`;
     
     // Optimistic UI update
     setMessages((prev) => [
