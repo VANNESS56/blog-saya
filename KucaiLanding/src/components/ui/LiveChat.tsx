@@ -77,16 +77,55 @@ export function LiveChat() {
   return <LiveChatInner />;
 }
 
-const renderMessageText = (text: string) => {
-  return text.split('\n').map((line, i, arr) => {
+const renderMessageText = (
+  text: string,
+  msgId?: number | string,
+  copiedId?: number | string | null,
+  handleCopy?: (text: string, id: number | string) => void
+) => {
+  return text.split("\n").map((line, i, arr) => {
     const parts = line.split(/(\*[^*]+\*)/g);
     return (
       <span key={i}>
         {parts.map((part, j) => {
-          if (part.startsWith('*') && part.endsWith('*')) {
-            return <strong key={j} className="font-bold">{part.slice(1, -1)}</strong>;
+          if (part.startsWith("*") && part.endsWith("*")) {
+            return (
+              <strong key={j} className="font-bold">
+                {part.slice(1, -1)}
+              </strong>
+            );
           }
-          return part;
+          
+          if (handleCopy && msgId && /\d{8,}/.test(part)) {
+            const numParts = part.split(/(\d{8,})/g);
+            return (
+              <span key={j}>
+                {numParts.map((sub, k) => {
+                  if (/\d{8,}/.test(sub)) {
+                    const uniqueId = `${msgId}-${sub}-${k}`;
+                    return (
+                      <span key={k} className="inline-flex items-center gap-1.5 align-middle mx-1">
+                        <span className="font-mono text-amber-300 font-semibold tracking-wider">{sub}</span>
+                        <button
+                          onClick={() => handleCopy(sub, uniqueId)}
+                          className="flex items-center gap-1 px-2 py-0.5 bg-[#2a1f18] hover:bg-[#3a2b22] border border-amber-900/50 rounded-md text-[10px] font-semibold text-amber-500 transition-colors"
+                        >
+                          {copiedId === uniqueId ? (
+                            <><Check className="w-3 h-3" /> Disalin</>
+                          ) : (
+                            <><Copy className="w-3 h-3" /> Salin</>
+                          )}
+                        </button>
+                      </span>
+                    );
+                  }
+                  return <span key={k}>{sub}</span>;
+                })}
+              </span>
+            );
+          }
+
+          return <span key={j}>{part}</span>;
         })}
         {i < arr.length - 1 && <br />}
       </span>
@@ -595,16 +634,12 @@ function LiveChatInner() {
                           )}
                         </div>
                       )}
-                      {msg.message && <span>{renderMessageText(msg.message)}</span>}
-                      {msg.sender === "admin" && msg.message && /\d{8,}/.test(msg.message) && (
-                        <div className="mt-2 flex justify-end">
-                          <button
-                            onClick={() => handleCopy(msg.message, msg.id)}
-                            className="flex items-center gap-1.5 px-3 py-1 bg-[#2a1f18] hover:bg-[#3a2b22] border border-amber-900/50 rounded-lg text-[10px] font-semibold text-amber-500 transition-colors"
-                          >
-                            {copiedId === msg.id ? <><Check className="w-3 h-3" /> Disalin</> : <><Copy className="w-3 h-3" /> Salin</>}
-                          </button>
-                        </div>
+                      {msg.message && (
+                        <span>
+                          {msg.sender === "admin" 
+                            ? renderMessageText(msg.message, msg.id, copiedId, handleCopy)
+                            : renderMessageText(msg.message)}
+                        </span>
                       )}
                       <div
                         className={`text-[10px] mt-1 ${
