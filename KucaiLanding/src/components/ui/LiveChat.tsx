@@ -156,7 +156,7 @@ function LiveChatInner() {
   const [chatSettings, setChatSettings] = useState<{ buy_rate_text: string; sell_rate_text: string; qris_image_url: string } | null>(null);
   const [quickReplyUsed, setQuickReplyUsed] = useState(false);
   const [copiedNumber, setCopiedNumber] = useState(false);
-  const [chatMode, setChatMode] = useState<"buy" | "sell" | null>(null);
+  const [chatMode, setChatMode] = useState<"buy" | "sell" | "jual_akun" | null>(null);
   const [sellStage, setSellStage] = useState<"idle" | "proof_sent" | "payout_method" | "awaiting_number" | "awaiting_name" | "done">("idle");
   const [selectedPayoutMethod, setSelectedPayoutMethod] = useState<string | null>(null);
 
@@ -372,6 +372,48 @@ function LiveChatInner() {
       session_id: sessionId,
       sender: "admin",
       message: sellText,
+    });
+
+    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+    setSending(false);
+  };
+
+  const handleQuickReplyJualAkun = async () => {
+    if (!sessionId || sending || quickReplyUsed) return;
+    setQuickReplyUsed(true);
+    setChatMode("jual_akun");
+    setSending(true);
+
+    const jualAkunText = `kalau jual akun , silahkan kirim ss spek akunnya :
+・ backpack
+・ playtime hour
+・ supporter / ssupporter
+・ title ( kalau ada )
+・ roles kalau level 5 keatas
+
+kalau beli akun , silahkan klik beli dari website ya 🥰
+
+-nanti admin mimin bales secepatnya ditunggu ya 🤗`;
+    
+    // Optimistic UI update
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), session_id: sessionId, sender: "customer", message: "🧑‍💻 Jual Akun", created_at: new Date().toISOString() },
+      { id: Date.now() + 1, session_id: sessionId, sender: "admin", message: jualAkunText, created_at: new Date().toISOString() }
+    ]);
+
+    // Customer choice
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "customer",
+      message: "🧑‍💻 Jual Akun",
+    });
+
+    // Admin auto-reply
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "admin",
+      message: jualAkunText,
     });
 
     await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
@@ -710,20 +752,29 @@ function LiveChatInner() {
 
               {/* BUY / SELL Quick Buttons — show only if greeting was sent and not yet used */}
               {!quickReplyUsed && !isBlocked && (
-                <div className="shrink-0 px-3 py-2 flex gap-2 border-t border-white/10 bg-[#0e0e0e]">
+                <div className="shrink-0 px-3 py-2 flex flex-col gap-2 border-t border-white/10 bg-[#0e0e0e]">
+                  <div className="flex gap-2">
+                    <button
+                      onClick={handleQuickReplyBuy}
+                      disabled={sending}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
+                    >
+                      🛒 Beli DL/BGL
+                    </button>
+                    <button
+                      onClick={handleQuickReplySell}
+                      disabled={sending}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-orange-600/20 hover:bg-orange-600/40 text-orange-400 border border-orange-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
+                    >
+                      💰 Jual DL/BGL
+                    </button>
+                  </div>
                   <button
-                    onClick={handleQuickReplyBuy}
+                    onClick={handleQuickReplyJualAkun}
                     disabled={sending}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
+                    className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
                   >
-                    🛒 Beli DL/BGL
-                  </button>
-                  <button
-                    onClick={handleQuickReplySell}
-                    disabled={sending}
-                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-orange-600/20 hover:bg-orange-600/40 text-orange-400 border border-orange-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
-                  >
-                    💰 Jual DL/BGL
+                    🧑‍💻 Jual Akun
                   </button>
                 </div>
               )}
@@ -766,7 +817,7 @@ function LiveChatInner() {
                         className="w-full flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 border border-white/10 border-dashed rounded-xl text-gray-300 hover:text-white text-sm font-semibold transition-colors"
                       >
                         <ImagePlus className="w-4 h-4" />
-                        {chatMode === "sell" ? "Upload / Pilih Foto Bukti" : "Kirim Foto Bukti Transfer"}
+                        {chatMode === "sell" ? "Upload / Pilih Foto Bukti" : chatMode === "jual_akun" ? "Kirim SS Spek Akun" : "Kirim Foto Bukti Transfer"}
                       </button>
                     </div>
                   )}
@@ -789,8 +840,8 @@ function LiveChatInner() {
                     className="p-3 flex items-center gap-2"
                   >
                     <input type="file" ref={fileInputRef} accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
-                    {/* Only show input bar if: no mode selected, or files selected, or sell awaiting text input */}
-                    {(!quickReplyUsed || selectedFiles.length > 0 || (chatMode === "sell" && (sellStage === "awaiting_number" || sellStage === "awaiting_name"))) && (
+                    {/* Only show input bar if: no mode selected, or files selected, or sell awaiting text input, or Jual Akun mode */}
+                    {(!quickReplyUsed || chatMode === "jual_akun" || selectedFiles.length > 0 || (chatMode === "sell" && (sellStage === "awaiting_number" || sellStage === "awaiting_name"))) && (
                       <>
                         {selectedFiles.length > 0 && (
                           <button
