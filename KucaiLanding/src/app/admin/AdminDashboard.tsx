@@ -708,21 +708,27 @@ function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
     async function fetchProofs() {
       const { data } = await supabase
         .from("chat_messages")
-        .select(`*, chat_sessions(customer_name)`)
+        .select(`*, chat_sessions(id, customer_name)`)
         .eq("sender", "customer")
         .not("image_url", "is", null)
         .order("created_at", { ascending: false });
       
+      const { data: modeIndicators } = await supabase
+        .from("chat_messages")
+        .select("session_id, message")
+        .in("message", ["🛒 Beli DL/BGL", "💰 Jual DL/BGL"]);
+
+      const sessionModeMap: Record<string, string> = {};
+      if (modeIndicators) {
+        modeIndicators.forEach(m => {
+          sessionModeMap[m.session_id] = m.message === "🛒 Beli DL/BGL" ? "buy" : "sell";
+        });
+      }
+
       if (data) {
-        // Filter out buy/sell based on message content
-        // Sell mode uploads are empty text (auto-submitted)
-        // Buy mode uploads have caption
         const filtered = data.filter(msg => {
-          if (mode === "sell") {
-            return !msg.message || msg.message.trim() === "";
-          } else {
-            return msg.message && msg.message.trim() !== "";
-          }
+          const sMode = sessionModeMap[msg.session_id] || "buy";
+          return sMode === mode;
         });
         setProofs(filtered);
       }
