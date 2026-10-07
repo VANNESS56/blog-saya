@@ -157,6 +157,8 @@ function LiveChatInner() {
   const [quickReplyUsed, setQuickReplyUsed] = useState(false);
   const [copiedNumber, setCopiedNumber] = useState(false);
   const [chatMode, setChatMode] = useState<"buy" | "sell" | null>(null);
+  const [sellStage, setSellStage] = useState<"idle" | "proof_sent" | "payout_method" | "awaiting_number" | "awaiting_name" | "done">("idle");
+  const [selectedPayoutMethod, setSelectedPayoutMethod] = useState<string | null>(null);
 
   // Listen for custom event to open chat
   useEffect(() => {
@@ -383,6 +385,22 @@ function LiveChatInner() {
     });
   };
 
+  const sendAdminMsg = async (message: string) => {
+    const optimistic = { id: Date.now() + Math.random(), session_id: sessionId!, sender: "admin", message, created_at: new Date().toISOString() };
+    setMessages(prev => [...prev, optimistic]);
+    await supabase.from("chat_messages").insert({ session_id: sessionId, sender: "admin", message });
+    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+  };
+
+  const handlePayoutMethod = async (method: string) => {
+    setSelectedPayoutMethod(method);
+    setSellStage("awaiting_number");
+    const customerMsg = { id: Date.now(), session_id: sessionId!, sender: "customer", message: method, created_at: new Date().toISOString() };
+    setMessages(prev => [...prev, customerMsg]);
+    await supabase.from("chat_messages").insert({ session_id: sessionId, sender: "customer", message: method });
+    await sendAdminMsg("Silahkan kirimkan nomor / alamat payoutnya");
+  };
+
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
     const trimmed = newMessage.trim();
@@ -427,6 +445,10 @@ function LiveChatInner() {
         setNewMessage("");
         setSelectedFiles([]);
         if (!quickReplyUsed) setQuickReplyUsed(true);
+        // In sell mode: after photo, trigger payout flow
+        if (chatMode === "sell" && sellStage === "idle") {
+          setSellStage("payout_method");
+        }
       } catch (err: any) {
         alert(`Terjadi kesalahan: ${err.message}`);
       }
@@ -441,6 +463,19 @@ function LiveChatInner() {
       await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
       setNewMessage("");
       if (!quickReplyUsed) setQuickReplyUsed(true);
+      
+      // Sell stage auto-replies
+      if (chatMode === "sell" && sellStage === "awaiting_number") {
+        setSellStage("awaiting_name");
+        setTimeout(async () => {
+          await sendAdminMsg("Atas nama siapa rekening / e-walletnya?");
+        }, 600);
+      } else if (chatMode === "sell" && sellStage === "awaiting_name") {
+        setSellStage("done");
+        setTimeout(async () => {
+          await sendAdminMsg("Pembayaran sedang di proses\nmohon menunggu 1-10 menit yaa\nThankyou sudah menunggu 🥰✌️");
+        }, 600);
+      }
     }
 
     setSending(false);
@@ -452,8 +487,8 @@ function LiveChatInner() {
     if (files && files.length > 0) {
       const newFiles = Array.from(files);
       setSelectedFiles(prev => [...prev, ...newFiles]);
-      // Auto-fill template if message is empty
-      if (!newMessage.trim()) {
+      // In sell mode, don't auto-fill the buy template
+      if (!newMessage.trim() && chatMode !== "sell") {
         setNewMessage("isi nama world & growidny ya 🙏\nnama world :\nowner :");
       }
     }
@@ -689,8 +724,30 @@ function LiveChatInner() {
                 </div>
               ) : (
                 <div className="shrink-0 flex flex-col border-t border-white/10 bg-[#0e0e0e]">
-                  {/* Prominent Upload Proof Button (show after Buy/Sell choice) */}
-                  {quickReplyUsed && selectedFiles.length === 0 && (
+                   {/* Payout Method Buttons (sell mode, after proof photo sent) */}
+                   {chatMode === "sell" && sellStage === "payout_method" && (
+                     <div className="px-3 pt-3 pb-1">
+                       <p className="text-xs text-amber-400 font-bold mb-2 flex items-center gap-1.5">
+                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse inline-block"></span>
+                         PILIH METODE PAYOUT
+                       </p>
+                       <div className="grid grid-cols-2 gap-2">
+                         {["Gopay", "Dana", "OVO", "ShopeePay", "BCA", "Mandiri", "BRI", "BNI"].map((m) => (
+                           <button
+                             key={m}
+                             type="button"
+                             onClick={() => handlePayoutMethod(m)}
+                             className="py-2.5 px-3 bg-[#1a1a1a] hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/50 rounded-xl text-sm font-semibold text-white/80 hover:text-amber-400 transition-all text-left"
+                           >
+                             {m}
+                           </button>
+                         ))}
+                       </div>
+                     </div>
+                   )}
+
+                  {/* Prominent Upload Proof Button (show after Buy/Sell choice, but not during payout flow) */}
+                  {quickReplyUsed && selectedFiles.length === 0 && (chatMode !== "sell" || sellStage === "idle") && (
                     <div className="px-3 pt-3">
                       <button
                         type="button"
