@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Send, Minus, ImagePlus } from "lucide-react";
+import { X, Send, Minus, ImagePlus, Copy, Check } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { usePathname } from "next/navigation";
@@ -113,6 +113,7 @@ function LiveChatInner() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
+  const [copiedId, setCopiedId] = useState<number | string | null>(null);
   const [chatSettings, setChatSettings] = useState<{ buy_rate_text: string; sell_rate_text: string; qris_image_url: string } | null>(null);
   const [quickReplyUsed, setQuickReplyUsed] = useState(false);
   const [copiedNumber, setCopiedNumber] = useState(false);
@@ -450,6 +451,12 @@ function LiveChatInner() {
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
   };
 
+  const handleCopy = (text: string, id: number | string) => {
+    navigator.clipboard.writeText(text);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
   return (
     <div className="fixed bottom-[85px] right-4 md:bottom-8 md:right-8 z-[51] flex flex-col items-end pointer-events-none">
       {/* Chat Window */}
@@ -556,6 +563,16 @@ function LiveChatInner() {
                         <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => setPreviewImage(msg.image_url || null)} />
                       )}
                       {msg.message && <span>{renderMessageText(msg.message)}</span>}
+                      {msg.sender === "admin" && msg.message && /\d{8,}/.test(msg.message) && (
+                        <div className="mt-2 flex justify-end">
+                          <button
+                            onClick={() => handleCopy(msg.message, msg.id)}
+                            className="flex items-center gap-1.5 px-3 py-1 bg-[#2a1f18] hover:bg-[#3a2b22] border border-amber-900/50 rounded-lg text-[10px] font-semibold text-amber-500 transition-colors"
+                          >
+                            {copiedId === msg.id ? <><Check className="w-3 h-3" /> Disalin</> : <><Copy className="w-3 h-3" /> Salin</>}
+                          </button>
+                        </div>
+                      )}
                       <div
                         className={`text-[10px] mt-1 ${
                           msg.sender === "customer"
