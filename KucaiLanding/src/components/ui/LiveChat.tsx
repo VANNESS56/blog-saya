@@ -240,11 +240,19 @@ function LiveChatInner() {
       JSON.stringify({ sessionId: sid, customerName: trimmed })
     );
 
+    const greetingMsg = `Halo! 👋 Selamat datang di *Kucai Account*. Mau *jual* atau *beli*?`;
+    
+    // Optimistic UI update
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), session_id: sid, sender: "admin", message: greetingMsg, created_at: new Date().toISOString() }
+    ]);
+
     // Send auto-greeting
     await supabase.from("chat_messages").insert({
       session_id: sid,
       sender: "admin",
-      message: `Halo! 👋 Selamat datang di *Kucai Account*. Mau *jual* atau *beli*?`,
+      message: greetingMsg,
     });
   };
 
@@ -254,6 +262,14 @@ function LiveChatInner() {
     setSending(true);
     const buyText = chatSettings?.buy_rate_text || "";
     const qrisUrl = chatSettings?.qris_image_url || "";
+
+    const newMsgs: any[] = [];
+    newMsgs.push({ id: Date.now(), session_id: sessionId, sender: "customer", message: "🛒 Beli DL/BGL", created_at: new Date().toISOString() });
+    if (buyText) newMsgs.push({ id: Date.now() + 1, session_id: sessionId, sender: "admin", message: buyText, created_at: new Date().toISOString() });
+    if (qrisUrl) newMsgs.push({ id: Date.now() + 2, session_id: sessionId, sender: "admin", message: "Scan QRIS di bawah untuk bayar:", image_url: qrisUrl, created_at: new Date().toISOString() });
+    
+    // Optimistic UI update
+    setMessages((prev) => [...prev, ...newMsgs]);
 
     // Send customer's choice message
     await supabase.from("chat_messages").insert({
@@ -290,6 +306,15 @@ function LiveChatInner() {
     setQuickReplyUsed(true);
     setSending(true);
 
+    const sellText = chatSettings?.sell_rate_text || `*Silahkan kirim SS spek akun kamu ya kak:*\n・ backpack\n・ playtime hour\n・ supporter / ssupporter\n・ title ( kalau ada )\n・ roles kalau level 5 keatas\n\n*-nanti admin mimin bales secepatnya ditunggu ya* 🤗`;
+    
+    // Optimistic UI update
+    setMessages((prev) => [
+      ...prev,
+      { id: Date.now(), session_id: sessionId, sender: "customer", message: "💰 Jual DL/BGL", created_at: new Date().toISOString() },
+      { id: Date.now() + 1, session_id: sessionId, sender: "admin", message: sellText, created_at: new Date().toISOString() }
+    ]);
+
     // Customer choice
     await supabase.from("chat_messages").insert({
       session_id: sessionId,
@@ -298,7 +323,6 @@ function LiveChatInner() {
     });
 
     // Admin auto-reply
-    const sellText = chatSettings?.sell_rate_text || `*Silahkan kirim SS spek akun kamu ya kak:*\n・ backpack\n・ playtime hour\n・ supporter / ssupporter\n・ title ( kalau ada )\n・ roles kalau level 5 keatas\n\n*-nanti admin mimin bales secepatnya ditunggu ya* 🤗`;
     await supabase.from("chat_messages").insert({
       session_id: sessionId,
       sender: "admin",
