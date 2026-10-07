@@ -359,6 +359,7 @@ function LiveChatInner() {
         await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
         setNewMessage("");
         setSelectedFiles([]);
+        if (!quickReplyUsed) setQuickReplyUsed(true);
       } catch (err: any) {
         alert(`Terjadi kesalahan: ${err.message}`);
       }
@@ -372,6 +373,7 @@ function LiveChatInner() {
       });
       await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
       setNewMessage("");
+      if (!quickReplyUsed) setQuickReplyUsed(true);
     }
 
     setSending(false);
@@ -549,7 +551,7 @@ function LiveChatInner() {
               </div>
 
               {/* BUY / SELL Quick Buttons — show only if greeting was sent and not yet used */}
-              {!quickReplyUsed && messages.length > 0 && messages[messages.length - 1]?.sender === "admin" && !isBlocked && (
+              {!quickReplyUsed && !isBlocked && (
                 <div className="shrink-0 px-3 py-2 flex gap-2 border-t border-white/10 bg-[#0e0e0e]">
                   <button
                     onClick={handleQuickReplyBuy}
@@ -575,8 +577,8 @@ function LiveChatInner() {
                 </div>
               ) : (
                 <div className="shrink-0 flex flex-col border-t border-white/10 bg-[#0e0e0e]">
-                  {/* Prominent Upload Proof Button */}
-                  {selectedFiles.length === 0 && (
+                  {/* Prominent Upload Proof Button (show after Buy/Sell choice) */}
+                  {quickReplyUsed && selectedFiles.length === 0 && (
                     <div className="px-3 pt-3">
                       <button
                         type="button"
