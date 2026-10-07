@@ -470,17 +470,20 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
             const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
             const result = await res.json();
             if (result.url) {
-              await supabase.from("chat_messages").insert({
+              const { error: insertError } = await supabase.from("chat_messages").insert({
                 session_id: sessionId,
                 sender: "customer",
                 message: i === 0 ? trimmed : "", // Text caption attached to first image
                 image_url: result.url,
               });
+              if (insertError) {
+                alert(`Gagal menyimpan pesan: ${insertError.message}`);
+              }
             } else if (result.error) {
               alert(`Gagal mengirim foto: ${result.error}`);
             }
           } catch (err: any) {
-             alert(`Gagal terhubung ke server (foto mungkin terlalu besar): ${err.message}`);
+             alert(`Gagal terhubung ke server saat mengirim foto: ${err.message}`);
           }
         }
         await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
@@ -533,20 +536,20 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
       if (!newMessage.trim() && chatMode !== "sell") {
         setNewMessage("isi nama world & growidny ya 🙏\nnama world :\nowner :");
       }
-      
-      // Auto submit for sell mode
-      if (chatMode === "sell" && sellStage === "idle") {
-        // We defer the submission slightly to let state update, or just do it directly:
-        setTimeout(() => {
-          if (document.getElementById("chat-form")) {
-            const submitEvent = new Event('submit', { cancelable: true, bubbles: true });
-            document.getElementById("chat-form")?.dispatchEvent(submitEvent);
-          }
-        }, 100);
-      }
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
+
+  // Safe Auto-submit effect for sell mode
+  useEffect(() => {
+    if (chatMode === "sell" && sellStage === "idle" && selectedFiles.length > 0 && !sending && !uploading) {
+       // Trigger send automatically after state has updated
+       const form = document.getElementById("chat-form") as HTMLFormElement;
+       if (form) {
+         form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+       }
+    }
+  }, [selectedFiles, chatMode, sellStage, sending, uploading]);
 
   const handleOpen = () => {
     setIsOpen(true);
