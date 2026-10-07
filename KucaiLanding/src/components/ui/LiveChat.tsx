@@ -777,29 +777,42 @@ function LiveChatInner() {
                     className="p-3 flex items-center gap-2"
                   >
                     <input type="file" ref={fileInputRef} accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
-                    <button
-                      type="button"
-                      onClick={() => fileInputRef.current?.click()}
-                      disabled={uploading}
-                      className="w-10 h-10 shrink-0 bg-white/10 hover:bg-white/20 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-colors"
-                    >
-                      <ImagePlus className="w-4 h-4" />
-                    </button>
-                    <input
-                      ref={inputRef}
-                      type="text"
-                      value={newMessage}
-                      onChange={(e) => setNewMessage(e.target.value)}
-                      placeholder={uploading ? "Mengunggah..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik pesan...")}
-                      className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
-                    />
-                    <button
-                      type="submit"
-                      disabled={(!newMessage.trim() && selectedFiles.length === 0) || sending || uploading}
-                      className="w-10 h-10 shrink-0 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
-                    >
-                      <Send className="w-4 h-4" />
-                    </button>
+                    {/* Only show input bar if: no mode selected, or files selected, or sell awaiting text input */}
+                    {(!quickReplyUsed || selectedFiles.length > 0 || (chatMode === "sell" && (sellStage === "awaiting_number" || sellStage === "awaiting_name"))) && (
+                      <>
+                        {selectedFiles.length > 0 && (
+                          <button
+                            type="button"
+                            onClick={() => fileInputRef.current?.click()}
+                            disabled={uploading}
+                            className="w-10 h-10 shrink-0 bg-white/10 hover:bg-white/20 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                          >
+                            <ImagePlus className="w-4 h-4" />
+                          </button>
+                        )}
+                        <input
+                          ref={inputRef}
+                          type="text"
+                          value={newMessage}
+                          onChange={(e) => setNewMessage(e.target.value)}
+                          placeholder={
+                            uploading ? "Mengunggah..." :
+                            sellStage === "awaiting_number" ? `Nomor ${selectedPayoutMethod} kamu...` :
+                            sellStage === "awaiting_name" ? "Atas nama..." :
+                            selectedFiles.length > 0 ? "Tambahkan keterangan..." :
+                            "Ketik pesan..."
+                          }
+                          className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
+                        />
+                        <button
+                          type="submit"
+                          disabled={(!newMessage.trim() && selectedFiles.length === 0) || sending || uploading}
+                          className="w-10 h-10 shrink-0 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
+                        >
+                          <Send className="w-4 h-4" />
+                        </button>
+                      </>
+                    )}
                   </form>
                 </div>
               )}
