@@ -383,6 +383,10 @@ function LiveChatInner() {
     if (files && files.length > 0) {
       const newFiles = Array.from(files);
       setSelectedFiles(prev => [...prev, ...newFiles]);
+      // Auto-fill template if message is empty
+      if (!newMessage.trim()) {
+        setNewMessage("isi nama world & growidny ya 🙏\nnama world :\nowner :");
+      }
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
@@ -570,7 +574,21 @@ function LiveChatInner() {
                   <p className="text-red-400 text-xs font-medium">🚫 Sesi chat ini telah diblokir oleh admin.</p>
                 </div>
               ) : (
-                <div className="shrink-0 flex flex-col border-t border-white/10">
+                <div className="shrink-0 flex flex-col border-t border-white/10 bg-[#0e0e0e]">
+                  {/* Prominent Upload Proof Button */}
+                  {selectedFiles.length === 0 && (
+                    <div className="px-3 pt-3">
+                      <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        className="w-full flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 border border-white/10 border-dashed rounded-xl text-gray-300 hover:text-white text-sm font-semibold transition-colors"
+                      >
+                        <ImagePlus className="w-4 h-4" />
+                        Kirim Foto Bukti Transfer / Akun
+                      </button>
+                    </div>
+                  )}
+
                   {selectedFiles.length > 0 && (
                     <div className="flex gap-2 p-3 bg-white/5 overflow-x-auto border-b border-white/10">
                       {selectedFiles.map((f, i) => (
@@ -603,8 +621,6 @@ function LiveChatInner() {
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder={uploading ? "Mengunggah..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik pesan...")}
                       className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
-                      maxLength={500}
-                      disabled={uploading}
                     />
                     <button
                       type="submit"
