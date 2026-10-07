@@ -716,19 +716,45 @@ function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
       const { data: modeIndicators } = await supabase
         .from("chat_messages")
         .select("session_id, message")
-        .in("message", ["🛒 Beli DL/BGL", "💰 Jual DL/BGL"]);
+        .in("message", ["🛒 Beli DL/BGL", "💰 Jual DL/BGL", "🧑‍💻 Jual Akun"]);
 
       const sessionModeMap: Record<string, string> = {};
       if (modeIndicators) {
         modeIndicators.forEach(m => {
-          sessionModeMap[m.session_id] = m.message === "🛒 Beli DL/BGL" ? "buy" : "sell";
+          sessionModeMap[m.session_id] = m.message === "🛒 Beli DL/BGL" ? "buy" : 
+                                         m.message === "💰 Jual DL/BGL" ? "sell" : "jual_akun";
+        });
+      }
+
+      const { data: textMessages } = await supabase
+        .from("chat_messages")
+        .select("session_id, message")
+        .eq("sender", "customer")
+        .is("image_url", null)
+        .order("created_at", { ascending: true });
+        
+      const sessionTextMap: Record<string, string[]> = {};
+      if (textMessages) {
+        textMessages.forEach(m => {
+          if (!sessionTextMap[m.session_id]) sessionTextMap[m.session_id] = [];
+          if (!["🛒 Beli DL/BGL", "💰 Jual DL/BGL", "🧑‍💻 Jual Akun"].includes(m.message)) {
+            sessionTextMap[m.session_id].push(m.message);
+          }
         });
       }
 
       if (data) {
         const filtered = data.filter(msg => {
           const sMode = sessionModeMap[msg.session_id] || "buy";
-          return sMode === mode;
+          return mode === "buy" ? (sMode === "buy" || sMode === "jual_akun") : (sMode === "sell");
+        }).map(msg => {
+          if (!msg.message || msg.message.trim() === "") {
+             const extraTexts = sessionTextMap[msg.session_id];
+             if (extraTexts && extraTexts.length > 0) {
+                 msg.message = extraTexts.join("\n");
+             }
+          }
+          return msg;
         });
         setProofs(filtered);
       }
