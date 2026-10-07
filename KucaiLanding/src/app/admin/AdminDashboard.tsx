@@ -26,7 +26,7 @@ async function adminUpload(file: File, folder: string): Promise<string | null> {
 }
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders_buy" | "orders_sell" | "stock" | "products" | "profile" | "theme" | "livechat">("dashboard");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const router = useRouter();
 
@@ -109,10 +109,18 @@ export function AdminDashboard() {
             </li>
             <li>
               <button suppressHydrationWarning 
-                onClick={() => setActiveTab("orders")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                onClick={() => setActiveTab("orders_buy")}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders_buy' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
-                <ShoppingCart className="w-5 h-5" /> Buyer Orders
+                <ShoppingCart className="w-5 h-5" /> Menu Buy (Beli)
+              </button>
+            </li>
+            <li>
+              <button suppressHydrationWarning 
+                onClick={() => setActiveTab("orders_sell")}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders_sell' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+              >
+                <ShoppingCart className="w-5 h-5" /> Menu Sell (Jual)
               </button>
             </li>
             <li>
@@ -192,7 +200,8 @@ export function AdminDashboard() {
             {activeTab === "testimonials" && <ManageTestimonials />}
             {activeTab === "reputations" && <ManageReputations />}
             {activeTab === "settings" && <ManageSettings />}
-            {activeTab === "orders" && <ManageOrders />}
+            {activeTab === "orders_buy" && <ManageOrders mode="buy" />}
+            {activeTab === "orders_sell" && <ManageOrders mode="sell" />}
             {activeTab === "stock" && <ManageStock />}
             {activeTab === "products" && <ManageProducts />}
             {activeTab === "profile" && <ManageProfile />}
@@ -690,7 +699,7 @@ function ManageSettings() {
   );
 }
 
-function ManageOrders() {
+function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
   const [proofs, setProofs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeSubTab, setActiveSubTab] = useState("Menunggu dicek");
@@ -703,11 +712,24 @@ function ManageOrders() {
         .eq("sender", "customer")
         .not("image_url", "is", null)
         .order("created_at", { ascending: false });
-      if (data) setProofs(data);
+      
+      if (data) {
+        // Filter out buy/sell based on message content
+        // Sell mode uploads are empty text (auto-submitted)
+        // Buy mode uploads have caption
+        const filtered = data.filter(msg => {
+          if (mode === "sell") {
+            return !msg.message || msg.message.trim() === "";
+          } else {
+            return msg.message && msg.message.trim() !== "";
+          }
+        });
+        setProofs(filtered);
+      }
       setLoading(false);
     }
     fetchProofs();
-  }, []);
+  }, [mode]);
 
   return (
     <div className="space-y-6">
