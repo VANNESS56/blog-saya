@@ -320,6 +320,29 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
       }
 
+      case "getChatSettings": {
+        const keys = ["buy_rate_text", "sell_rate_text", "qris_image_url"];
+        const { data: rows } = await supabaseAdmin
+          .from("site_settings")
+          .select("key, value")
+          .in("key", keys);
+        const result: Record<string, string> = {};
+        for (const row of rows || []) result[row.key] = row.value;
+        return NextResponse.json({ success: true, data: result });
+      }
+
+      case "saveChatSettings": {
+        const { buy_rate_text, sell_rate_text, qris_image_url } = data || {};
+        const upserts = [];
+        if (buy_rate_text !== undefined) upserts.push({ key: "buy_rate_text", value: buy_rate_text, description: "Teks auto-reply tombol BUY di chat" });
+        if (sell_rate_text !== undefined) upserts.push({ key: "sell_rate_text", value: sell_rate_text, description: "Teks auto-reply tombol SELL di chat" });
+        if (qris_image_url !== undefined) upserts.push({ key: "qris_image_url", value: qris_image_url, description: "URL gambar QRIS untuk auto-reply BUY" });
+        if (upserts.length > 0) {
+          await supabaseAdmin.from("site_settings").upsert(upserts);
+        }
+        return NextResponse.json({ success: true });
+      }
+
       default:
         return NextResponse.json(
           { error: "Unknown action" },

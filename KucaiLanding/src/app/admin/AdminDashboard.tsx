@@ -1651,6 +1651,11 @@ function ManageLiveChat() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [readSessions, setReadSessions] = useState<Record<string, string>>({});
   const notifAudioRef = useRef<HTMLAudioElement | null>(null);
+  const [chatSettings, setChatSettings] = useState({ buy_rate_text: "", sell_rate_text: "", qris_image_url: "" });
+  const [settingsTab, setSettingsTab] = useState<"chats" | "settings">("chats");
+  const [savingSettings, setSavingSettings] = useState(false);
+  const [settingsSaved, setSettingsSaved] = useState(false);
+  const qrisFileInputRef = useRef<HTMLInputElement>(null);
 
   // Load read status from localStorage + request notification permission
   useEffect(() => {
@@ -1662,6 +1667,11 @@ function ManageLiveChat() {
       Notification.requestPermission();
     }
     notifAudioRef.current = new Audio("/notif.mp3");
+    // Load chat settings
+    fetch("/api/chat/settings")
+      .then(r => r.json())
+      .then(d => setChatSettings(d))
+      .catch(() => {});
   }, []);
 
   const markAsRead = (sessionId: string, lastMessageAt: string) => {
@@ -1814,7 +1824,86 @@ function ManageLiveChat() {
   if (loading) return <p className="text-white/50">Memuat data chat...</p>;
 
   return (
-    <div className="bg-[#140e0b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: "500px" }}>
+    <div className="space-y-4">
+      {/* Tab switcher */}
+      <div className="flex gap-2">
+        <button
+          onClick={() => setSettingsTab("chats")}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${settingsTab === "chats" ? "bg-amber-600 text-white" : "bg-amber-900/20 text-amber-400 hover:bg-amber-900/40"}`}
+        >💬 Percakapan</button>
+        <button
+          onClick={() => setSettingsTab("settings")}
+          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${settingsTab === "settings" ? "bg-amber-600 text-white" : "bg-amber-900/20 text-amber-400 hover:bg-amber-900/40"}`}
+        >⚙️ Quick Reply Settings</button>
+      </div>
+
+      {settingsTab === "settings" ? (
+        <div className="bg-[#140e0b] border border-amber-900/20 rounded-xl p-6 space-y-5">
+          <h3 className="font-bold text-white/90">Quick Reply Settings</h3>
+
+          <div>
+            <label className="block text-xs text-amber-400 font-bold mb-1">Teks Auto-Reply tombol BELI 🛒</label>
+            <textarea
+              value={chatSettings.buy_rate_text}
+              onChange={e => setChatSettings(p => ({ ...p, buy_rate_text: e.target.value }))}
+              rows={10}
+              className="w-full bg-black/30 border border-amber-900/30 rounded-lg p-3 text-white/80 text-sm font-mono resize-y focus:outline-none focus:border-amber-500"
+              placeholder="Teks rate beli yang akan dikirim otomatis..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-amber-400 font-bold mb-1">Teks Auto-Reply tombol JUAL 💰</label>
+            <textarea
+              value={chatSettings.sell_rate_text}
+              onChange={e => setChatSettings(p => ({ ...p, sell_rate_text: e.target.value }))}
+              rows={6}
+              className="w-full bg-black/30 border border-amber-900/30 rounded-lg p-3 text-white/80 text-sm font-mono resize-y focus:outline-none focus:border-amber-500"
+              placeholder="Instruksi untuk customer yang mau jual..."
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs text-amber-400 font-bold mb-1">Gambar QRIS (dikirim otomatis saat klik BELI)</label>
+            <input type="file" ref={qrisFileInputRef} accept="image/*" className="hidden" onChange={async (e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const fd = new FormData();
+              fd.append("file", file);
+              fd.append("folder", "qris");
+              const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+              const result = await res.json();
+              if (result.url) setChatSettings(p => ({ ...p, qris_image_url: result.url }));
+            }} />
+            {chatSettings.qris_image_url && (
+              <img src={chatSettings.qris_image_url} alt="QRIS" className="w-40 h-40 object-contain rounded-lg border border-amber-900/30 mb-2" />
+            )}
+            <button
+              onClick={() => qrisFileInputRef.current?.click()}
+              className="px-4 py-2 bg-amber-900/30 hover:bg-amber-900/50 border border-amber-700/50 text-amber-400 text-sm rounded-lg transition-colors"
+            >📷 Upload Gambar QRIS</button>
+            {chatSettings.qris_image_url && (
+              <span className="ml-3 text-xs text-green-400">✓ Gambar terpasang</span>
+            )}
+          </div>
+
+          <button
+            disabled={savingSettings}
+            onClick={async () => {
+              setSavingSettings(true);
+              const res = await fetch("/api/admin/data", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ action: "saveChatSettings", data: chatSettings }),
+              });
+              setSavingSettings(false);
+              if (res.ok) { setSettingsSaved(true); setTimeout(() => setSettingsSaved(false), 2000); }
+            }}
+            className="w-full py-3 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors"
+          >{savingSettings ? "Menyimpan..." : settingsSaved ? "✓ Tersimpan!" : "Simpan Pengaturan"}</button>
+        </div>
+      ) : (
+      <div className="bg-[#140e0b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden" style={{ height: "calc(100vh - 280px)", minHeight: "500px" }}>
       <div className="flex h-full">
         {/* Left Panel — Session List */}
         <div className={`${activeSession ? 'hidden md:flex' : 'flex'} w-full md:w-[320px] shrink-0 border-r border-amber-900/20 flex-col`}>
@@ -2049,6 +2138,8 @@ function ManageLiveChat() {
             <img src={previewImage} alt="Preview" className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()} />
           </div>
         </div>
+      )}
+    </div>
       )}
     </div>
   );

@@ -113,12 +113,23 @@ function LiveChatInner() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
+  const [chatSettings, setChatSettings] = useState<{ buy_rate_text: string; sell_rate_text: string; qris_image_url: string } | null>(null);
+  const [quickReplyUsed, setQuickReplyUsed] = useState(false);
+  const [copiedNumber, setCopiedNumber] = useState(false);
 
   // Listen for custom event to open chat
   useEffect(() => {
     const handleOpenLiveChat = () => setIsOpen(true);
     window.addEventListener("open-livechat", handleOpenLiveChat);
     return () => window.removeEventListener("open-livechat", handleOpenLiveChat);
+  }, []);
+
+  // Fetch chat settings (buy/sell rate text, qris)
+  useEffect(() => {
+    fetch("/api/chat/settings")
+      .then(r => r.json())
+      .then(d => setChatSettings(d))
+      .catch(() => {});
   }, []);
 
   // Restore session from localStorage
@@ -233,7 +244,75 @@ function LiveChatInner() {
     await supabase.from("chat_messages").insert({
       session_id: sid,
       sender: "admin",
-      message: `*kalau jual akun , silahkan kirim ss spek akunnya :*\n・ backpack\n・ playtime hour\n・ supporter / ssupporter\n・ title ( kalau ada )\n・ roles kalau level 5 keatas\n\n*kalau beli akun , silahkan klik beli dari website ya* 🥰\n\n*-nanti admin mimin bales secepatnya ditunggu ya* 🤗`,
+      message: `Halo! 👋 Selamat datang di *Kucai Account*. Mau *jual* atau *beli*?`,
+    });
+  };
+
+  const handleQuickReplyBuy = async () => {
+    if (!sessionId || sending || quickReplyUsed) return;
+    setQuickReplyUsed(true);
+    setSending(true);
+    const buyText = chatSettings?.buy_rate_text || "";
+    const qrisUrl = chatSettings?.qris_image_url || "";
+
+    // Send customer's choice message
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "customer",
+      message: "🛒 Beli DL/BGL",
+    });
+
+    // Admin auto-reply: rate text
+    if (buyText) {
+      await supabase.from("chat_messages").insert({
+        session_id: sessionId,
+        sender: "admin",
+        message: buyText,
+      });
+    }
+
+    // Admin auto-reply: QRIS image
+    if (qrisUrl) {
+      await supabase.from("chat_messages").insert({
+        session_id: sessionId,
+        sender: "admin",
+        message: "Scan QRIS di bawah untuk bayar:",
+        image_url: qrisUrl,
+      });
+    }
+
+    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+    setSending(false);
+  };
+
+  const handleQuickReplySell = async () => {
+    if (!sessionId || sending || quickReplyUsed) return;
+    setQuickReplyUsed(true);
+    setSending(true);
+
+    // Customer choice
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "customer",
+      message: "💰 Jual DL/BGL",
+    });
+
+    // Admin auto-reply
+    const sellText = chatSettings?.sell_rate_text || `*Silahkan kirim SS spek akun kamu ya kak:*\n・ backpack\n・ playtime hour\n・ supporter / ssupporter\n・ title ( kalau ada )\n・ roles kalau level 5 keatas\n\n*-nanti admin mimin bales secepatnya ditunggu ya* 🤗`;
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "admin",
+      message: sellText,
+    });
+
+    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+    setSending(false);
+  };
+
+  const copyNumber = (num: string) => {
+    navigator.clipboard.writeText(num).then(() => {
+      setCopiedNumber(true);
+      setTimeout(() => setCopiedNumber(false), 2000);
     });
   };
 
@@ -464,6 +543,26 @@ function LiveChatInner() {
                 ))}
                 <div ref={messagesEndRef} />
               </div>
+
+              {/* BUY / SELL Quick Buttons — show only if greeting was sent and not yet used */}
+              {!quickReplyUsed && messages.length > 0 && messages[messages.length - 1]?.sender === "admin" && !isBlocked && (
+                <div className="shrink-0 px-3 py-2 flex gap-2 border-t border-white/10 bg-[#0e0e0e]">
+                  <button
+                    onClick={handleQuickReplyBuy}
+                    disabled={sending}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
+                  >
+                    🛒 Beli DL/BGL
+                  </button>
+                  <button
+                    onClick={handleQuickReplySell}
+                    disabled={sending}
+                    className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-orange-600/20 hover:bg-orange-600/40 text-orange-400 border border-orange-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
+                  >
+                    💰 Jual DL/BGL
+                  </button>
+                </div>
+              )}
 
               {/* Input Area */}
               {isBlocked ? (
