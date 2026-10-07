@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
+import { type Account, type Testimonial, type Reputation, supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X, ArrowLeft } from "lucide-react";
 import Image from "next/image";
@@ -112,7 +112,7 @@ export function AdminDashboard() {
                 onClick={() => setActiveTab("orders")}
                 className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
-                <ShoppingCart className="w-5 h-5" /> Orders
+                <ShoppingCart className="w-5 h-5" /> Buyer Orders
               </button>
             </li>
             <li>
@@ -691,54 +691,78 @@ function ManageSettings() {
 }
 
 function ManageOrders() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [proofs, setProofs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeSubTab, setActiveSubTab] = useState("Menunggu dicek");
 
   useEffect(() => {
-    async function fetchOrders() {
-      const res = await fetch("/api/admin/ecommerce", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "fetchOrders" })
-      });
-      const data = await res.json();
-      if (data.data) setOrders(data.data);
+    async function fetchProofs() {
+      const { data } = await supabase
+        .from("chat_messages")
+        .select(`*, chat_sessions(customer_name)`)
+        .eq("sender", "customer")
+        .not("image_url", "is", null)
+        .order("created_at", { ascending: false });
+      if (data) setProofs(data);
       setLoading(false);
     }
-    fetchOrders();
+    fetchProofs();
   }, []);
 
   return (
-    <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
-      <div className="px-6 py-4 border-b border-amber-900/20 flex justify-between items-center">
-        <h3 className="text-lg font-semibold text-white/90">Semua Pesanan</h3>
+    <div className="space-y-6">
+      <div className="flex bg-[#140e0b] p-1.5 rounded-xl border border-amber-900/20 max-w-2xl mx-auto shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
+        {["Menunggu dicek", "Riwayat"].map((tab) => (
+          <button
+            key={tab}
+            onClick={() => setActiveSubTab(tab)}
+            className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all ${
+              activeSubTab === tab ? "bg-[#1f1611] text-amber-500 shadow-sm border border-amber-900/30" : "text-gray-400 hover:text-white"
+            }`}
+          >
+            {tab} {tab === "Menunggu dicek" && <span className="ml-1 px-2 py-0.5 bg-amber-500/20 text-amber-500 rounded-full text-xs">{proofs.length}</span>}
+          </button>
+        ))}
       </div>
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead className="bg-[#0c0805] text-white/70">
-            <tr>
-              <th className="px-6 py-3 font-medium">Invoice</th>
-              <th className="px-6 py-3 font-medium">Customer WA</th>
-              <th className="px-6 py-3 font-medium">Produk</th>
-              <th className="px-6 py-3 font-medium">Status</th>
-              <th className="px-6 py-3 font-medium">Total</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {loading ? <tr><td colSpan={5} className="p-4 text-center">Loading...</td></tr> : orders.map(order => (
-              <tr key={order.id} className="hover:bg-[#0c0805]">
-                <td className="px-6 py-4 font-mono text-xs text-amber-500">{order.invoice_no}</td>
-                <td className="px-6 py-4">{order.customer_wa}</td>
-                <td className="px-6 py-4">{order.digital_products?.title || '-'}</td>
-                <td className="px-6 py-4">
-                  <span className={`px-2 py-1 rounded text-xs font-bold ${order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`}>
-                    {order.payment_status.toUpperCase()}
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
+        {loading ? (
+          <p className="text-white/50 text-center col-span-full py-10">Memuat data order...</p>
+        ) : (
+          proofs.map((proof) => (
+            <div key={proof.id} className="bg-[#140e0b] rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.4)] border border-amber-900/20 overflow-hidden flex flex-col group hover:border-amber-500/50 transition-colors">
+              <div className="p-4 bg-white/5 border-b border-amber-900/20 relative">
+                <img 
+                  src={proof.image_url} 
+                  alt="Bukti TF" 
+                  className="w-full h-48 object-cover rounded-xl border border-white/10 cursor-pointer group-hover:scale-[1.02] transition-transform" 
+                  onClick={() => window.open(proof.image_url, '_blank')} 
+                />
+              </div>
+              <div className="p-5 flex flex-col gap-3 flex-1">
+                <div className="flex justify-between items-start">
+                  <h4 className="font-bold text-white text-lg truncate pr-2">{proof.chat_sessions?.customer_name || 'Tamu'}</h4>
+                  <span className="shrink-0 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/20 flex items-center gap-1">
+                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                    BARU
                   </span>
-                </td>
-                <td className="px-6 py-4">Rp {order.amount.toLocaleString("id-ID")}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                </div>
+                <div className="text-sm text-gray-300 whitespace-pre-wrap bg-black/40 p-4 rounded-xl border border-white/5 font-mono shadow-inner flex-1">
+                  {proof.message || "Tidak ada detail text."}
+                </div>
+                <div className="mt-2 pt-4 border-t border-white/5 text-xs text-gray-500 flex justify-between items-center">
+                  <span className="flex items-center gap-1.5">
+                    <Headphones className="w-3.5 h-3.5 text-amber-500/70" /> Chat
+                  </span>
+                  <span>{new Date(proof.created_at).toLocaleString("id-ID", { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
+        {!loading && proofs.length === 0 && (
+           <p className="text-white/50 text-center col-span-full py-10">Belum ada order masuk.</p>
+        )}
       </div>
     </div>
   );
