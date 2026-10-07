@@ -708,7 +708,7 @@ function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
     async function fetchProofs() {
       const { data } = await supabase
         .from("chat_messages")
-        .select(`*, chat_sessions(id, customer_name)`)
+        .select(`*, chat_sessions(id, customer_name, status)`)
         .eq("sender", "customer")
         .not("image_url", "is", null)
         .order("created_at", { ascending: false });
@@ -746,7 +746,11 @@ function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
       if (data) {
         const filtered = data.filter(msg => {
           const sMode = sessionModeMap[msg.session_id] || "buy";
-          return mode === "buy" ? (sMode === "buy" || sMode === "jual_akun") : (sMode === "sell");
+          const isModeMatch = mode === "buy" ? (sMode === "buy" || sMode === "jual_akun") : (sMode === "sell");
+          const sessionStatus = msg.chat_sessions?.status || 'active';
+          const isStatusMatch = activeSubTab === "Menunggu dicek" ? sessionStatus !== 'done' : sessionStatus === 'done';
+          
+          return isModeMatch && isStatusMatch;
         }).map(msg => {
           if (!msg.message || msg.message.trim() === "") {
              const extraTexts = sessionTextMap[msg.session_id];
@@ -761,7 +765,29 @@ function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
       setLoading(false);
     }
     fetchProofs();
-  }, [mode]);
+  }, [mode, activeSubTab]);
+
+  const handleMarkAsDone = async (sessionId: string) => {
+    try {
+      await supabase.from("chat_sessions").update({ status: 'done' }).eq("id", sessionId);
+      
+      const messageText = mode === "buy" 
+        ? "Udah Di Drop ya Cai 🔥\nThankyou ya, Udah order !🤩.\n\n📢UPDATE SELANJUTNYA BISA MASUK SALURAN YA 📢\nhttps://whatsapp.com/channel/0029VbDJVnn2Jl8I2Lqi792g"
+        : "Udah Di tranfer ya Cai 🔥\nThankyou ya, Udah order !🤩.\n\n📢HARGA TERUPDATE BISA MASUK SALURAN YA 📢\nhttps://whatsapp.com/channel/0029VbDJVnn2Jl8I2Lqi792g";
+        
+      await supabase.from("chat_messages").insert({
+        session_id: sessionId,
+        sender: "admin",
+        message: messageText
+      });
+      
+      // Refresh proofs
+      setProofs(prev => prev.filter(p => p.session_id !== sessionId));
+    } catch (err) {
+      console.error(err);
+      alert("Gagal menandai selesai");
+    }
+  };
 
   return (
     <div className="space-y-6">
@@ -796,10 +822,12 @@ function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
               <div className="p-5 flex flex-col gap-3 flex-1">
                 <div className="flex justify-between items-start">
                   <h4 className="font-bold text-white text-lg truncate pr-2">{proof.chat_sessions?.customer_name || 'Tamu'}</h4>
-                  <span className="shrink-0 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/20 flex items-center gap-1">
-                    <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-                    BARU
-                  </span>
+                  {activeSubTab === "Menunggu dicek" && (
+                    <span className="shrink-0 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/20 flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
+                      BARU
+                    </span>
+                  )}
                 </div>
                 <div className="text-sm text-gray-300 whitespace-pre-wrap bg-black/40 p-4 rounded-xl border border-white/5 font-mono shadow-inner flex-1">
                   {proof.message || "Tidak ada detail text."}
@@ -810,6 +838,14 @@ function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
                   </span>
                   <span>{new Date(proof.created_at).toLocaleString("id-ID", { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}</span>
                 </div>
+                {activeSubTab === "Menunggu dicek" && (
+                  <button 
+                    onClick={() => handleMarkAsDone(proof.session_id)}
+                    className="mt-3 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-900/20"
+                  >
+                    Done
+                  </button>
+                )}
               </div>
             </div>
           ))
