@@ -202,12 +202,23 @@ function LiveChatInner() {
         .order("created_at", { ascending: true });
       if (data) setMessages(data);
 
-      // Check if blocked
-      const { data: session } = await supabase
+      // Check if blocked or session deleted
+      const { data: session, error: sessionError } = await supabase
         .from("chat_sessions")
         .select("status")
         .eq("id", sessionId)
         .single();
+        
+      if (sessionError || !session) {
+        // Session not found in DB (maybe deleted by admin)
+        localStorage.removeItem("kucaidl_chat");
+        setSessionId(null);
+        setNameSubmitted(false);
+        setMessages([]);
+        setChatMode(null);
+        setQuickReplyUsed(false);
+        return;
+      }
       if (session?.status === "blocked") setIsBlocked(true);
     }
     fetchMessages();
