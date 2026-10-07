@@ -457,6 +457,24 @@ function LiveChatInner() {
     setTimeout(() => setCopiedId(null), 2000);
   };
 
+  const handleDownloadQR = async (url: string) => {
+    try {
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = blobUrl;
+      link.download = "QRIS_KucaiDL.jpg";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Failed to download image", err);
+      window.open(url, '_blank');
+    }
+  };
+
   return (
     <div className="fixed bottom-[85px] right-4 md:bottom-8 md:right-8 z-[51] flex flex-col items-end pointer-events-none">
       {/* Chat Window */}
@@ -560,7 +578,22 @@ function LiveChatInner() {
                       }`}
                     >
                       {msg.image_url && (
-                        <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => setPreviewImage(msg.image_url || null)} />
+                        <div className="flex flex-col mb-2">
+                          <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover cursor-pointer" onClick={() => setPreviewImage(msg.image_url || null)} />
+                          {msg.sender === "admin" && (
+                            <div className="w-full flex flex-col gap-1.5 mt-2">
+                              <button
+                                onClick={() => handleDownloadQR(msg.image_url!)}
+                                className="w-full py-2 bg-transparent hover:bg-white/5 border border-white/20 rounded-lg text-white font-semibold text-xs transition-colors"
+                              >
+                                Simpan gambar QR
+                              </button>
+                              <p className="text-[10px] text-gray-400 leading-tight">
+                                Di HP: simpan dulu, lalu pilih dari galeri saat bayar di aplikasi bank/e-wallet.
+                              </p>
+                            </div>
+                          )}
+                        </div>
                       )}
                       {msg.message && <span>{renderMessageText(msg.message)}</span>}
                       {msg.sender === "admin" && msg.message && /\d{8,}/.test(msg.message) && (
