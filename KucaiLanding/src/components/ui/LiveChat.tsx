@@ -482,7 +482,7 @@ function LiveChatInner() {
     inputRef.current?.focus();
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const newFiles = Array.from(files);
@@ -490,6 +490,17 @@ function LiveChatInner() {
       // In sell mode, don't auto-fill the buy template
       if (!newMessage.trim() && chatMode !== "sell") {
         setNewMessage("isi nama world & growidny ya 🙏\nnama world :\nowner :");
+      }
+      
+      // Auto submit for sell mode
+      if (chatMode === "sell" && sellStage === "idle") {
+        // We defer the submission slightly to let state update, or just do it directly:
+        setTimeout(() => {
+          if (document.getElementById("chat-form")) {
+            const submitEvent = new Event('submit', { cancelable: true, bubbles: true });
+            document.getElementById("chat-form")?.dispatchEvent(submitEvent);
+          }
+        }, 100);
       }
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
@@ -773,6 +784,7 @@ function LiveChatInner() {
                     </div>
                   )}
                   <form
+                    id="chat-form"
                     onSubmit={handleSendMessage}
                     className="p-3 flex items-center gap-2"
                   >
