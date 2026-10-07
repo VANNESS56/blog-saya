@@ -1622,8 +1622,6 @@ function ManageTheme() {
 }
 
 // ─── LIVE CHAT MANAGEMENT ───
-import { supabase } from "@/lib/supabase";
-
 interface ChatSession {
   id: string;
   customer_name: string;
