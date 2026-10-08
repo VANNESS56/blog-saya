@@ -128,7 +128,7 @@ export default function JualBeliPage() {
 
     const adminReply = mode === "buy"
       ? (jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL")
-      : "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n🌍 WORLD : POSZIO\n🔐 OWNER : deleteALVIN";
+      : "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]";
 
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })
@@ -323,6 +323,41 @@ export default function JualBeliPage() {
         </div>
       );
     }
+
+    if (msg.message.includes("[WORLD_CARD:")) {
+      const worldCardRegex = /\[WORLD_CARD:(.*?)\|(.*?)\]/;
+      const match = msg.message.match(worldCardRegex);
+      if (match) {
+        const before = msg.message.slice(0, match.index);
+        const after = msg.message.slice(match.index! + match[0].length);
+        const world = match[1];
+        const owner = match[2];
+        const copyText = `World: ${world} | Owner: ${owner}`;
+        
+        return (
+          <div className="space-y-2.5">
+            {before.trim() && <div className="whitespace-pre-wrap leading-relaxed">{formatText(before.trim())}</div>}
+            
+            <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3 flex items-center justify-between shadow-inner mt-1 mb-1">
+              <div className="flex items-center gap-2.5 font-mono text-[14px] font-bold tracking-wide">
+                <span className="text-white">{world}</span>
+                <span className="text-sky-500/40">|</span>
+                <span className="text-white/70">{owner}</span>
+              </div>
+              <button 
+                onClick={() => navigator.clipboard.writeText(copyText)}
+                className="px-3 py-1.5 bg-sky-600/20 hover:bg-sky-600/40 border border-sky-500/20 text-sky-400 rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0"
+              >
+                Salin
+              </button>
+            </div>
+
+            {after.trim() && <div className="whitespace-pre-wrap leading-relaxed">{formatText(after.trim())}</div>}
+          </div>
+        );
+      }
+    }
+
     return <div className="whitespace-pre-wrap leading-relaxed">{formatText(msg.message)}</div>;
   };
 
