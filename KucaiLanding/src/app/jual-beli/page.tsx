@@ -10,7 +10,7 @@ export default function JualBeliPage() {
   const router = useRouter();
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([
-    { id: "init", sender: "admin", message: "Halo! \uD83D\uDC4B Selamat datang di Kucai Account. Mau jual atau beli?" }
+    { id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }
   ]);
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
@@ -37,7 +37,7 @@ export default function JualBeliPage() {
     const customerText = mode === "buy" ? "Bang, saya mau beli DL \uD83D\uDE4F" : "Bang, saya mau jual DL \uD83D\uDE4F";
     
     await supabase.from("chat_messages").insert([
-      { session_id: sid, sender: "admin", message: "Halo! \uD83D\uDC4B Selamat datang di Kucai Account. Mau jual atau beli?" },
+      { session_id: sid, sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" },
       { session_id: sid, sender: "customer", message: customerText }
     ]);
     
@@ -112,7 +112,7 @@ export default function JualBeliPage() {
             <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" className="w-full h-full object-cover" alt="Kucai" />
           </div>
           <div>
-            <h1 className="text-white font-bold text-[15px] leading-tight">Kucai Account</h1>
+            <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
             <p className="text-emerald-400 text-xs flex items-center gap-1.5 mt-0.5">
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" /> Online
             </p>
