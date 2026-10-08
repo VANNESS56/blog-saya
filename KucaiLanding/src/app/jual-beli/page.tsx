@@ -54,13 +54,20 @@ export default function JualBeliPage() {
       ? (jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL")
       : "Silakan kirimkan screenshot spek akun atau jumlah DL/BGL yang mau dijual ya, admin akan segera merespon! 👇";
       
-    const { data: replyMsg } = await supabase.from("chat_messages")
-      .insert({ session_id: sid, sender: "admin", message: adminReply })
-      .select("*").single();
-      
-    if (replyMsg) {
-      setMessages(prev => [...prev, replyMsg]);
-    }
+      const { data: replyMsg } = await supabase.from("chat_messages")
+        .insert({ session_id: sid, sender: "admin", message: adminReply })
+        .select("*").single();
+        
+      if (replyMsg) {
+        setMessages(prev => [...prev, replyMsg]);
+        
+        if (mode === "buy") {
+           const { data: qrisMsg } = await supabase.from("chat_messages")
+             .insert({ session_id: sid, sender: "admin", message: "[QRIS_IMAGE]" })
+             .select("*").single();
+           if (qrisMsg) setMessages(prev => [...prev, qrisMsg]);
+        }
+      }
   };
 
   const handleSend = async (e: React.FormEvent) => {
@@ -77,6 +84,31 @@ export default function JualBeliPage() {
   };
 
   const renderMessageText = (msg: Msg) => {
+    if (msg.message === "[QRIS_IMAGE]") {
+      const handleDownload = () => {
+         const link = document.createElement("a");
+         link.href = "/qris.jpg";
+         link.download = "QRIS_KucaiDL.jpg";
+         document.body.appendChild(link);
+         link.click();
+         document.body.removeChild(link);
+      };
+      
+      return (
+        <div className="w-[240px] md:w-[280px] -mx-4 -my-3 flex flex-col">
+           <img src="/qris.jpg" alt="QRIS Kucai DL" className="w-full h-auto object-cover rounded-t-[19px] border-b border-white/5" />
+           <div className="p-3 bg-[#111928] rounded-b-[19px] rounded-bl-sm">
+              <button onClick={handleDownload} className="w-full py-2 bg-transparent hover:bg-white/5 border border-white/10 rounded-lg text-white text-[13px] font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
+                 Simpan gambar QR
+              </button>
+              <p className="text-[10px] text-white/40 mt-2 text-center leading-relaxed px-1">
+                 Di HP: simpan dulu, lalu pilih dari galeri saat bayar di aplikasi bank/e-wallet.
+              </p>
+           </div>
+        </div>
+      );
+    }
+
     if (msg.sender === "admin" && msg.message.includes("=")) {
       const lines = msg.message.split("\n");
       return (
