@@ -22,6 +22,9 @@ export default function JualBeliPage() {
   const [trxMode, setTrxMode] = useState<"buy" | "sell">("buy");
   const [worldName, setWorldName] = useState("");
   const [growId, setGrowId] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("");
+  const [searchPayment, setSearchPayment] = useState("");
+  const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -169,8 +172,11 @@ export default function JualBeliPage() {
   const handleSubmitProof = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sessionId || proofFiles.length === 0) return;
-    if (!worldName.trim() || !growId.trim()) {
-      return alert(trxMode === "buy" ? "Nama World dan GrowID wajib diisi!" : "Nomor Rekening dan Atas Nama wajib diisi!");
+    if (trxMode === "buy" && (!worldName.trim() || !growId.trim())) {
+      return alert("Nama World dan GrowID wajib diisi!");
+    }
+    if (trxMode === "sell" && (!paymentMethod || !worldName.trim() || !growId.trim())) {
+      return alert("Metode Pembayaran, Nomor Rekening, dan Atas Nama wajib diisi!");
     }
 
     setUploading(true);
@@ -193,7 +199,7 @@ export default function JualBeliPage() {
 
     const caption = trxMode === "buy"
       ? `World: ${worldName.trim()}\nGrowID: ${growId.trim()}`
-      : `No Rek/Wallet: ${worldName.trim()}\nAtas Nama: ${growId.trim()}`;
+      : `Metode: ${paymentMethod}\nNo Rek/Wallet: ${worldName.trim()}\nAtas Nama: ${growId.trim()}`;
 
     if (uploadedUrls.length > 0) {
       for (let i = 0; i < uploadedUrls.length; i++) {
@@ -424,6 +430,43 @@ export default function JualBeliPage() {
                     </>
                   ) : (
                     <>
+                      <div className="relative">
+                         <div 
+                           className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors cursor-pointer flex justify-between items-center"
+                           onClick={() => setShowPaymentOptions(!showPaymentOptions)}
+                         >
+                           <span className={paymentMethod ? "text-white" : "text-white/50"}>{paymentMethod || "Pilih Metode Pembayaran"}</span>
+                           <span className="text-white/30 text-xs">▼</span>
+                         </div>
+                         {showPaymentOptions && (
+                           <div className="absolute bottom-[calc(100%+8px)] left-0 w-full bg-[#1e2b40] border border-white/10 rounded-xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] overflow-hidden z-20">
+                             <input 
+                               type="text" 
+                               value={searchPayment} 
+                               onChange={e => setSearchPayment(e.target.value)} 
+                               placeholder="Cari metode (Gopay, Dana...)" 
+                               className="w-full bg-[#162032] border-b border-white/10 px-4 py-3 text-white text-sm outline-none"
+                               autoFocus
+                             />
+                             <div className="max-h-40 overflow-y-auto">
+                               {["Gopay", "Dana", "OVO", "ShopeePay", "LinkAja", "BCA", "Mandiri", "BNI", "BRI", "SeaBank", "Jago", "BSI", "Permata", "CIMB Niaga", "Blu"]
+                                 .filter(p => p.toLowerCase().includes(searchPayment.toLowerCase()))
+                                 .map(p => (
+                                   <div 
+                                     key={p} 
+                                     onClick={() => { setPaymentMethod(p); setShowPaymentOptions(false); setSearchPayment(""); }}
+                                     className="px-4 py-3 hover:bg-sky-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 last:border-0"
+                                   >
+                                     {p}
+                                   </div>
+                                 ))}
+                               {["Gopay", "Dana", "OVO", "ShopeePay", "LinkAja", "BCA", "Mandiri", "BNI", "BRI", "SeaBank", "Jago", "BSI", "Permata", "CIMB Niaga", "Blu"].filter(p => p.toLowerCase().includes(searchPayment.toLowerCase())).length === 0 && (
+                                 <div className="px-4 py-3 text-white/40 text-sm text-center">Tidak ditemukan</div>
+                               )}
+                             </div>
+                           </div>
+                         )}
+                      </div>
                       <div>
                         <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
                       </div>
