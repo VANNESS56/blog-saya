@@ -34,7 +34,7 @@ export default function JualBeliPage() {
     const sid = sessionData.id;
     setSessionId(sid);
     
-    const customerText = mode === "buy" ? "Bang, saya mau beli DL \uD83D\uDE4F" : "Bang, saya mau jual DL \uD83D\uDE4F";
+    const customerText = mode === "buy" ? "Bang, saya mau beli DL 🙏" : "Bang, saya mau jual DL 🙏";
     
     await supabase.from("chat_messages").insert([
       { session_id: sid, sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" },
@@ -44,8 +44,8 @@ export default function JualBeliPage() {
     setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
 
     const adminReply = mode === "buy"
-      ? "Rate beli ke KucaiDL \uD83E\uDD17\nDL : 785\nBGL : 78.500\n\nGopay  = 081367232472 an Desi\nDana    = 081367232472 an Desi\nBank  =  Khusus Bank TF ke QRIS\n\n\u203C\uFE0FPayment transfer ke ewallet di atas ya thankyou \uD83E\uDD70\n\nNOTE \u2757\uFE0F : klo udah tf kirim nama world, growid \n\n\uD83D\uDC78 Admin Desi KUCAIDL"
-      : "Silakan kirimkan screenshot spek akun atau jumlah DL/BGL yang mau dijual ya, admin akan segera merespon! \uD83D\uDC47";
+      ? "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay  = 081367232472 an Desi\nDana    = 081367232472 an Desi\nBank  =  Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL"
+      : "Silakan kirimkan screenshot spek akun atau jumlah DL/BGL yang mau dijual ya, admin akan segera merespon! 👇";
       
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })
@@ -73,7 +73,7 @@ export default function JualBeliPage() {
     if (msg.sender === "admin" && msg.message.includes("Rate beli ke KucaiDL")) {
       return (
         <div className="space-y-3">
-          <p>Rate beli ke KucaiDL \uD83E\uDD17<br/>DL : 785<br/>BGL : 78.500</p>
+          <p>Rate beli ke KucaiDL 🤗<br/>DL : 785<br/>BGL : 78.500</p>
           <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3 space-y-2 shadow-inner">
             <p className="text-white/70 text-xs font-medium mb-2">Silakan transfer ke sini ya:</p>
             {["Gopay", "Dana"].map(provider => (
@@ -92,7 +92,7 @@ export default function JualBeliPage() {
                </div>
             </div>
           </div>
-          <p>\u203C\uFE0FPayment transfer ke ewallet di atas ya thankyou \uD83E\uDD70<br/><br/>NOTE \u2757\uFE0F : klo udah tf kirim nama world, growid <br/><br/>\uD83D\uDC78 Admin Desi KUCAIDL</p>
+          <p>‼️Payment transfer ke ewallet di atas ya thankyou 🥰<br/><br/>NOTE ❗️ : klo udah tf kirim nama world, growid <br/><br/>👸 Admin Desi KUCAIDL</p>
         </div>
       );
     }
