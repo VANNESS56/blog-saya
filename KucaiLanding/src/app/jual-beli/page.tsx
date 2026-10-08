@@ -284,7 +284,7 @@ export default function JualBeliPage() {
               const copyText = numMatch ? numMatch[0] : null;
 
               return (
-                <div key={i} className="flex items-center justify-between gap-3 bg-[#0b101a] p-3 rounded-xl border border-white/5 shadow-inner mt-3 mb-3">
+                <div key={i} className="flex items-center justify-between gap-3 bg-[#0b101a] p-2.5 rounded-xl border border-white/5 shadow-inner my-1.5">
                   <div className="text-xs">
                     <span className="font-bold text-white">{provider}</span><br />
                     <span className="text-white/60">{value}</span>
@@ -297,7 +297,7 @@ export default function JualBeliPage() {
                 </div>
               );
             }
-            return <p key={i} className="min-h-[1rem] leading-relaxed">{line}</p>;
+            return <p key={i} className="min-h-[0.5rem] leading-relaxed">{line}</p>;
           })}
         </div>
       );
