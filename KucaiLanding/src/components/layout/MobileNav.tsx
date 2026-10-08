@@ -9,6 +9,8 @@ export function MobileNav() {
   const pathname = usePathname();
   const [activeHash, setActiveHash] = useState("");
 
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/jual-beli")) return null;
+
   // Update hash on scroll or navigation
   useEffect(() => {
     const handleHashChange = () => {

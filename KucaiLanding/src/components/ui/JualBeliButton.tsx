@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 
 export function JualBeliButton() {
   const pathname = usePathname();
-  if (pathname?.startsWith("/admin")) return null;
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/jual-beli")) return null;
   return <JualBeliInner />;
 }
 

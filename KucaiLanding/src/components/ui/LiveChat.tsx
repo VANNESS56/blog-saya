@@ -71,8 +71,8 @@ const compressImage = (file: File): Promise<File> => {
 export function LiveChat() {
   const pathname = usePathname();
   
-  // Don't show on admin pages
-  if (pathname?.startsWith("/admin")) return null;
+  // Don't show on admin or jual-beli pages
+  if (pathname?.startsWith("/admin") || pathname?.startsWith("/jual-beli")) return null;
 
   return <LiveChatInner />;
 }
