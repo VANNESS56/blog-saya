@@ -564,6 +564,7 @@ function ManageSettings() {
   
   const [waKucaidl, setWaKucaidl] = useState("");
   const [waKucaiakun, setWaKucaiakun] = useState("");
+  const [jualBeliReply, setJualBeliReply] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -595,8 +596,10 @@ function ManageSettings() {
       if (siteData) {
         const kucaidl = siteData.find((s: any) => s.key === "wa_kucaidl");
         const kucaiakun = siteData.find((s: any) => s.key === "wa_kucaiakun");
+        const reply = siteData.find((s: any) => s.key === "jual_beli_reply");
         if (kucaidl) setWaKucaidl(kucaidl.value);
         if (kucaiakun) setWaKucaiakun(kucaiakun.value);
+        if (reply) setJualBeliReply(reply.value);
       }
 
       setLoading(false);
@@ -609,7 +612,7 @@ function ManageSettings() {
     setSaving(true);
     try {
       const result = await adminApi("saveSettings", {
-        buyBgl, buyDl, sellBgl, waKucaidl, waKucaiakun,
+        buyBgl, buyDl, sellBgl, waKucaidl, waKucaiakun, jualBeliReply
       });
 
       if (result.error) throw new Error(result.error);
@@ -678,6 +681,20 @@ function ManageSettings() {
           <label className="block text-sm font-medium text-white/70 mb-1">WhatsApp KucaiAkun</label>
           <input suppressHydrationWarning type="text" value={waKucaiakun} onChange={e=>setWaKucaiakun(e.target.value)} required className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="628..." />
           <p className="text-xs text-white/50 mt-1">Nomor untuk transaksi Jual/Beli Akun (Format: 628...)</p>
+        </div>
+
+        <div className="md:col-span-2 border-t border-amber-900/20 pt-4">
+          <h4 className="font-semibold text-white/80 mb-4">Pengaturan Balasan Chat (Beli DL/BGL)</h4>
+          <label className="block text-sm font-medium text-white/70 mb-1">Teks Balasan Otomatis</label>
+          <textarea
+            value={jualBeliReply}
+            onChange={(e) => setJualBeliReply(e.target.value)}
+            placeholder={"Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS"}
+            className="w-full h-48 border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all whitespace-pre-wrap bg-transparent"
+          />
+          <p className="text-xs text-white/50 mt-1">
+            Tips: Gunakan format <strong>NamaBank = NomorRekening an Nama</strong> agar tombol "Salin" otomatis muncul.
+          </p>
         </div>
 
         <div className="md:col-span-2 mt-2">

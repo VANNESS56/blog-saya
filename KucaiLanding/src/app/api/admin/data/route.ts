@@ -186,7 +186,7 @@ export async function POST(req: NextRequest) {
         });
       }
       case "saveSettings": {
-        const { buyBgl, buyDl, sellBgl, waKucaidl, waKucaiakun } = data;
+        const { buyBgl, buyDl, sellBgl, waKucaidl, waKucaiakun, jualBeliReply } = data;
 
         await supabaseAdmin
           .from("products")
@@ -234,6 +234,13 @@ export async function POST(req: NextRequest) {
             key: "wa_kucaiakun",
             value: sanitizePhone(waKucaiakun),
             description: "Nomor WhatsApp Akun (KucaiAkun)",
+          });
+        }
+        if (jualBeliReply !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "jual_beli_reply",
+            value: jualBeliReply,
+            description: "Teks balasan otomatis untuk mode Beli DL",
           });
         }
 

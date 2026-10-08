@@ -15,8 +15,15 @@ export default function JualBeliPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [showOptions, setShowOptions] = useState(true);
+  const [jualBeliReply, setJualBeliReply] = useState<string | null>(null);
   
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("value").eq("key", "jual_beli_reply").single().then(({ data }) => {
+      if (data) setJualBeliReply(data.value);
+    });
+  }, []);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -44,7 +51,7 @@ export default function JualBeliPage() {
     setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
 
     const adminReply = mode === "buy"
-      ? "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay  = 081367232472 an Desi\nDana    = 081367232472 an Desi\nBank  =  Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL"
+      ? (jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL")
       : "Silakan kirimkan screenshot spek akun atau jumlah DL/BGL yang mau dijual ya, admin akan segera merespon! 👇";
       
     const { data: replyMsg } = await supabase.from("chat_messages")
@@ -70,29 +77,35 @@ export default function JualBeliPage() {
   };
 
   const renderMessageText = (msg: Msg) => {
-    if (msg.sender === "admin" && msg.message.includes("Rate beli ke KucaiDL")) {
+    if (msg.sender === "admin" && msg.message.includes("=")) {
+      const lines = msg.message.split("\n");
       return (
-        <div className="space-y-3">
-          <p>Rate beli ke KucaiDL 🤗<br/>DL : 785<br/>BGL : 78.500</p>
-          <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3 space-y-2 shadow-inner">
-            <p className="text-white/70 text-xs font-medium mb-2">Silakan transfer ke sini ya:</p>
-            {["Gopay", "Dana"].map(provider => (
-              <div key={provider} className="flex items-center justify-between gap-3 bg-[#131b2c] p-2.5 rounded-lg border border-white/5">
-                 <div className="text-xs">
-                   <span className="font-bold text-white">{provider}</span><br/>
-                   <span className="text-white/60">081367232472 a.n. Desi</span>
-                 </div>
-                 <button onClick={() => navigator.clipboard.writeText("081367232472")} className="px-3 py-1.5 bg-sky-600/20 hover:bg-sky-600/40 border border-sky-500/20 text-sky-400 rounded-lg text-xs font-bold transition-colors active:scale-95">Salin</button>
-              </div>
-            ))}
-            <div className="flex items-center justify-between gap-3 bg-[#131b2c] p-2.5 rounded-lg border border-white/5">
-               <div className="text-xs">
-                 <span className="font-bold text-white">Bank</span><br/>
-                 <span className="text-white/60">Khusus Bank TF ke QRIS</span>
-               </div>
-            </div>
-          </div>
-          <p>‼️Payment transfer ke ewallet di atas ya thankyou 🥰<br/><br/>NOTE ❗️ : klo udah tf kirim nama world, growid <br/><br/>👸 Admin Desi KUCAIDL</p>
+        <div className="space-y-1">
+          {lines.map((line, i) => {
+            const match = line.match(/^(.+?)\s*=\s*(.+)$/);
+            // Don't treat purely informational lines with = as payment cards if they're too long or contain certain keywords
+            if (match && line.trim().length > 3 && !line.toLowerCase().includes("klo udah tf") && !line.includes("==")) {
+              const provider = match[1].trim();
+              const value = match[2].trim();
+              const numMatch = value.match(/\d{10,}/);
+              const copyText = numMatch ? numMatch[0] : null;
+
+              return (
+                <div key={i} className="flex items-center justify-between gap-3 bg-[#0b101a] p-3 rounded-xl border border-white/5 shadow-inner mt-3 mb-3">
+                   <div className="text-xs">
+                     <span className="font-bold text-white">{provider}</span><br/>
+                     <span className="text-white/60">{value}</span>
+                   </div>
+                   {copyText && (
+                     <button onClick={() => navigator.clipboard.writeText(copyText)} className="px-3 py-1.5 bg-sky-600/20 hover:bg-sky-600/40 border border-sky-500/20 text-sky-400 rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0">
+                       Salin
+                     </button>
+                   )}
+                </div>
+              );
+            }
+            return <p key={i} className="min-h-[1rem] leading-relaxed">{line}</p>;
+          })}
         </div>
       );
     }
