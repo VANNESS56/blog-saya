@@ -36,8 +36,8 @@ export default function JualBeliPage() {
     const sid = data.id;
     setSessionId(sid);
     const greeting = mode === "buy"
-      ? "Halo! ?? Kamu mau beli DL/BGL ya? Silakan ceritakan kebutuhanmu, min akan bantu segera!"
-      : "Halo! ?? Kamu mau jual DL/BGL ya? Silakan kirim detail akun atau itemmu, min akan cek secepatnya!";
+      ? "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay  = 081367232472 an Desi\nDana    = 081367232472 an Desi\nBank  =  Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL"
+      : "Halo! 👋 Kamu mau jual DL/BGL ya? Silakan kirim detail akun atau itemmu, min akan cek secepatnya!";
     await supabase.from("chat_messages").insert({ session_id: sid, sender: "admin", message: greeting });
     const { data: msgs } = await supabase.from("chat_messages").select("*").eq("session_id", sid).order("created_at");
     setMessages(msgs || []);
@@ -76,7 +76,7 @@ export default function JualBeliPage() {
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
           {messages.map(msg => (
             <div key={msg.id} className={`flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
-              <div className={`max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.sender === "customer" ? "bg-sky-600 text-white rounded-br-md" : "bg-[#1e1e2e] text-gray-200 rounded-bl-md border border-white/5"}`}>
+              <div className={`whitespace-pre-wrap max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.sender === "customer" ? "bg-sky-600 text-white rounded-br-md" : "bg-[#1e1e2e] text-gray-200 rounded-bl-md border border-white/5"}`}>
                 {msg.message}
               </div>
             </div>
