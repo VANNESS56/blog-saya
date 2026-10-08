@@ -23,6 +23,7 @@ export default function JualBeliPage() {
   const [showOptions, setShowOptions] = useState(true);
   const [jualBeliReply, setJualBeliReply] = useState<string | null>(null);
   const [sellReply, setSellReply] = useState<string | null>(null);
+  const [paymentMethodList, setPaymentMethodList] = useState<string[]>(["Gopay", "Dana", "OVO", "BCA", "Mandiri"]);
   const [isFreeChat, setIsFreeChat] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [proofFiles, setProofFiles] = useState<File[]>([]);
@@ -55,6 +56,11 @@ export default function JualBeliPage() {
     });
     supabase.from("site_settings").select("value").eq("key", "sell_reply").single().then(({ data }) => {
       if (data) setSellReply(data.value);
+    });
+    supabase.from("site_settings").select("value").eq("key", "payment_methods").single().then(({ data }) => {
+      if (data && data.value) {
+        setPaymentMethodList(data.value.split(",").map((s: string) => s.trim()).filter(Boolean));
+      }
     });
   }, []);
 
@@ -554,7 +560,7 @@ export default function JualBeliPage() {
                                <div className="px-4 py-2 text-[10px] font-bold text-white/40 uppercase tracking-wider bg-white/5">
                                  {savedPayouts.length > 0 && !searchPayment ? "Lainnya (Tulis Sendiri)" : "Daftar Metode"}
                                </div>
-                               {["Gopay", "Dana", "OVO", "ShopeePay", "LinkAja", "BCA", "Mandiri", "BNI", "BRI", "SeaBank", "Jago", "BSI", "Permata", "CIMB Niaga", "Blu"]
+                               {paymentMethodList
                                  .filter(p => p.toLowerCase().includes(searchPayment.toLowerCase()))
                                  .map(p => (
                                    <div 
@@ -565,7 +571,7 @@ export default function JualBeliPage() {
                                      {p}
                                    </div>
                                  ))}
-                               {["Gopay", "Dana", "OVO", "ShopeePay", "LinkAja", "BCA", "Mandiri", "BNI", "BRI", "SeaBank", "Jago", "BSI", "Permata", "CIMB Niaga", "Blu"].filter(p => p.toLowerCase().includes(searchPayment.toLowerCase())).length === 0 && (
+                               {paymentMethodList.filter(p => p.toLowerCase().includes(searchPayment.toLowerCase())).length === 0 && (
                                  <div className="px-4 py-3 text-white/40 text-sm text-center">Tidak ditemukan</div>
                                )}
                              </div>

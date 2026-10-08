@@ -248,7 +248,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "saveKucaiDLSettings": {
-        const { jualBeliReply, sellReply } = data;
+        const { jualBeliReply, sellReply, paymentMethods } = data;
         if (jualBeliReply !== undefined) {
           await supabaseAdmin.from("site_settings").upsert({
             key: "jual_beli_reply",
@@ -261,6 +261,13 @@ export async function POST(req: NextRequest) {
             key: "sell_reply",
             value: sellReply,
             description: "Teks balasan otomatis untuk mode Jual DL",
+          });
+        }
+        if (paymentMethods !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "payment_methods",
+            value: paymentMethods,
+            description: "Daftar metode pembayaran Kucai DL",
           });
         }
         return NextResponse.json({ success: true });

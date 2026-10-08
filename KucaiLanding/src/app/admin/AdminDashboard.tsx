@@ -1851,6 +1851,7 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
 function ManageKucaiDLSettings() {
   const [jualBeliReply, setJualBeliReply] = useState("");
   const [sellReply, setSellReply] = useState("");
+  const [paymentMethods, setPaymentMethods] = useState("Gopay, Dana, OVO, ShopeePay, LinkAja, BCA, Mandiri, BNI, BRI, SeaBank, Jago, BSI, Permata, CIMB Niaga, Blu");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -1862,6 +1863,9 @@ function ManageKucaiDLSettings() {
       const { data: dataSell } = await supabase.from("site_settings").select("value").eq("key", "sell_reply").single();
       if (dataSell) setSellReply(dataSell.value);
 
+      const { data: dataPayment } = await supabase.from("site_settings").select("value").eq("key", "payment_methods").single();
+      if (dataPayment) setPaymentMethods(dataPayment.value);
+
       setLoading(false);
     }
     fetchSettings();
@@ -1871,7 +1875,7 @@ function ManageKucaiDLSettings() {
     e.preventDefault();
     setSaving(true);
     try {
-      const result = await adminApi("saveKucaiDLSettings", { jualBeliReply, sellReply });
+      const result = await adminApi("saveKucaiDLSettings", { jualBeliReply, sellReply, paymentMethods });
       if (result.error) throw new Error(result.error);
       Swal.fire({ title: "Berhasil!", text: "Teks balasan promosi berhasil diperbarui.", icon: "success" });
     } catch (err: any) {
@@ -1910,6 +1914,18 @@ function ManageKucaiDLSettings() {
           />
           <p className="text-xs text-white/50 mt-1">
             Tips: Tambahkan <strong>[WORLD_CARD:NamaWorld|NamaOwner]</strong> untuk memunculkan kotak World otomatis.
+          </p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-white/70 mb-1">Daftar Metode Pembayaran (Dropdown Jual)</label>
+          <textarea
+            value={paymentMethods}
+            onChange={(e) => setPaymentMethods(e.target.value)}
+            placeholder={"Gopay, Dana, OVO, BCA, Mandiri"}
+            className="w-full h-24 border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all bg-transparent"
+          />
+          <p className="text-xs text-white/50 mt-1">
+            Tips: Pisahkan dengan koma (contoh: <strong>Gopay, Dana, BCA, Mandiri</strong>)
           </p>
         </div>
         <div>
