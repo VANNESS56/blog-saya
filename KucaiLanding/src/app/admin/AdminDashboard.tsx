@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 
@@ -26,7 +26,8 @@ async function adminUpload(file: File, folder: string): Promise<string | null> {
 }
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats">("dashboard");
+  const [kucaiDLMenuOpen, setKucaiDLMenuOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const router = useRouter();
 
@@ -155,6 +156,47 @@ export function AdminDashboard() {
                 <Headphones className="w-5 h-5" /> Live Chat
               </button>
             </li>
+            <li>
+              <div className="w-full">
+                <button suppressHydrationWarning 
+                  onClick={() => setKucaiDLMenuOpen(!kucaiDLMenuOpen)}
+                  className={`w-full flex items-center justify-between gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab.startsWith('kucaidl_') ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                >
+                  <div className="flex items-center gap-4">
+                    <MessageSquare className="w-5 h-5" /> Kucai DL
+                  </div>
+                  <ChevronDown className={`w-4 h-4 transition-transform ${kucaiDLMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+                {kucaiDLMenuOpen && (
+                  <ul className="mt-2 ml-9 space-y-1">
+                    <li>
+                      <button suppressHydrationWarning
+                        onClick={() => setActiveTab("kucaidl_buy")}
+                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_buy' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                      >
+                        Buy
+                      </button>
+                    </li>
+                    <li>
+                      <button suppressHydrationWarning
+                        onClick={() => setActiveTab("kucaidl_sell")}
+                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_sell' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                      >
+                        Sell
+                      </button>
+                    </li>
+                    <li>
+                      <button suppressHydrationWarning
+                        onClick={() => setActiveTab("kucaidl_chats")}
+                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_chats' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                      >
+                        Chats
+                      </button>
+                    </li>
+                  </ul>
+                )}
+              </div>
+            </li>
           </ul>
           <hr className="my-6 border-amber-900/20" />
           <button suppressHydrationWarning 
@@ -197,7 +239,10 @@ export function AdminDashboard() {
             {activeTab === "products" && <ManageProducts />}
             {activeTab === "profile" && <ManageProfile />}
             {activeTab === "theme" && <ManageTheme />}
-            {activeTab === "livechat" && <ManageLiveChat />}
+            {activeTab === "livechat" && <ManageLiveChat filter="livechat" />}
+            {activeTab === "kucaidl_buy" && <ManageLiveChat filter="kucaidl_buy" />}
+            {activeTab === "kucaidl_sell" && <ManageLiveChat filter="kucaidl_sell" />}
+            {activeTab === "kucaidl_chats" && <ManageLiveChat filter="kucaidl_chats" />}
           </div>
           
           <footer className="mt-12 pb-4">
@@ -1653,7 +1698,9 @@ const renderMessageText = (text: string) => {
   });
 };
 
-function ManageLiveChat() {
+type ChatFilter = "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats";
+
+function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
   const [activeSession, setActiveSession] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
@@ -1691,10 +1738,14 @@ function ManageLiveChat() {
 
   // Fetch all sessions with latest message preview
   const fetchSessions = useCallback(async () => {
-    const { data: sessionsData } = await supabase
-      .from("chat_sessions")
-      .select("*")
-      .order("last_message_at", { ascending: false });
+    let query = supabase.from("chat_sessions").select("*").order("last_message_at", { ascending: false });
+    if (filter === "livechat") {
+      query = query.not("customer_name", "ilike", "Customer_%");
+    } else {
+      query = query.ilike("customer_name", "Customer_%");
+    }
+
+    const { data: sessionsData } = await query;
 
     if (sessionsData) {
       // Get last message for each session
@@ -1707,18 +1758,34 @@ function ManageLiveChat() {
             .order("created_at", { ascending: false })
             .limit(1);
 
-          return {
+          let includeSession = true;
+          
+          if (filter === "kucaidl_buy" || filter === "kucaidl_sell") {
+             const { data: firstCustomerMsg } = await supabase
+               .from("chat_messages")
+               .select("message")
+               .eq("session_id", s.id)
+               .eq("sender", "customer")
+               .order("created_at", { ascending: true })
+               .limit(1);
+               
+             const msgText = firstCustomerMsg?.[0]?.message || "";
+             if (filter === "kucaidl_buy" && !msgText.includes("beli DL")) includeSession = false;
+             if (filter === "kucaidl_sell" && !msgText.includes("jual DL")) includeSession = false;
+          }
+
+          return includeSession ? {
             ...s,
             lastMsg: lastMsgs?.[0]
               ? `${lastMsgs[0].sender === "admin" ? "Anda: " : ""}${lastMsgs[0].message}`
               : "Belum ada pesan",
-          };
+          } : null;
         })
       );
-      setSessions(withPreviews);
+      setSessions(withPreviews.filter(Boolean) as ChatSession[]);
     }
     setLoading(false);
-  }, []);
+  }, [filter]);
 
   useEffect(() => {
     fetchSessions();
