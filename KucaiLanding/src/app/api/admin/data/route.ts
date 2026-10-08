@@ -247,6 +247,18 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
       }
 
+      case "saveKucaiDLSettings": {
+        const { jualBeliReply } = data;
+        if (jualBeliReply !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "jual_beli_reply",
+            value: jualBeliReply,
+            description: "Teks balasan otomatis untuk mode Beli DL",
+          });
+        }
+        return NextResponse.json({ success: true });
+      }
+
       case "updateTheme": {
         const { theme } = data;
         if (!theme) return NextResponse.json({ error: "Theme required" }, { status: 400 });

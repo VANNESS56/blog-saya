@@ -26,7 +26,7 @@ async function adminUpload(file: File, folder: string): Promise<string | null> {
 }
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats" | "kucaidl_settings">("dashboard");
   const [kucaiDLMenuOpen, setKucaiDLMenuOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const router = useRouter();
@@ -193,6 +193,14 @@ export function AdminDashboard() {
                         Chats
                       </button>
                     </li>
+                    <li>
+                      <button suppressHydrationWarning
+                        onClick={() => setActiveTab("kucaidl_settings")}
+                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_settings' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                      >
+                        Settings
+                      </button>
+                    </li>
                   </ul>
                 )}
               </div>
@@ -243,6 +251,7 @@ export function AdminDashboard() {
             {activeTab === "kucaidl_buy" && <ManageKucaiDLGrid filter="kucaidl_buy" />}
             {activeTab === "kucaidl_sell" && <ManageKucaiDLGrid filter="kucaidl_sell" />}
             {activeTab === "kucaidl_chats" && <ManageLiveChat filter="kucaidl_chats" />}
+            {activeTab === "kucaidl_settings" && <ManageKucaiDLSettings />}
           </div>
           
           <footer className="mt-12 pb-4">
@@ -609,7 +618,6 @@ function ManageSettings() {
   
   const [waKucaidl, setWaKucaidl] = useState("");
   const [waKucaiakun, setWaKucaiakun] = useState("");
-  const [jualBeliReply, setJualBeliReply] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -641,10 +649,8 @@ function ManageSettings() {
       if (siteData) {
         const kucaidl = siteData.find((s: any) => s.key === "wa_kucaidl");
         const kucaiakun = siteData.find((s: any) => s.key === "wa_kucaiakun");
-        const reply = siteData.find((s: any) => s.key === "jual_beli_reply");
         if (kucaidl) setWaKucaidl(kucaidl.value);
         if (kucaiakun) setWaKucaiakun(kucaiakun.value);
-        if (reply) setJualBeliReply(reply.value);
       }
 
       setLoading(false);
@@ -657,7 +663,7 @@ function ManageSettings() {
     setSaving(true);
     try {
       const result = await adminApi("saveSettings", {
-        buyBgl, buyDl, sellBgl, waKucaidl, waKucaiakun, jualBeliReply
+        buyBgl, buyDl, sellBgl, waKucaidl, waKucaiakun
       });
 
       if (result.error) throw new Error(result.error);
@@ -726,20 +732,6 @@ function ManageSettings() {
           <label className="block text-sm font-medium text-white/70 mb-1">WhatsApp KucaiAkun</label>
           <input suppressHydrationWarning type="text" value={waKucaiakun} onChange={e=>setWaKucaiakun(e.target.value)} required className="w-full border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all" placeholder="628..." />
           <p className="text-xs text-white/50 mt-1">Nomor untuk transaksi Jual/Beli Akun (Format: 628...)</p>
-        </div>
-
-        <div className="md:col-span-2 border-t border-amber-900/20 pt-4">
-          <h4 className="font-semibold text-white/80 mb-4">Pengaturan Balasan Chat (Beli DL/BGL)</h4>
-          <label className="block text-sm font-medium text-white/70 mb-1">Teks Balasan Otomatis</label>
-          <textarea
-            value={jualBeliReply}
-            onChange={(e) => setJualBeliReply(e.target.value)}
-            placeholder={"Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS"}
-            className="w-full h-48 border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all whitespace-pre-wrap bg-transparent"
-          />
-          <p className="text-xs text-white/50 mt-1">
-            Tips: Gunakan format <strong>NamaBank = NomorRekening an Nama</strong> agar tombol "Salin" otomatis muncul.
-          </p>
         </div>
 
         <div className="md:col-span-2 mt-2">
@@ -1797,6 +1789,63 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
            </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ManageKucaiDLSettings() {
+  const [jualBeliReply, setJualBeliReply] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    async function fetch() {
+      const { data } = await supabase.from("site_settings").select("value").eq("key", "jual_beli_reply").single();
+      if (data) setJualBeliReply(data.value);
+      setLoading(false);
+    }
+    fetch();
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      const result = await adminApi("saveKucaiDLSettings", { jualBeliReply });
+      if (result.error) throw new Error(result.error);
+      Swal.fire({ title: "Berhasil!", text: "Teks balasan promosi berhasil diperbarui.", icon: "success" });
+    } catch (err: any) {
+      Swal.fire({ title: "Gagal!", text: err.message, icon: "error" });
+    }
+    setSaving(false);
+  };
+
+  if (loading) return <div className="p-8 text-center text-white/50 animate-pulse">Memuat...</div>;
+
+  return (
+    <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden m-6">
+      <div className="px-6 py-4 border-b border-amber-900/20">
+        <h3 className="text-lg font-semibold text-white/90">Kucai DL Settings</h3>
+      </div>
+      <form onSubmit={handleSave} className="p-6 grid grid-cols-1 gap-6">
+        <div>
+          <label className="block text-sm font-medium text-white/70 mb-1">Teks Balasan Otomatis (Beli DL/BGL)</label>
+          <textarea
+            value={jualBeliReply}
+            onChange={(e) => setJualBeliReply(e.target.value)}
+            placeholder={"Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS"}
+            className="w-full h-48 border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all whitespace-pre-wrap bg-transparent"
+          />
+          <p className="text-xs text-white/50 mt-1">
+            Tips: Gunakan format <strong>NamaBank = NomorRekening an Nama</strong> agar tombol "Salin" otomatis muncul.
+          </p>
+        </div>
+        <div>
+          <button suppressHydrationWarning type="submit" disabled={saving} className="bg-[#4272d7] text-white px-5 py-2.5 rounded shadow-[0_4px_20px_rgba(0,0,0,0.3)] hover:bg-amber-600 transition-colors font-medium text-sm disabled:opacity-50">
+            {saving ? "Saving..." : "Save Settings"}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
