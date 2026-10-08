@@ -22,6 +22,7 @@ export default function JualBeliPage() {
   const [sending, setSending] = useState(false);
   const [showOptions, setShowOptions] = useState(true);
   const [jualBeliReply, setJualBeliReply] = useState<string | null>(null);
+  const [sellReply, setSellReply] = useState<string | null>(null);
   const [isFreeChat, setIsFreeChat] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [proofFiles, setProofFiles] = useState<File[]>([]);
@@ -46,6 +47,9 @@ export default function JualBeliPage() {
   useEffect(() => {
     supabase.from("site_settings").select("value").eq("key", "jual_beli_reply").single().then(({ data }) => {
       if (data) setJualBeliReply(data.value);
+    });
+    supabase.from("site_settings").select("value").eq("key", "sell_reply").single().then(({ data }) => {
+      if (data) setSellReply(data.value);
     });
   }, []);
 
@@ -145,7 +149,7 @@ export default function JualBeliPage() {
 
     const adminReply = mode === "buy"
       ? (jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL")
-      : "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]";
+      : (sellReply || "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]");
 
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })

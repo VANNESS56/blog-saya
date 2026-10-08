@@ -1850,23 +1850,28 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
 
 function ManageKucaiDLSettings() {
   const [jualBeliReply, setJualBeliReply] = useState("");
+  const [sellReply, setSellReply] = useState("");
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    async function fetch() {
-      const { data } = await supabase.from("site_settings").select("value").eq("key", "jual_beli_reply").single();
-      if (data) setJualBeliReply(data.value);
+    async function fetchSettings() {
+      const { data: dataBuy } = await supabase.from("site_settings").select("value").eq("key", "jual_beli_reply").single();
+      if (dataBuy) setJualBeliReply(dataBuy.value);
+      
+      const { data: dataSell } = await supabase.from("site_settings").select("value").eq("key", "sell_reply").single();
+      if (dataSell) setSellReply(dataSell.value);
+
       setLoading(false);
     }
-    fetch();
+    fetchSettings();
   }, []);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
     try {
-      const result = await adminApi("saveKucaiDLSettings", { jualBeliReply });
+      const result = await adminApi("saveKucaiDLSettings", { jualBeliReply, sellReply });
       if (result.error) throw new Error(result.error);
       Swal.fire({ title: "Berhasil!", text: "Teks balasan promosi berhasil diperbarui.", icon: "success" });
     } catch (err: any) {
@@ -1889,10 +1894,22 @@ function ManageKucaiDLSettings() {
             value={jualBeliReply}
             onChange={(e) => setJualBeliReply(e.target.value)}
             placeholder={"Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS"}
-            className="w-full h-48 border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all whitespace-pre-wrap bg-transparent"
+            className="w-full h-40 border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all whitespace-pre-wrap bg-transparent"
           />
           <p className="text-xs text-white/50 mt-1">
             Tips: Gunakan format <strong>NamaBank = NomorRekening an Nama</strong> agar tombol "Salin" otomatis muncul.
+          </p>
+        </div>
+        <div>
+          <label className="block text-sm font-medium text-white/70 mb-1">Teks Balasan Otomatis (Jual DL/BGL)</label>
+          <textarea
+            value={sellReply}
+            onChange={(e) => setSellReply(e.target.value)}
+            placeholder={"MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]"}
+            className="w-full h-40 border border-amber-900/50 p-2.5 rounded text-sm text-white/90 focus:ring-1 focus:ring-amber-500 focus:border-amber-500 outline-none transition-all whitespace-pre-wrap bg-transparent"
+          />
+          <p className="text-xs text-white/50 mt-1">
+            Tips: Tambahkan <strong>[WORLD_CARD:NamaWorld|NamaOwner]</strong> untuk memunculkan kotak World otomatis.
           </p>
         </div>
         <div>

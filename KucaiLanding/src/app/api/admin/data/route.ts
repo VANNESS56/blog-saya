@@ -248,12 +248,19 @@ export async function POST(req: NextRequest) {
       }
 
       case "saveKucaiDLSettings": {
-        const { jualBeliReply } = data;
+        const { jualBeliReply, sellReply } = data;
         if (jualBeliReply !== undefined) {
           await supabaseAdmin.from("site_settings").upsert({
             key: "jual_beli_reply",
             value: jualBeliReply,
             description: "Teks balasan otomatis untuk mode Beli DL",
+          });
+        }
+        if (sellReply !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "sell_reply",
+            value: sellReply,
+            description: "Teks balasan otomatis untuk mode Jual DL",
           });
         }
         return NextResponse.json({ success: true });
