@@ -377,8 +377,8 @@ export default function JualBeliPage() {
             
             <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3.5 shadow-inner mt-1 mb-1">
               <div className="flex flex-col gap-2 font-mono text-[14px] font-bold tracking-wide">
-                <div className="text-white">WORLD : <span className="text-sky-400">{world}</span></div>
-                <div className="text-white">OWNER : <span className="text-sky-400">{owner}</span></div>
+                <div className="text-white">🌎 WORLD : <span className="text-sky-400">{world}</span></div>
+                <div className="text-white">🤴 OWNER : <span className="text-sky-400">{owner}</span></div>
               </div>
             </div>
 
