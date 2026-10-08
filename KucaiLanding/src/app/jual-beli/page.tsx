@@ -73,6 +73,11 @@ export default function JualBeliPage() {
           if (prev.find(m => m.id === payload.new.id)) return prev;
           return [...prev, payload.new as Msg];
         });
+        
+        if (payload.new.sender === "admin" && (payload.new.message.includes("Udah Di Drop ya Cai") || payload.new.message.includes("Udah Di tranfer ya Cai"))) {
+          setIsFreeChat(false);
+          setShowOptions(true);
+        }
       }).subscribe();
       
     return () => { supabase.removeChannel(ch); }
@@ -80,24 +85,36 @@ export default function JualBeliPage() {
 
   const handleSelectMode = async (mode: "buy" | "sell") => {
     setShowOptions(false);
+    setIsFreeChat(false);
 
-    const { data: sessionData } = await supabase
-      .from("chat_sessions")
-      .insert({ customer_name: `Customer_${Math.floor(Math.random() * 10000)}` })
-      .select("id").single();
-
-    if (!sessionData) return;
-    const sid = sessionData.id;
-    setSessionId(sid);
+    let sid = sessionId;
+    if (!sid) {
+      const { data: sessionData } = await supabase
+        .from("chat_sessions")
+        .insert({ customer_name: `Customer_${Math.floor(Math.random() * 10000)}` })
+        .select("id").single();
+      if (!sessionData) return;
+      sid = sessionData.id;
+      setSessionId(sid);
+      
+      await supabase.from("chat_messages").insert([
+        { session_id: sid, sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" },
+      ]);
+    } else {
+      await supabase.from("chat_sessions").update({ status: 'active', last_message_at: new Date().toISOString() }).eq("id", sid);
+    }
 
     const customerText = mode === "buy" ? "Bang, saya mau beli DL 🙏" : "Bang, saya mau jual DL 🙏";
 
-    await supabase.from("chat_messages").insert([
-      { session_id: sid, sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" },
+    const { data: msgCst } = await supabase.from("chat_messages").insert([
       { session_id: sid, sender: "customer", message: customerText }
-    ]);
+    ]).select("*").single();
 
-    setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
+    if (msgCst) {
+      setMessages(prev => [...prev, msgCst]);
+    } else {
+      setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
+    }
 
     const adminReply = mode === "buy"
       ? (jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL")
