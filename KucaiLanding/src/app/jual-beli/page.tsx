@@ -42,6 +42,11 @@ export default function JualBeliPage() {
     if (saved) {
       try { setSavedPayouts(JSON.parse(saved)); } catch (e) {}
     }
+    
+    // Request notification permission
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
   }, []);
 
   useEffect(() => {
@@ -100,9 +105,26 @@ export default function JualBeliPage() {
           return [...prev, payload.new as Msg];
         });
         
-        if (payload.new.sender === "admin" && (payload.new.message.includes("Udah Di Drop ya Cai") || payload.new.message.includes("Udah Di tranfer ya Cai"))) {
-          setIsFreeChat(false);
-          setShowOptions(true);
+        if (payload.new.sender === "admin") {
+          // Play sound if possible
+          try {
+            const audio = new Audio("https://actions.google.com/sounds/v1/alarms/beep_short.ogg");
+            audio.volume = 0.5;
+            audio.play().catch(() => {});
+          } catch(e) {}
+
+          // Browser Notification popup if tab is hidden
+          if ("Notification" in window && Notification.permission === "granted" && document.hidden) {
+            new Notification("Pesan Baru - Kucai DL", {
+              body: "Admin membalas pesan kamu!",
+              icon: "/icon.png"
+            });
+          }
+
+          if (payload.new.message.includes("Udah Di Drop ya Cai") || payload.new.message.includes("Udah Di tranfer ya Cai")) {
+            setIsFreeChat(false);
+            setShowOptions(true);
+          }
         }
       }).subscribe();
       
