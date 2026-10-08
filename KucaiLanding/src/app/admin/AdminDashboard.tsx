@@ -1751,6 +1751,35 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
     setLoading(false);
   }, [filter]);
 
+  const markAsDone = async (sessionId: string, isBuy: boolean) => {
+    // 1. Update session status to selesai
+    await supabase.from("chat_sessions").update({ status: "selesai" }).eq("id", sessionId);
+    
+    // 2. Insert auto reply
+    const message = isBuy 
+      ? `| Udah Di Drop ya Cai 🔥\n*Thankyou ya, Udah order !🤩.*\n\n📣*UPDATE SELANJUTNYA BISA MASUK SALURAN YA* 📣\nhttps://whatsapp.com/channel/0029VbDJVnn2Jl8I2Lqi792g`
+      : `| Udah Di tranfer ya Cai 🔥\n*Thankyou ya, Udah order !🤩.*\n\n📣*HARGA TERUPDATE BISA MASUK SALURAN YA* 📣\nhttps://whatsapp.com/channel/0029VbDJVnn2Jl8I2Lqi792g`;
+      
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "admin",
+      message: message
+    });
+    
+    // 3. Update local state
+    setItems(prev => prev.map(item => item.session.id === sessionId ? { ...item, session: { ...item.session, status: "selesai" } } : item));
+    
+    Swal.fire({
+       title: "Berhasil!",
+       text: "Ditandai selesai & pesan terkirim.",
+       icon: "success",
+       toast: true,
+       position: 'top-end',
+       showConfirmButton: false,
+       timer: 3000
+    });
+  };
+
   useEffect(() => {
     fetchData();
   }, [fetchData]);
@@ -1782,8 +1811,20 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
               <div className="p-4 flex flex-col flex-1">
                 <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">{item.time}</div>
                 <div className="text-sm text-white font-semibold whitespace-pre-wrap flex-1">{item.caption}</div>
-                <div className="mt-4 pt-3 border-t border-white/10 text-xs text-emerald-400 font-medium">
-                  {item.session.customer_name}
+                <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
+                  <div className="text-xs text-emerald-400 font-medium">
+                    {item.session.customer_name}
+                  </div>
+                  {item.session.status === "selesai" ? (
+                    <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Done</span>
+                  ) : (
+                    <button 
+                      onClick={() => markAsDone(item.session.id, filter === "kucaidl_buy")}
+                      className="text-[10px] bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 transition-colors font-bold uppercase tracking-wider"
+                    >
+                      Tandai Selesai
+                    </button>
+                  )}
                 </div>
               </div>
            </div>
