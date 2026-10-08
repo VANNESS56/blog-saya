@@ -83,6 +83,7 @@ import { SettingsProvider } from "@/lib/settings/SettingsContext";
 import { Analytics } from "@vercel/analytics/next";
 import { MobileNav } from "@/components/layout/MobileNav";
 import { LiveChat } from "@/components/ui/LiveChat";
+import { JualBeliButton } from "@/components/ui/JualBeliButton";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const revalidate = 0; // Disable cache so theme changes apply instantly
@@ -113,6 +114,7 @@ export default async function RootLayout({
           <LanguageProvider>
             {children}
             <LiveChat />
+            <JualBeliButton />
             <MobileNav />
           </LanguageProvider>
         </SettingsProvider>
