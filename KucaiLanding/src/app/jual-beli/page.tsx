@@ -227,19 +227,25 @@ export default function JualBeliPage() {
     setIsFreeChat(true); // Unlock chat
 
     // Auto replies
+    const replyText1 = trxMode === "buy" 
+      ? "Terima kasih! 🙏 Mimin cek transferan kamu dulu ya 🥰"
+      : "pembayaran sedang di proses \nmohon menunggu 1-10 menit yaa\nThankyou sudah menunggu 🥰✌️";
+
     const { data: reply1 } = await supabase.from("chat_messages").insert({
       session_id: sessionId,
       sender: "admin",
-      message: "Terima kasih! 🙏 Mimin cek transferan kamu dulu ya 🥰"
+      message: replyText1
     }).select("*").single();
     if (reply1) setMessages(prev => [...prev, reply1]);
 
-    const { data: reply2 } = await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      sender: "admin",
-      message: "Setelah cek  , mimin akan proses drop ke world mu estimasi 1 - 5 menit 🙏\nsesuai antrian ✌️"
-    }).select("*").single();
-    if (reply2) setMessages(prev => [...prev, reply2]);
+    if (trxMode === "buy") {
+      const { data: reply2 } = await supabase.from("chat_messages").insert({
+        session_id: sessionId,
+        sender: "admin",
+        message: "Setelah cek  , mimin akan proses drop ke world mu estimasi 1 - 5 menit 🙏\nsesuai antrian ✌️"
+      }).select("*").single();
+      if (reply2) setMessages(prev => [...prev, reply2]);
+    }
   };
 
   const handleCancelTransaction = () => {
