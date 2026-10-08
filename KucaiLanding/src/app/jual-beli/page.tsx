@@ -124,6 +124,9 @@ export default function JualBeliPage() {
           if (payload.new.message.includes("Udah Di Drop ya Cai") || payload.new.message.includes("Udah Di tranfer ya Cai")) {
             setIsFreeChat(false);
             setShowOptions(true);
+            if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
+              document.activeElement.blur();
+            }
           }
         }
       }).subscribe();
