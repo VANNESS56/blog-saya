@@ -293,8 +293,8 @@ export default function JualBeliPage() {
           <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-white/5 -ml-2">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg">
-            <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" className="w-full h-full object-cover" alt="Kucai" />
+          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border border-white/10">
+            <img src="/kucaidl-profile.jpg" className="w-full h-full object-cover" alt="Kucai DL" />
           </div>
           <div>
             <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
