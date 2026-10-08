@@ -240,8 +240,8 @@ export function AdminDashboard() {
             {activeTab === "profile" && <ManageProfile />}
             {activeTab === "theme" && <ManageTheme />}
             {activeTab === "livechat" && <ManageLiveChat filter="livechat" />}
-            {activeTab === "kucaidl_buy" && <ManageLiveChat filter="kucaidl_buy" />}
-            {activeTab === "kucaidl_sell" && <ManageLiveChat filter="kucaidl_sell" />}
+            {activeTab === "kucaidl_buy" && <ManageKucaiDLGrid filter="kucaidl_buy" />}
+            {activeTab === "kucaidl_sell" && <ManageKucaiDLGrid filter="kucaidl_sell" />}
             {activeTab === "kucaidl_chats" && <ManageLiveChat filter="kucaidl_chats" />}
           </div>
           
@@ -1699,6 +1699,107 @@ const renderMessageText = (text: string) => {
 };
 
 type ChatFilter = "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats";
+
+function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" }) {
+  const [items, setItems] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchData = useCallback(async () => {
+    // 1. Fetch sessions
+    const { data: sessionsData } = await supabase
+      .from("chat_sessions")
+      .select("*")
+      .ilike("customer_name", "Customer_%")
+      .order("created_at", { ascending: false });
+      
+    if (!sessionsData) {
+      setLoading(false);
+      return;
+    }
+
+    const gridItems = [];
+    for (const s of sessionsData) {
+       // Check if it's buy or sell
+       const { data: firstCustomerMsg } = await supabase
+         .from("chat_messages")
+         .select("message")
+         .eq("session_id", s.id)
+         .eq("sender", "customer")
+         .order("created_at", { ascending: true })
+         .limit(1);
+         
+       const msgText = firstCustomerMsg?.[0]?.message || "";
+       let isBuy = msgText.includes("beli DL");
+       let isSell = msgText.includes("jual DL");
+       
+       if (filter === "kucaidl_buy" && !isBuy) continue;
+       if (filter === "kucaidl_sell" && !isSell) continue;
+       
+       // Get proofs
+       const { data: proofs } = await supabase
+         .from("chat_messages")
+         .select("*")
+         .eq("session_id", s.id)
+         .eq("sender", "customer")
+         .not("image_url", "is", null)
+         .order("created_at", { ascending: true });
+         
+       if (proofs && proofs.length > 0) {
+         // The first proof usually has the World/GrowID caption
+         const captionMsg = proofs.find((p: any) => p.message && p.message.includes("World:"));
+         gridItems.push({
+           session: s,
+           proofs: proofs,
+           caption: captionMsg ? captionMsg.message : "Data tidak tersedia",
+           time: new Date(proofs[0].created_at).toLocaleString('id-ID')
+         });
+       }
+    }
+    setItems(gridItems);
+    setLoading(false);
+  }, [filter]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  if (loading) {
+    return <div className="p-8 text-center text-white/50 animate-pulse">Memuat data...</div>;
+  }
+
+  return (
+    <div className="p-6">
+      <h2 className="text-xl font-bold text-white mb-6">
+        Data {filter === "kucaidl_buy" ? "Pembelian" : "Penjualan"}
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
+        {items.length === 0 ? (
+           <p className="text-white/50 col-span-full">Belum ada data bukti yang dikirimkan.</p>
+        ) : items.map((item, i) => (
+           <div key={i} className="bg-[#111928] border border-white/5 rounded-2xl overflow-hidden shadow-lg flex flex-col group">
+              <div className="relative aspect-[3/4] w-full bg-[#0a0f1c] overflow-hidden">
+                {item.proofs[0]?.image_url && (
+                  <img src={item.proofs[0].image_url} alt="Proof" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 cursor-pointer" onClick={() => window.open(item.proofs[0].image_url, "_blank")} />
+                )}
+                {item.proofs.length > 1 && (
+                  <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-[10px] font-bold text-white">
+                    +{item.proofs.length - 1} Foto
+                  </div>
+                )}
+              </div>
+              <div className="p-4 flex flex-col flex-1">
+                <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">{item.time}</div>
+                <div className="text-sm text-white font-semibold whitespace-pre-wrap flex-1">{item.caption}</div>
+                <div className="mt-4 pt-3 border-t border-white/10 text-xs text-emerald-400 font-medium">
+                  {item.session.customer_name}
+                </div>
+              </div>
+           </div>
+        ))}
+      </div>
+    </div>
+  );
+}
 
 function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
   const [sessions, setSessions] = useState<ChatSession[]>([]);
