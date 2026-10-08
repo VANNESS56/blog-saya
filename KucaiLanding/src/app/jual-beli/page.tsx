@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Send, ArrowLeft } from "lucide-react";
 
-type Msg = { id: string; sender: "admin" | "customer"; message: string; created_at?: string; };
+type Msg = { id: string; sender: "admin" | "customer"; message: string; created_at?: string; image_url?: string; };
 
 export default function JualBeliPage() {
   const router = useRouter();
@@ -16,6 +16,9 @@ export default function JualBeliPage() {
   const [sending, setSending] = useState(false);
   const [showOptions, setShowOptions] = useState(true);
   const [jualBeliReply, setJualBeliReply] = useState<string | null>(null);
+  const [isFreeChat, setIsFreeChat] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   const bottomRef = useRef<HTMLDivElement>(null);
 
@@ -83,7 +86,50 @@ export default function JualBeliPage() {
     setSending(false);
   };
 
+  const handleUploadProof = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !sessionId) return;
+    
+    const maxFiles = Array.from(files).slice(0, 2);
+    setUploading(true);
+    
+    for (let i = 0; i < maxFiles.length; i++) {
+       const file = maxFiles[i];
+       const formData = new FormData();
+       formData.append("file", file);
+       try {
+         const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
+         const result = await res.json();
+         if (result.url) {
+           const { data: msg } = await supabase.from("chat_messages").insert({
+             session_id: sessionId,
+             sender: "customer",
+             message: "",
+             image_url: result.url,
+           }).select("*").single();
+           if (msg) setMessages(prev => [...prev, msg]);
+         }
+       } catch (err) {
+         console.error(err);
+       }
+    }
+    
+    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
+    setUploading(false);
+    setIsFreeChat(true); // Unlock chat
+  };
+
+  const handleCancelTransaction = () => {
+     setSessionId(null);
+     setIsFreeChat(false);
+     setShowOptions(true);
+     setMessages([{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }]);
+  };
+
   const renderMessageText = (msg: Msg) => {
+    if (msg.image_url) {
+       return <img src={msg.image_url} alt="Proof" className="w-full h-auto max-w-[200px] rounded-lg border border-white/10" />;
+    }
     if (msg.message === "[QRIS_IMAGE]") {
       const handleDownload = () => {
          const link = document.createElement("a");
@@ -196,6 +242,16 @@ export default function JualBeliPage() {
                </button>
                <button onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#1e2b40] hover:bg-[#25354e] border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
                   💰 Jual DL/BGL
+               </button>
+            </div>
+          ) : !isFreeChat ? (
+            <div className="flex flex-col gap-2 w-full max-w-4xl mx-auto">
+               <input type="file" ref={fileInputRef} accept="image/*" multiple onChange={handleUploadProof} className="hidden" />
+               <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
+                  {uploading ? "Mengunggah foto..." : "📸 Ambil / pilih foto bukti (Maks 2)"}
+               </button>
+               <button onClick={handleCancelTransaction} disabled={uploading} className="w-full py-3 bg-red-900/40 hover:bg-red-900/60 border border-red-500/30 rounded-2xl text-red-200 text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
+                  ❌ Batalkan transaksi
                </button>
             </div>
           ) : (
