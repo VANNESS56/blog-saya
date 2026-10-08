@@ -137,42 +137,41 @@ export default function JualBeliPage() {
             </div>
           ))}
 
-          {/* Inline Buttons (Telegram style) */}
-          {showOptions && (
-            <div className="flex justify-start mt-2">
-               <div className="flex flex-col gap-2 w-full max-w-[280px]">
-                  <button onClick={() => handleSelectMode("buy")} className="w-full py-3 bg-[#1e2b40] hover:bg-[#25354e] border border-white/5 rounded-xl text-white text-sm font-semibold transition-colors shadow-sm flex items-center justify-center gap-2 active:scale-[0.98]">
-                     \uD83D\uDED2 Beli DL/BGL
-                  </button>
-                  <button onClick={() => handleSelectMode("sell")} className="w-full py-3 bg-[#1e2b40] hover:bg-[#25354e] border border-white/5 rounded-xl text-white text-sm font-semibold transition-colors shadow-sm flex items-center justify-center gap-2 active:scale-[0.98]">
-                     \uD83D\uDCB0 Jual DL/BGL
-                  </button>
-               </div>
-            </div>
-          )}
+          {/* Inline Buttons moved to bottom keyboard */}
           
           <div ref={bottomRef} />
         </div>
 
-        {/* Input Area */}
+        {/* Input Area / Keyboard Options */}
         <div className="p-4 bg-[#0d1424] border-t border-white/5 sticky bottom-0 z-10">
-          <form onSubmit={handleSend} className="flex items-end gap-3 max-w-4xl mx-auto relative">
-            <input
-              type="text" 
-              value={input} 
-              onChange={e => setInput(e.target.value)}
-              disabled={!sessionId}
-              placeholder={sessionId ? "Ketik pesan..." : "Pilih opsi di atas dulu..."}
-              className="flex-1 bg-[#162032] border border-white/10 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-sky-500 focus:bg-[#1a263a] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
-            />
-            <button 
-              type="submit" 
-              disabled={!input.trim() || sending || !sessionId}
-              className="w-12 h-12 shrink-0 bg-sky-600 hover:bg-sky-500 disabled:bg-[#1e293b] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
-            >
-              <Send className="w-5 h-5 ml-1" />
-            </button>
-          </form>
+          {showOptions ? (
+            <div className="flex gap-2 w-full max-w-4xl mx-auto">
+               <button onClick={() => handleSelectMode("buy")} className="flex-1 py-4 bg-[#1e2b40] hover:bg-[#25354e] border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+                  🛒 Beli DL/BGL
+               </button>
+               <button onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#1e2b40] hover:bg-[#25354e] border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+                  💰 Jual DL/BGL
+               </button>
+            </div>
+          ) : (
+            <form onSubmit={handleSend} className="flex items-end gap-3 max-w-4xl mx-auto relative">
+              <input
+                type="text" 
+                value={input} 
+                onChange={e => setInput(e.target.value)}
+                disabled={!sessionId}
+                placeholder="Ketik pesan..."
+                className="flex-1 bg-[#162032] border border-white/10 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-sky-500 focus:bg-[#1a263a] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+              />
+              <button 
+                type="submit" 
+                disabled={!input.trim() || sending || !sessionId}
+                className="w-12 h-12 shrink-0 bg-sky-600 hover:bg-sky-500 disabled:bg-[#1e293b] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
+              >
+                <Send className="w-5 h-5 ml-1" />
+              </button>
+            </form>
+          )}
         </div>
         
       </div>
