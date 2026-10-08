@@ -97,9 +97,13 @@ export default function JualBeliPage() {
       sid = sessionData.id;
       setSessionId(sid);
       
-      await supabase.from("chat_messages").insert([
+      const { data: initMsg } = await supabase.from("chat_messages").insert([
         { session_id: sid, sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" },
-      ]);
+      ]).select("*").single();
+      
+      if (initMsg) {
+        setMessages([initMsg]);
+      }
     } else {
       await supabase.from("chat_sessions").update({ status: 'active', last_message_at: new Date().toISOString() }).eq("id", sid);
     }
