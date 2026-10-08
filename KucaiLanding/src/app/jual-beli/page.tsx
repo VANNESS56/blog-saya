@@ -18,6 +18,9 @@ export default function JualBeliPage() {
   const [jualBeliReply, setJualBeliReply] = useState<string | null>(null);
   const [isFreeChat, setIsFreeChat] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [proofFiles, setProofFiles] = useState<File[]>([]);
+  const [worldName, setWorldName] = useState("");
+  const [growId, setGrowId] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
   
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -86,36 +89,61 @@ export default function JualBeliPage() {
     setSending(false);
   };
 
-  const handleUploadProof = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleSelectProof = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
-    if (!files || files.length === 0 || !sessionId) return;
+    if (!files || files.length === 0) return;
+    setProofFiles(Array.from(files).slice(0, 2));
+    if (fileInputRef.current) fileInputRef.current.value = "";
+  };
+
+  const handleSubmitProof = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!sessionId || proofFiles.length === 0) return;
+    if (!worldName.trim() || !growId.trim()) return alert("Nama World dan GrowID wajib diisi!");
     
-    const maxFiles = Array.from(files).slice(0, 2);
     setUploading(true);
+    let uploadedUrls: string[] = [];
     
-    for (let i = 0; i < maxFiles.length; i++) {
-       const file = maxFiles[i];
+    for (let i = 0; i < proofFiles.length; i++) {
+       const file = proofFiles[i];
        const formData = new FormData();
        formData.append("file", file);
        try {
          const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
          const result = await res.json();
          if (result.url) {
-           const { data: msg } = await supabase.from("chat_messages").insert({
-             session_id: sessionId,
-             sender: "customer",
-             message: "",
-             image_url: result.url,
-           }).select("*").single();
-           if (msg) setMessages(prev => [...prev, msg]);
+           uploadedUrls.push(result.url);
          }
        } catch (err) {
          console.error(err);
        }
     }
     
+    const caption = `World: ${worldName.trim()}\nGrowID: ${growId.trim()}`;
+    
+    if (uploadedUrls.length > 0) {
+      for (let i = 0; i < uploadedUrls.length; i++) {
+         const { data: msg } = await supabase.from("chat_messages").insert({
+           session_id: sessionId,
+           sender: "customer",
+           message: i === 0 ? caption : "",
+           image_url: uploadedUrls[i],
+         }).select("*").single();
+         if (msg) setMessages(prev => [...prev, msg]);
+      }
+    } else {
+      // Fallback if no images succeeded
+      const { data: msg } = await supabase.from("chat_messages").insert({
+         session_id: sessionId,
+         sender: "customer",
+         message: caption,
+      }).select("*").single();
+      if (msg) setMessages(prev => [...prev, msg]);
+    }
+    
     await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
     setUploading(false);
+    setProofFiles([]);
     setIsFreeChat(true); // Unlock chat
   };
 
@@ -123,6 +151,9 @@ export default function JualBeliPage() {
      setSessionId(null);
      setIsFreeChat(false);
      setShowOptions(true);
+     setProofFiles([]);
+     setWorldName("");
+     setGrowId("");
      setMessages([{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }]);
   };
 
@@ -246,13 +277,33 @@ export default function JualBeliPage() {
             </div>
           ) : !isFreeChat ? (
             <div className="flex flex-col gap-2 w-full max-w-4xl mx-auto">
-               <input type="file" ref={fileInputRef} accept="image/*" multiple onChange={handleUploadProof} className="hidden" />
-               <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
-                  {uploading ? "Mengunggah foto..." : "📸 Ambil / pilih foto bukti (Maks 2)"}
-               </button>
-               <button onClick={handleCancelTransaction} disabled={uploading} className="w-full py-3 bg-red-900/40 hover:bg-red-900/60 border border-red-500/30 rounded-2xl text-red-200 text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
-                  ❌ Batalkan transaksi
-               </button>
+               {proofFiles.length > 0 ? (
+                 <form onSubmit={handleSubmitProof} className="bg-[#111928] p-4 rounded-2xl border border-white/5 space-y-3">
+                   <p className="text-sm font-semibold text-white/80 mb-2">📸 {proofFiles.length} foto dipilih</p>
+                   <div>
+                     <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                   </div>
+                   <div>
+                     <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                   </div>
+                   <button type="submit" disabled={uploading} className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl text-white text-sm font-bold transition-colors disabled:opacity-50 mt-2">
+                     {uploading ? "Mengirim..." : "Kirim Bukti & Data"}
+                   </button>
+                   <button type="button" onClick={() => setProofFiles([])} disabled={uploading} className="w-full py-2 text-white/50 hover:text-white/80 text-xs transition-colors">
+                     Batal pilih foto
+                   </button>
+                 </form>
+               ) : (
+                 <>
+                   <input type="file" ref={fileInputRef} accept="image/*" multiple onChange={handleSelectProof} className="hidden" />
+                   <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
+                      📸 Ambil / pilih foto bukti (Maks 2)
+                   </button>
+                   <button onClick={handleCancelTransaction} disabled={uploading} className="w-full py-3 bg-red-900/40 hover:bg-red-900/60 border border-red-500/30 rounded-2xl text-red-200 text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
+                      ❌ Batalkan transaksi
+                   </button>
+                 </>
+               )}
             </div>
           ) : (
             <form onSubmit={handleSend} className="flex items-end gap-3 max-w-4xl mx-auto relative">
