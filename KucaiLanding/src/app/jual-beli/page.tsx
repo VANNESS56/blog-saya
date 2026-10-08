@@ -77,7 +77,42 @@ export default function JualBeliPage() {
           {messages.map(msg => (
             <div key={msg.id} className={`flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
               <div className={`whitespace-pre-wrap max-w-[78%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${msg.sender === "customer" ? "bg-sky-600 text-white rounded-br-md" : "bg-[#1e1e2e] text-gray-200 rounded-bl-md border border-white/5"}`}>
-                {msg.message}
+                {msg.sender === "admin" && msg.message.includes("Rate beli ke KucaiDL") ? (
+                  <div className="space-y-3">
+                    <p>Rate beli ke KucaiDL 🤗<br/>DL : 785<br/>BGL : 78.500</p>
+                    
+                    <div className="bg-[#141420] border border-white/10 rounded-xl p-3 space-y-2">
+                      <p className="text-white/70 text-xs font-medium mb-2">Silakan transfer ke sini ya:</p>
+                      
+                      <div className="flex items-center justify-between gap-3 bg-black/30 p-2.5 rounded-lg border border-white/5">
+                         <div className="text-xs">
+                           <span className="font-bold text-white">Gopay</span><br/>
+                           <span className="text-white/60">081367232472 a.n. Desi</span>
+                         </div>
+                         <button onClick={() => navigator.clipboard.writeText("081367232472")} className="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-xs font-bold text-white transition-colors active:scale-95">Salin</button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between gap-3 bg-black/30 p-2.5 rounded-lg border border-white/5">
+                         <div className="text-xs">
+                           <span className="font-bold text-white">Dana</span><br/>
+                           <span className="text-white/60">081367232472 a.n. Desi</span>
+                         </div>
+                         <button onClick={() => navigator.clipboard.writeText("081367232472")} className="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-lg text-xs font-bold text-white transition-colors active:scale-95">Salin</button>
+                      </div>
+                      
+                      <div className="flex items-center justify-between gap-3 bg-black/30 p-2.5 rounded-lg border border-white/5">
+                         <div className="text-xs">
+                           <span className="font-bold text-white">Bank</span><br/>
+                           <span className="text-white/60">Khusus Bank TF ke QRIS</span>
+                         </div>
+                      </div>
+                    </div>
+
+                    <p>‼️Payment transfer ke ewallet di atas ya thankyou 🥰<br/><br/>NOTE ❗️ : klo udah tf kirim nama world, growid <br/><br/>👸 Admin Desi KUCAIDL</p>
+                  </div>
+                ) : (
+                  msg.message
+                )}
               </div>
             </div>
           ))}
