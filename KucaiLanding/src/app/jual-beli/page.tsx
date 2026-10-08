@@ -6,6 +6,12 @@ import { Send, ArrowLeft } from "lucide-react";
 
 type Msg = { id: string; sender: "admin" | "customer"; message: string; created_at?: string; image_url?: string; };
 
+type SavedPayout = {
+  method: string;
+  accountNo: string;
+  accountName: string;
+};
+
 export default function JualBeliPage() {
   const router = useRouter();
   const [sessionId, setSessionId] = useState<string | null>(null);
@@ -25,9 +31,17 @@ export default function JualBeliPage() {
   const [paymentMethod, setPaymentMethod] = useState("");
   const [searchPayment, setSearchPayment] = useState("");
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
+  const [savedPayouts, setSavedPayouts] = useState<SavedPayout[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const saved = localStorage.getItem("kucaidl_saved_payouts");
+    if (saved) {
+      try { setSavedPayouts(JSON.parse(saved)); } catch (e) {}
+    }
+  }, []);
 
   useEffect(() => {
     supabase.from("site_settings").select("value").eq("key", "jual_beli_reply").single().then(({ data }) => {
@@ -225,6 +239,16 @@ export default function JualBeliPage() {
     setUploading(false);
     setProofFiles([]);
     setIsFreeChat(true); // Unlock chat
+
+    if (trxMode === "sell") {
+      const newPayout = { method: paymentMethod, accountNo: worldName.trim(), accountName: growId.trim() };
+      const exists = savedPayouts.find(p => p.method === newPayout.method && p.accountNo === newPayout.accountNo);
+      if (!exists) {
+        const updated = [newPayout, ...savedPayouts].slice(0, 5);
+        setSavedPayouts(updated);
+        localStorage.setItem("kucaidl_saved_payouts", JSON.stringify(updated));
+      }
+    }
 
     // Auto replies
     const replyText1 = trxMode === "buy" 
@@ -454,7 +478,37 @@ export default function JualBeliPage() {
                                className="w-full bg-[#162032] border-b border-white/10 px-4 py-3 text-white text-sm outline-none"
                                autoFocus
                              />
-                             <div className="max-h-40 overflow-y-auto">
+                             <div className="max-h-48 overflow-y-auto pb-2">
+                               {savedPayouts.length > 0 && !searchPayment && (
+                                 <div className="mb-2">
+                                   <div className="px-4 py-2 text-[10px] font-bold text-white/40 uppercase tracking-wider bg-white/5">Tersimpan</div>
+                                   {savedPayouts.map((p, idx) => (
+                                     <div 
+                                       key={idx} 
+                                       onClick={() => { 
+                                         setPaymentMethod(p.method); 
+                                         setWorldName(p.accountNo);
+                                         setGrowId(p.accountName);
+                                         setShowPaymentOptions(false); 
+                                       }}
+                                       className="px-4 py-3 hover:bg-sky-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 font-medium flex justify-between items-center"
+                                     >
+                                       <span>{p.method} <span className="text-white/50 text-xs tracking-wider">{(p.accountNo.length > 5 ? p.accountNo.substring(0,2) + "•".repeat(4) + p.accountNo.slice(-3) : p.accountNo)}</span></span>
+                                       <span className="text-white/40 text-xs max-w-[100px] truncate">{p.accountName}</span>
+                                     </div>
+                                   ))}
+                                   <div 
+                                     onClick={() => { setSavedPayouts([]); localStorage.removeItem("kucaidl_saved_payouts"); }}
+                                     className="px-4 py-3 hover:bg-red-900/30 text-red-400 text-sm cursor-pointer transition-colors border-b border-white/5"
+                                   >
+                                     Hapus payout tersimpan...
+                                   </div>
+                                 </div>
+                               )}
+
+                               <div className="px-4 py-2 text-[10px] font-bold text-white/40 uppercase tracking-wider bg-white/5">
+                                 {savedPayouts.length > 0 && !searchPayment ? "Lainnya (Tulis Sendiri)" : "Daftar Metode"}
+                               </div>
                                {["Gopay", "Dana", "OVO", "ShopeePay", "LinkAja", "BCA", "Mandiri", "BNI", "BRI", "SeaBank", "Jago", "BSI", "Permata", "CIMB Niaga", "Blu"]
                                  .filter(p => p.toLowerCase().includes(searchPayment.toLowerCase()))
                                  .map(p => (
