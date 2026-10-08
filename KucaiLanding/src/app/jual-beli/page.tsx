@@ -339,18 +339,11 @@ export default function JualBeliPage() {
           <div className="space-y-2.5">
             {before.trim() && <div className="whitespace-pre-wrap leading-relaxed">{formatText(before.trim())}</div>}
             
-            <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3 flex items-center justify-between shadow-inner mt-1 mb-1">
-              <div className="flex items-center gap-2.5 font-mono text-[14px] font-bold tracking-wide">
-                <span className="text-white">{world}</span>
-                <span className="text-sky-500/40">|</span>
-                <span className="text-white/70">{owner}</span>
+            <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3.5 shadow-inner mt-1 mb-1">
+              <div className="flex flex-col gap-2 font-mono text-[14px] font-bold tracking-wide">
+                <div className="text-white">WORLD : <span className="text-sky-400">{world}</span></div>
+                <div className="text-white">OWNER : <span className="text-sky-400">{owner}</span></div>
               </div>
-              <button 
-                onClick={() => navigator.clipboard.writeText(copyText)}
-                className="px-3 py-1.5 bg-sky-600/20 hover:bg-sky-600/40 border border-sky-500/20 text-sky-400 rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0"
-              >
-                Salin
-              </button>
             </div>
 
             {after.trim() && <div className="whitespace-pre-wrap leading-relaxed">{formatText(after.trim())}</div>}
