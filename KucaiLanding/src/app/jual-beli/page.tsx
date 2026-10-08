@@ -247,14 +247,15 @@ export default function JualBeliPage() {
   };
 
   const formatText = (text: string) => {
-    // Parse *bold*, _italic_, ~strike~
+    // Parse URLs, *bold*, _italic_, ~strike~
     let html = text
+      .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-sky-400 hover:underline break-all">$1</a>')
       .replace(/\*(.*?)\*/g, "<strong>$1</strong>")
       .replace(/_(.*?)_/g, "<em>$1</em>")
       .replace(/~(.*?)~/g, "<del>$1</del>");
       
     // Don't replace \n with <br/> if the parent already handles whitespace-pre-wrap or if we split by \n
-    return <span dangerouslySetInnerHTML={{ __html: html }} />;
+    return <span dangerouslySetInnerHTML={{ __html: html }} className="break-words" />;
   };
 
   const renderMessageText = (msg: Msg) => {
