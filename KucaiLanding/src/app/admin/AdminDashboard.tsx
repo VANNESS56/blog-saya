@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { type Account, type Testimonial, type Reputation, supabase } from "@/lib/supabase";
+import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
-import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X, ArrowLeft } from "lucide-react";
+import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X } from "lucide-react";
 import Image from "next/image";
 import Swal from "sweetalert2";
 
@@ -26,7 +26,7 @@ async function adminUpload(file: File, folder: string): Promise<string | null> {
 }
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders_buy" | "orders_sell" | "stock" | "products" | "profile" | "theme" | "livechat">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat">("dashboard");
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const router = useRouter();
 
@@ -109,18 +109,10 @@ export function AdminDashboard() {
             </li>
             <li>
               <button suppressHydrationWarning 
-                onClick={() => setActiveTab("orders_buy")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders_buy' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                onClick={() => setActiveTab("orders")}
+                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
-                <ShoppingCart className="w-5 h-5" /> Menu Buy (Beli)
-              </button>
-            </li>
-            <li>
-              <button suppressHydrationWarning 
-                onClick={() => setActiveTab("orders_sell")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'orders_sell' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
-              >
-                <ShoppingCart className="w-5 h-5" /> Menu Sell (Jual)
+                <ShoppingCart className="w-5 h-5" /> Orders
               </button>
             </li>
             <li>
@@ -200,8 +192,7 @@ export function AdminDashboard() {
             {activeTab === "testimonials" && <ManageTestimonials />}
             {activeTab === "reputations" && <ManageReputations />}
             {activeTab === "settings" && <ManageSettings />}
-            {activeTab === "orders_buy" && <ManageOrders mode="buy" />}
-            {activeTab === "orders_sell" && <ManageOrders mode="sell" />}
+            {activeTab === "orders" && <ManageOrders />}
             {activeTab === "stock" && <ManageStock />}
             {activeTab === "products" && <ManageProducts />}
             {activeTab === "profile" && <ManageProfile />}
@@ -699,160 +690,55 @@ function ManageSettings() {
   );
 }
 
-function ManageOrders({ mode }: { mode: 'buy' | 'sell' }) {
-  const [proofs, setProofs] = useState<any[]>([]);
+function ManageOrders() {
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeSubTab, setActiveSubTab] = useState("Menunggu dicek");
 
   useEffect(() => {
-    async function fetchProofs() {
-      const { data } = await supabase
-        .from("chat_messages")
-        .select(`*, chat_sessions(id, customer_name, status)`)
-        .eq("sender", "customer")
-        .not("image_url", "is", null)
-        .order("created_at", { ascending: false });
-      
-      const { data: modeIndicators } = await supabase
-        .from("chat_messages")
-        .select("session_id, message")
-        .in("message", ["🛒 Beli DL/BGL", "💰 Jual DL/BGL", "🧑‍💻 Jual Akun"]);
-
-      const sessionModeMap: Record<string, string> = {};
-      if (modeIndicators) {
-        modeIndicators.forEach(m => {
-          sessionModeMap[m.session_id] = m.message === "🛒 Beli DL/BGL" ? "buy" : 
-                                         m.message === "💰 Jual DL/BGL" ? "sell" : "jual_akun";
-        });
-      }
-
-      const { data: textMessages } = await supabase
-        .from("chat_messages")
-        .select("session_id, message")
-        .eq("sender", "customer")
-        .is("image_url", null)
-        .order("created_at", { ascending: true });
-        
-      const sessionTextMap: Record<string, string[]> = {};
-      if (textMessages) {
-        textMessages.forEach(m => {
-          if (!sessionTextMap[m.session_id]) sessionTextMap[m.session_id] = [];
-          if (!["🛒 Beli DL/BGL", "💰 Jual DL/BGL", "🧑‍💻 Jual Akun"].includes(m.message)) {
-            sessionTextMap[m.session_id].push(m.message);
-          }
-        });
-      }
-
-      if (data) {
-        const filtered = data.filter(msg => {
-          const sMode = sessionModeMap[msg.session_id] || "buy";
-          const isModeMatch = mode === "buy" ? (sMode === "buy" || sMode === "jual_akun") : (sMode === "sell");
-          const sessionStatus = msg.chat_sessions?.status || 'active';
-          const isStatusMatch = activeSubTab === "Menunggu dicek" ? sessionStatus !== 'done' : sessionStatus === 'done';
-          
-          return isModeMatch && isStatusMatch;
-        }).map(msg => {
-          if (!msg.message || msg.message.trim() === "") {
-             const extraTexts = sessionTextMap[msg.session_id];
-             if (extraTexts && extraTexts.length > 0) {
-                 msg.message = extraTexts.join("\n");
-             }
-          }
-          return msg;
-        });
-        setProofs(filtered);
-      }
+    async function fetchOrders() {
+      const res = await fetch("/api/admin/ecommerce", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "fetchOrders" })
+      });
+      const data = await res.json();
+      if (data.data) setOrders(data.data);
       setLoading(false);
     }
-    fetchProofs();
-  }, [mode, activeSubTab]);
-
-  const handleMarkAsDone = async (sessionId: string) => {
-    try {
-      await supabase.from("chat_sessions").update({ status: 'done' }).eq("id", sessionId);
-      
-      const messageText = mode === "buy" 
-        ? "Udah Di Drop ya Cai 🔥\nThankyou ya, Udah order !🤩.\n\n📢UPDATE SELANJUTNYA BISA MASUK SALURAN YA 📢\nhttps://whatsapp.com/channel/0029VbDJVnn2Jl8I2Lqi792g"
-        : "Udah Di tranfer ya Cai 🔥\nThankyou ya, Udah order !🤩.\n\n📢HARGA TERUPDATE BISA MASUK SALURAN YA 📢\nhttps://whatsapp.com/channel/0029VbDJVnn2Jl8I2Lqi792g";
-        
-      await supabase.from("chat_messages").insert({
-        session_id: sessionId,
-        sender: "admin",
-        message: messageText
-      });
-      
-      // Refresh proofs
-      setProofs(prev => prev.filter(p => p.session_id !== sessionId));
-    } catch (err) {
-      console.error(err);
-      alert("Gagal menandai selesai");
-    }
-  };
+    fetchOrders();
+  }, []);
 
   return (
-    <div className="space-y-6">
-      <div className="flex bg-[#140e0b] p-1.5 rounded-xl border border-amber-900/20 max-w-2xl mx-auto shadow-[0_4px_20px_rgba(0,0,0,0.3)]">
-        {["Menunggu dicek", "Riwayat"].map((tab) => (
-          <button
-            key={tab}
-            onClick={() => setActiveSubTab(tab)}
-            className={`flex-1 py-3 text-sm font-semibold rounded-lg transition-all ${
-              activeSubTab === tab ? "bg-[#1f1611] text-amber-500 shadow-sm border border-amber-900/30" : "text-gray-400 hover:text-white"
-            }`}
-          >
-            {tab} {tab === "Menunggu dicek" && <span className="ml-1 px-2 py-0.5 bg-amber-500/20 text-amber-500 rounded-full text-xs">{proofs.length}</span>}
-          </button>
-        ))}
+    <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden">
+      <div className="px-6 py-4 border-b border-amber-900/20 flex justify-between items-center">
+        <h3 className="text-lg font-semibold text-white/90">Semua Pesanan</h3>
       </div>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
-        {loading ? (
-          <p className="text-white/50 text-center col-span-full py-10">Memuat data order...</p>
-        ) : (
-          proofs.map((proof) => (
-            <div key={proof.id} className="bg-[#140e0b] rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.4)] border border-amber-900/20 overflow-hidden flex flex-col group hover:border-amber-500/50 transition-colors">
-              <div className="p-4 bg-white/5 border-b border-amber-900/20 relative">
-                <img 
-                  src={proof.image_url} 
-                  alt="Bukti TF" 
-                  className="w-full h-48 object-cover rounded-xl border border-white/10 cursor-pointer group-hover:scale-[1.02] transition-transform" 
-                  onClick={() => window.open(proof.image_url, '_blank')} 
-                />
-              </div>
-              <div className="p-5 flex flex-col gap-3 flex-1">
-                <div className="flex justify-between items-start">
-                  <h4 className="font-bold text-white text-lg truncate pr-2">{proof.chat_sessions?.customer_name || 'Tamu'}</h4>
-                  {activeSubTab === "Menunggu dicek" && (
-                    <span className="shrink-0 px-2.5 py-1 bg-emerald-500/20 text-emerald-400 text-[10px] font-bold rounded-full border border-emerald-500/20 flex items-center gap-1">
-                      <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse"></div>
-                      BARU
-                    </span>
-                  )}
-                </div>
-                <div className="text-sm text-gray-300 whitespace-pre-wrap bg-black/40 p-4 rounded-xl border border-white/5 font-mono shadow-inner flex-1">
-                  {proof.message || "Tidak ada detail text."}
-                </div>
-                <div className="mt-2 pt-4 border-t border-white/5 text-xs text-gray-500 flex justify-between items-center">
-                  <span className="flex items-center gap-1.5">
-                    <Headphones className="w-3.5 h-3.5 text-amber-500/70" /> Chat
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-[#0c0805] text-white/70">
+            <tr>
+              <th className="px-6 py-3 font-medium">Invoice</th>
+              <th className="px-6 py-3 font-medium">Customer WA</th>
+              <th className="px-6 py-3 font-medium">Produk</th>
+              <th className="px-6 py-3 font-medium">Status</th>
+              <th className="px-6 py-3 font-medium">Total</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100">
+            {loading ? <tr><td colSpan={5} className="p-4 text-center">Loading...</td></tr> : orders.map(order => (
+              <tr key={order.id} className="hover:bg-[#0c0805]">
+                <td className="px-6 py-4 font-mono text-xs text-amber-500">{order.invoice_no}</td>
+                <td className="px-6 py-4">{order.customer_wa}</td>
+                <td className="px-6 py-4">{order.digital_products?.title || '-'}</td>
+                <td className="px-6 py-4">
+                  <span className={`px-2 py-1 rounded text-xs font-bold ${order.payment_status === 'paid' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'}`}>
+                    {order.payment_status.toUpperCase()}
                   </span>
-                  <span>{new Date(proof.created_at).toLocaleString("id-ID", { hour: '2-digit', minute: '2-digit', day: 'numeric', month: 'short' })}</span>
-                </div>
-                {activeSubTab === "Menunggu dicek" && (
-                  <button 
-                    onClick={() => handleMarkAsDone(proof.session_id)}
-                    className="mt-3 w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors shadow-lg shadow-emerald-900/20"
-                  >
-                    Done
-                  </button>
-                )}
-              </div>
-            </div>
-          ))
-        )}
-        {!loading && proofs.length === 0 && (
-           <p className="text-white/50 text-center col-span-full py-10">Belum ada order masuk.</p>
-        )}
+                </td>
+                <td className="px-6 py-4">Rp {order.amount.toLocaleString("id-ID")}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
@@ -1712,6 +1598,8 @@ function ManageTheme() {
 }
 
 // ─── LIVE CHAT MANAGEMENT ───
+import { supabase } from "@/lib/supabase";
+
 interface ChatSession {
   id: string;
   customer_name: string;
@@ -1763,11 +1651,6 @@ function ManageLiveChat() {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [readSessions, setReadSessions] = useState<Record<string, string>>({});
   const notifAudioRef = useRef<HTMLAudioElement | null>(null);
-  const [chatSettings, setChatSettings] = useState({ buy_rate_text: "", sell_rate_text: "", qris_image_url: "" });
-  const [settingsTab, setSettingsTab] = useState<"chats" | "settings">("chats");
-  const [savingSettings, setSavingSettings] = useState(false);
-  const [settingsSaved, setSettingsSaved] = useState(false);
-  const qrisFileInputRef = useRef<HTMLInputElement>(null);
 
   // Load read status from localStorage + request notification permission
   useEffect(() => {
@@ -1779,11 +1662,6 @@ function ManageLiveChat() {
       Notification.requestPermission();
     }
     notifAudioRef.current = new Audio("/notif.mp3");
-    // Load chat settings
-    fetch("/api/chat/settings")
-      .then(r => r.json())
-      .then(d => setChatSettings(d))
-      .catch(() => {});
   }, []);
 
   const markAsRead = (sessionId: string, lastMessageAt: string) => {
@@ -1936,89 +1814,10 @@ function ManageLiveChat() {
   if (loading) return <p className="text-white/50">Memuat data chat...</p>;
 
   return (
-    <div className="space-y-4">
-      {/* Tab switcher */}
-      <div className="flex gap-2">
-        <button
-          onClick={() => setSettingsTab("chats")}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${settingsTab === "chats" ? "bg-amber-600 text-white" : "bg-amber-900/20 text-amber-400 hover:bg-amber-900/40"}`}
-        >💬 Percakapan</button>
-        <button
-          onClick={() => setSettingsTab("settings")}
-          className={`px-4 py-2 rounded-lg text-sm font-semibold transition-colors ${settingsTab === "settings" ? "bg-amber-600 text-white" : "bg-amber-900/20 text-amber-400 hover:bg-amber-900/40"}`}
-        >⚙️ Quick Reply Settings</button>
-      </div>
-
-      {settingsTab === "settings" ? (
-        <div className="bg-[#140e0b] border border-amber-900/20 rounded-xl p-6 space-y-5">
-          <h3 className="font-bold text-white/90">Quick Reply Settings</h3>
-
-          <div>
-            <label className="block text-xs text-amber-400 font-bold mb-1">Teks Auto-Reply tombol BELI 🛒</label>
-            <textarea
-              value={chatSettings.buy_rate_text}
-              onChange={e => setChatSettings(p => ({ ...p, buy_rate_text: e.target.value }))}
-              rows={10}
-              className="w-full bg-black/30 border border-amber-900/30 rounded-lg p-3 text-white/80 text-sm font-mono resize-y focus:outline-none focus:border-amber-500"
-              placeholder="Teks rate beli yang akan dikirim otomatis..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs text-amber-400 font-bold mb-1">Teks Auto-Reply tombol JUAL 💰</label>
-            <textarea
-              value={chatSettings.sell_rate_text}
-              onChange={e => setChatSettings(p => ({ ...p, sell_rate_text: e.target.value }))}
-              rows={6}
-              className="w-full bg-black/30 border border-amber-900/30 rounded-lg p-3 text-white/80 text-sm font-mono resize-y focus:outline-none focus:border-amber-500"
-              placeholder="Instruksi untuk customer yang mau jual..."
-            />
-          </div>
-
-          <div>
-            <label className="block text-xs text-amber-400 font-bold mb-1">Gambar QRIS (dikirim otomatis saat klik BELI)</label>
-            <input type="file" ref={qrisFileInputRef} accept="image/*" className="hidden" onChange={async (e) => {
-              const file = e.target.files?.[0];
-              if (!file) return;
-              const fd = new FormData();
-              fd.append("file", file);
-              fd.append("folder", "qris");
-              const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
-              const result = await res.json();
-              if (result.url) setChatSettings(p => ({ ...p, qris_image_url: result.url }));
-            }} />
-            {chatSettings.qris_image_url && (
-              <img src={chatSettings.qris_image_url} alt="QRIS" className="w-40 h-40 object-contain rounded-lg border border-amber-900/30 mb-2" />
-            )}
-            <button
-              onClick={() => qrisFileInputRef.current?.click()}
-              className="px-4 py-2 bg-amber-900/30 hover:bg-amber-900/50 border border-amber-700/50 text-amber-400 text-sm rounded-lg transition-colors"
-            >📷 Upload Gambar QRIS</button>
-            {chatSettings.qris_image_url && (
-              <span className="ml-3 text-xs text-green-400">✓ Gambar terpasang</span>
-            )}
-          </div>
-
-          <button
-            disabled={savingSettings}
-            onClick={async () => {
-              setSavingSettings(true);
-              const res = await fetch("/api/admin/data", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ action: "saveChatSettings", data: chatSettings }),
-              });
-              setSavingSettings(false);
-              if (res.ok) { setSettingsSaved(true); setTimeout(() => setSettingsSaved(false), 2000); }
-            }}
-            className="w-full py-3 bg-amber-600 hover:bg-amber-700 disabled:opacity-50 text-white font-bold rounded-lg transition-colors"
-          >{savingSettings ? "Menyimpan..." : settingsSaved ? "✓ Tersimpan!" : "Simpan Pengaturan"}</button>
-        </div>
-      ) : (
-      <div className="bg-[#140e0b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden" style={{ height: "calc(100vh - 280px)", minHeight: "500px" }}>
+    <div className="bg-[#140e0b] rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden" style={{ height: "calc(100vh - 220px)", minHeight: "500px" }}>
       <div className="flex h-full">
         {/* Left Panel — Session List */}
-        <div className={`${activeSession ? 'hidden md:flex' : 'flex'} w-full md:w-[320px] shrink-0 border-r border-amber-900/20 flex-col`}>
+        <div className="w-[320px] shrink-0 border-r border-amber-900/20 flex flex-col">
           <div className="px-4 py-3 border-b border-amber-900/20 bg-[#0c0805]">
             <h3 className="font-bold text-white/90 text-sm">Percakapan</h3>
             <p className="text-xs text-white/50">{sessions.length} sesi chat</p>
@@ -2075,7 +1874,7 @@ function ManageLiveChat() {
         </div>
 
         {/* Right Panel — Chat */}
-        <div className={`${!activeSession ? 'hidden md:flex' : 'flex'} flex-1 flex-col w-full`}>
+        <div className="flex-1 flex flex-col">
           {!activeSession ? (
             <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
               <Headphones className="w-12 h-12 mb-4 text-gray-300" />
@@ -2086,12 +1885,6 @@ function ManageLiveChat() {
             <>
               {/* Chat Header */}
               <div className="px-5 py-3 border-b border-amber-900/20 bg-[#0c0805] flex items-center gap-3 shrink-0">
-                <button
-                  onClick={() => setActiveSession(null)}
-                  className="md:hidden flex items-center justify-center w-8 h-8 mr-1 bg-amber-900/20 text-amber-500 rounded-full hover:bg-amber-900/40"
-                >
-                  <ArrowLeft className="w-5 h-5" />
-                </button>
                 <div className="w-9 h-9 rounded-full bg-amber-900/40 flex items-center justify-center text-amber-500 font-bold text-sm">
                   {activeSessionData?.customer_name?.charAt(0)?.toUpperCase() || "?"}
                 </div>
@@ -2219,7 +2012,7 @@ function ManageLiveChat() {
                     value={reply}
                     onChange={(e) => setReply(e.target.value)}
                     placeholder={uploading ? "Mengunggah gambar..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik balasan...")}
-                    className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-gray-400 outline-none focus:border-amber-500 focus:ring-1 focus:ring-amber-500/30 transition-colors"
+                    className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-2.5 text-sm text-white/90 placeholder-gray-400 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-400/30 transition-colors"
                     maxLength={500}
                     disabled={uploading}
                   />
@@ -2250,8 +2043,6 @@ function ManageLiveChat() {
             <img src={previewImage} alt="Preview" className="max-w-full max-h-[90vh] object-contain rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()} />
           </div>
         </div>
-      )}
-    </div>
       )}
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { X, Send, Minus, ImagePlus, Copy, Check } from "lucide-react";
+import { X, Send, Minus, ImagePlus } from "lucide-react";
 import Image from "next/image";
 import { supabase } from "@/lib/supabase";
 import { usePathname } from "next/navigation";
@@ -77,55 +77,16 @@ export function LiveChat() {
   return <LiveChatInner />;
 }
 
-const renderMessageText = (
-  text: string,
-  msgId?: number | string,
-  copiedId?: number | string | null,
-  handleCopy?: (text: string, id: number | string) => void
-) => {
-  return text.split("\n").map((line, i, arr) => {
+const renderMessageText = (text: string) => {
+  return text.split('\n').map((line, i, arr) => {
     const parts = line.split(/(\*[^*]+\*)/g);
     return (
       <span key={i}>
         {parts.map((part, j) => {
-          if (part.startsWith("*") && part.endsWith("*")) {
-            return (
-              <strong key={j} className="font-bold">
-                {part.slice(1, -1)}
-              </strong>
-            );
+          if (part.startsWith('*') && part.endsWith('*')) {
+            return <strong key={j} className="font-bold">{part.slice(1, -1)}</strong>;
           }
-          
-          if (handleCopy && msgId && /\d{8,}/.test(part)) {
-            const numParts = part.split(/(\d{8,})/g);
-            return (
-              <span key={j}>
-                {numParts.map((sub, k) => {
-                  if (/\d{8,}/.test(sub)) {
-                    const uniqueId = `${msgId}-${sub}-${k}`;
-                    return (
-                      <span key={k} className="inline-flex items-center gap-1.5 align-middle mx-1">
-                        <span className="font-mono text-amber-300 font-semibold tracking-wider">{sub}</span>
-                        <button
-                          onClick={() => handleCopy(sub, uniqueId)}
-                          className="flex items-center gap-1 px-2 py-0.5 bg-[#2a1f18] hover:bg-[#3a2b22] border border-amber-900/50 rounded-md text-[10px] font-semibold text-amber-500 transition-colors"
-                        >
-                          {copiedId === uniqueId ? (
-                            <><Check className="w-3 h-3" /> Disalin</>
-                          ) : (
-                            <><Copy className="w-3 h-3" /> Salin</>
-                          )}
-                        </button>
-                      </span>
-                    );
-                  }
-                  return <span key={k}>{sub}</span>;
-                })}
-              </span>
-            );
-          }
-
-          return <span key={j}>{part}</span>;
+          return part;
         })}
         {i < arr.length - 1 && <br />}
       </span>
@@ -152,27 +113,12 @@ function LiveChatInner() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
-  const [copiedId, setCopiedId] = useState<number | string | null>(null);
-  const [chatSettings, setChatSettings] = useState<{ buy_rate_text: string; sell_rate_text: string; qris_image_url: string } | null>(null);
-  const [quickReplyUsed, setQuickReplyUsed] = useState(false);
-  const [copiedNumber, setCopiedNumber] = useState(false);
-  const [chatMode, setChatMode] = useState<"buy" | "sell" | "jual_akun" | null>(null);
-  const [sellStage, setSellStage] = useState<"idle" | "proof_sent" | "payout_method" | "awaiting_number" | "awaiting_name" | "done">("idle");
-  const [selectedPayoutMethod, setSelectedPayoutMethod] = useState<string | null>(null);
 
   // Listen for custom event to open chat
   useEffect(() => {
     const handleOpenLiveChat = () => setIsOpen(true);
     window.addEventListener("open-livechat", handleOpenLiveChat);
     return () => window.removeEventListener("open-livechat", handleOpenLiveChat);
-  }, []);
-
-  // Fetch chat settings (buy/sell rate text, qris)
-  useEffect(() => {
-    fetch("/api/chat/settings")
-      .then(r => r.json())
-      .then(d => setChatSettings(d))
-      .catch(() => {});
   }, []);
 
   // Restore session from localStorage
@@ -215,8 +161,6 @@ function LiveChatInner() {
         setSessionId(null);
         setNameSubmitted(false);
         setMessages([]);
-        setChatMode(null);
-        setQuickReplyUsed(false);
         return;
       }
       if (session?.status === "blocked") setIsBlocked(true);
@@ -294,164 +238,12 @@ function LiveChatInner() {
       JSON.stringify({ sessionId: sid, customerName: trimmed })
     );
 
-    const greetingMsg = `Halo! 👋 Selamat datang di *Kucai Account*. Mau *jual* atau *beli*?`;
-    
-    // Optimistic UI update
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), session_id: sid, sender: "admin", message: greetingMsg, created_at: new Date().toISOString() }
-    ]);
-
     // Send auto-greeting
     await supabase.from("chat_messages").insert({
       session_id: sid,
       sender: "admin",
-      message: greetingMsg,
+      message: `Halo! 👋 Selamat datang di Kucai Account. Ada yang bisa kami bantu?`,
     });
-  };
-
-  const handleQuickReplyBuy = async () => {
-    if (!sessionId || sending || quickReplyUsed) return;
-    setQuickReplyUsed(true);
-    setChatMode("buy");
-    setSending(true);
-    const buyText = chatSettings?.buy_rate_text || "";
-    const qrisUrl = chatSettings?.qris_image_url || "";
-
-    const newMsgs: any[] = [];
-    newMsgs.push({ id: Date.now(), session_id: sessionId, sender: "customer", message: "🛒 Beli DL/BGL", created_at: new Date().toISOString() });
-    if (buyText) newMsgs.push({ id: Date.now() + 1, session_id: sessionId, sender: "admin", message: buyText, created_at: new Date().toISOString() });
-    if (qrisUrl) newMsgs.push({ id: Date.now() + 2, session_id: sessionId, sender: "admin", message: "Scan QRIS di bawah untuk bayar:", image_url: qrisUrl, created_at: new Date().toISOString() });
-    
-    // Optimistic UI update
-    setMessages((prev) => [...prev, ...newMsgs]);
-
-    // Send customer's choice message
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      sender: "customer",
-      message: "🛒 Beli DL/BGL",
-    });
-
-    // Admin auto-reply: rate text
-    if (buyText) {
-      await supabase.from("chat_messages").insert({
-        session_id: sessionId,
-        sender: "admin",
-        message: buyText,
-      });
-    }
-
-    // Admin auto-reply: QRIS image
-    if (qrisUrl) {
-      await supabase.from("chat_messages").insert({
-        session_id: sessionId,
-        sender: "admin",
-        message: "Scan QRIS di bawah untuk bayar:",
-        image_url: qrisUrl,
-      });
-    }
-
-    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
-    setSending(false);
-  };
-
-  const handleQuickReplySell = async () => {
-    if (!sessionId || sending || quickReplyUsed) return;
-    setQuickReplyUsed(true);
-    setChatMode("sell");
-    setSending(true);
-
-    const sellText = chatSettings?.sell_rate_text || `MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n🌍 WORLD : POSZIO\n🔐 OWNER : deleteALVIN\n\n-> masuk portal <-`;
-    
-    // Optimistic UI update
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), session_id: sessionId, sender: "customer", message: "💰 Jual DL/BGL", created_at: new Date().toISOString() },
-      { id: Date.now() + 1, session_id: sessionId, sender: "admin", message: sellText, created_at: new Date().toISOString() }
-    ]);
-
-    // Customer choice
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      sender: "customer",
-      message: "💰 Jual DL/BGL",
-    });
-
-    // Admin auto-reply
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      sender: "admin",
-      message: sellText,
-    });
-
-    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
-    setSending(false);
-  };
-
-  const handleQuickReplyJualAkun = async () => {
-    if (!sessionId || sending || quickReplyUsed) return;
-    setQuickReplyUsed(true);
-    setChatMode("jual_akun");
-    setSending(true);
-
-    const jualAkunText = `kalau jual akun , silahkan kirim ss spek akunnya :
-・ backpack
-・ playtime hour
-・ supporter / ssupporter
-・ title ( kalau ada )
-・ roles kalau level 5 keatas
-
-kalau beli akun , silahkan klik beli dari website ya 🥰
-
--nanti admin mimin bales secepatnya ditunggu ya 🤗`;
-    
-    // Optimistic UI update
-    setMessages((prev) => [
-      ...prev,
-      { id: Date.now(), session_id: sessionId, sender: "customer", message: "🧑‍💻 Jual Akun", created_at: new Date().toISOString() },
-      { id: Date.now() + 1, session_id: sessionId, sender: "admin", message: jualAkunText, created_at: new Date().toISOString() }
-    ]);
-
-    // Customer choice
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      sender: "customer",
-      message: "🧑‍💻 Jual Akun",
-    });
-
-    // Admin auto-reply
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      sender: "admin",
-      message: jualAkunText,
-    });
-
-    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
-    setSending(false);
-  };
-
-  const copyNumber = (num: string) => {
-    navigator.clipboard.writeText(num).then(() => {
-      setCopiedNumber(true);
-      setTimeout(() => setCopiedNumber(false), 2000);
-    });
-  };
-
-  const sendAdminMsg = async (message: string) => {
-    const optimistic = { id: Date.now() + Math.random(), session_id: sessionId!, sender: "admin", message, created_at: new Date().toISOString() };
-    setMessages(prev => [...prev, optimistic]);
-    await supabase.from("chat_messages").insert({ session_id: sessionId, sender: "admin", message });
-    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
-  };
-
-  const handlePayoutMethod = async (method: string) => {
-    setSelectedPayoutMethod(method);
-    setSellStage("awaiting_number");
-    const customerMsg = { id: Date.now(), session_id: sessionId!, sender: "customer", message: method, created_at: new Date().toISOString() };
-    setMessages(prev => [...prev, customerMsg]);
-    await supabase.from("chat_messages").insert({ session_id: sessionId, sender: "customer", message: method });
-    await sendAdminMsg("Silahkan kirimkan nomor / alamat payoutnya");
   };
 
   const handleSendMessage = async (e: React.FormEvent) => {
@@ -481,30 +273,22 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
             const res = await fetch("/api/chat/upload", { method: "POST", body: formData });
             const result = await res.json();
             if (result.url) {
-              const { error: insertError } = await supabase.from("chat_messages").insert({
+              await supabase.from("chat_messages").insert({
                 session_id: sessionId,
                 sender: "customer",
                 message: i === 0 ? trimmed : "", // Text caption attached to first image
                 image_url: result.url,
               });
-              if (insertError) {
-                alert(`Gagal menyimpan pesan: ${insertError.message}`);
-              }
             } else if (result.error) {
               alert(`Gagal mengirim foto: ${result.error}`);
             }
           } catch (err: any) {
-             alert(`Gagal terhubung ke server saat mengirim foto: ${err.message}`);
+             alert(`Gagal terhubung ke server (foto mungkin terlalu besar): ${err.message}`);
           }
         }
         await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
         setNewMessage("");
         setSelectedFiles([]);
-        if (!quickReplyUsed) setQuickReplyUsed(true);
-        // In sell mode: after photo, trigger payout flow
-        if (chatMode === "sell" && sellStage === "idle") {
-          setSellStage("payout_method");
-        }
       } catch (err: any) {
         alert(`Terjadi kesalahan: ${err.message}`);
       }
@@ -518,49 +302,20 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
       });
       await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
       setNewMessage("");
-      if (!quickReplyUsed) setQuickReplyUsed(true);
-      
-      // Sell stage auto-replies
-      if (chatMode === "sell" && sellStage === "awaiting_number") {
-        setSellStage("awaiting_name");
-        setTimeout(async () => {
-          await sendAdminMsg("Atas nama siapa rekening / e-walletnya?");
-        }, 600);
-      } else if (chatMode === "sell" && sellStage === "awaiting_name") {
-        setSellStage("done");
-        setTimeout(async () => {
-          await sendAdminMsg("Pembayaran sedang di proses\nmohon menunggu 1-10 menit yaa\nThankyou sudah menunggu 🥰✌️");
-        }, 600);
-      }
     }
 
     setSending(false);
     inputRef.current?.focus();
   };
 
-  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (files && files.length > 0) {
       const newFiles = Array.from(files);
       setSelectedFiles(prev => [...prev, ...newFiles]);
-      // In sell mode, don't auto-fill the buy template
-      if (!newMessage.trim() && chatMode !== "sell") {
-        setNewMessage("isi nama world & growidny ya 🙏\nnama world :\nowner :");
-      }
     }
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
-
-  // Safe Auto-submit effect for sell mode
-  useEffect(() => {
-    if (chatMode === "sell" && sellStage === "idle" && selectedFiles.length > 0 && !sending && !uploading) {
-       // Trigger send automatically after state has updated
-       const form = document.getElementById("chat-form") as HTMLFormElement;
-       if (form) {
-         form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
-       }
-    }
-  }, [selectedFiles, chatMode, sellStage, sending, uploading]);
 
   const handleOpen = () => {
     setIsOpen(true);
@@ -593,30 +348,6 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
     if (!isDragging) return;
     setIsDragging(false);
     (e.target as HTMLElement).releasePointerCapture(e.pointerId);
-  };
-
-  const handleCopy = (text: string, id: number | string) => {
-    navigator.clipboard.writeText(text);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 2000);
-  };
-
-  const handleDownloadQR = async (url: string) => {
-    try {
-      const response = await fetch(url);
-      const blob = await response.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const link = document.createElement("a");
-      link.href = blobUrl;
-      link.download = "QRIS_KucaiDL.jpg";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(blobUrl);
-    } catch (err) {
-      console.error("Failed to download image", err);
-      window.open(url, '_blank');
-    }
   };
 
   return (
@@ -717,39 +448,18 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
                     <div
                       className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                         msg.sender === "customer"
-                          ? "bg-amber-600 text-white rounded-br-md"
-                          : "bg-[#1f1611] border border-amber-900/30 text-gray-200 rounded-bl-md"
+                          ? "bg-blue-600 text-white rounded-br-md"
+                          : "bg-white/10 text-gray-200 rounded-bl-md"
                       }`}
                     >
                       {msg.image_url && (
-                        <div className="flex flex-col mb-2">
-                          <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover cursor-pointer" onClick={() => setPreviewImage(msg.image_url || null)} />
-                          {msg.sender === "admin" && (
-                            <div className="w-full flex flex-col gap-1.5 mt-2">
-                              <button
-                                onClick={() => handleDownloadQR(msg.image_url!)}
-                                className="w-full py-2 bg-transparent hover:bg-white/5 border border-white/20 rounded-lg text-white font-semibold text-xs transition-colors"
-                              >
-                                Simpan gambar QR
-                              </button>
-                              <p className="text-[10px] text-gray-400 leading-tight">
-                                Di HP: simpan dulu, lalu pilih dari galeri saat bayar di aplikasi bank/e-wallet.
-                              </p>
-                            </div>
-                          )}
-                        </div>
+                        <img src={msg.image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => setPreviewImage(msg.image_url || null)} />
                       )}
-                      {msg.message && (
-                        <span>
-                          {msg.sender === "admin" 
-                            ? renderMessageText(msg.message, msg.id, copiedId, handleCopy)
-                            : renderMessageText(msg.message)}
-                        </span>
-                      )}
+                      {msg.message && <span>{renderMessageText(msg.message)}</span>}
                       <div
                         className={`text-[10px] mt-1 ${
                           msg.sender === "customer"
-                            ? "text-amber-200"
+                            ? "text-blue-200"
                             : "text-gray-500"
                         }`}
                       >
@@ -764,78 +474,13 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
                 <div ref={messagesEndRef} />
               </div>
 
-              {/* BUY / SELL Quick Buttons — show only if greeting was sent and not yet used */}
-              {!quickReplyUsed && !isBlocked && (
-                <div className="shrink-0 px-3 py-2 flex flex-col gap-2 border-t border-white/10 bg-[#0e0e0e]">
-                  <div className="flex gap-2">
-                    <button
-                      onClick={handleQuickReplyBuy}
-                      disabled={sending}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-amber-600/20 hover:bg-amber-600/40 text-amber-400 border border-amber-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
-                    >
-                      🛒 Beli DL/BGL
-                    </button>
-                    <button
-                      onClick={handleQuickReplySell}
-                      disabled={sending}
-                      className="flex-1 flex items-center justify-center gap-1.5 py-2.5 bg-orange-600/20 hover:bg-orange-600/40 text-orange-400 border border-orange-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
-                    >
-                      💰 Jual DL/BGL
-                    </button>
-                  </div>
-                  <button
-                    onClick={handleQuickReplyJualAkun}
-                    disabled={sending}
-                    className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-blue-600/20 hover:bg-blue-600/40 text-blue-400 border border-blue-600/40 rounded-xl text-sm font-bold transition-all disabled:opacity-50"
-                  >
-                    🧑‍💻 Jual Akun
-                  </button>
-                </div>
-              )}
-
               {/* Input Area */}
               {isBlocked ? (
                 <div className="shrink-0 p-3 border-t border-white/10 text-center">
                   <p className="text-red-400 text-xs font-medium">🚫 Sesi chat ini telah diblokir oleh admin.</p>
                 </div>
               ) : (
-                <div className="shrink-0 flex flex-col border-t border-white/10 bg-[#0e0e0e]">
-                   {/* Payout Method Buttons (sell mode, after proof photo sent) */}
-                   {chatMode === "sell" && sellStage === "payout_method" && (
-                     <div className="px-3 pt-3 pb-1">
-                       <p className="text-xs text-amber-400 font-bold mb-2 flex items-center gap-1.5">
-                         <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse inline-block"></span>
-                         PILIH METODE PAYOUT
-                       </p>
-                       <div className="grid grid-cols-2 gap-2">
-                         {["Gopay", "Dana", "OVO", "ShopeePay", "BCA", "Mandiri", "BRI", "BNI"].map((m) => (
-                           <button
-                             key={m}
-                             type="button"
-                             onClick={() => handlePayoutMethod(m)}
-                             className="py-2.5 px-3 bg-[#1a1a1a] hover:bg-amber-500/20 border border-white/10 hover:border-amber-500/50 rounded-xl text-sm font-semibold text-white/80 hover:text-amber-400 transition-all text-left"
-                           >
-                             {m}
-                           </button>
-                         ))}
-                       </div>
-                     </div>
-                   )}
-
-                  {/* Prominent Upload Proof Button (show after Buy/Sell choice, but not during payout flow) */}
-                  {quickReplyUsed && selectedFiles.length === 0 && (chatMode !== "sell" || sellStage === "idle") && (
-                    <div className="px-3 pt-3">
-                      <button
-                        type="button"
-                        onClick={() => fileInputRef.current?.click()}
-                        className="w-full flex items-center justify-center gap-2 py-3 bg-white/5 hover:bg-white/10 border border-white/10 border-dashed rounded-xl text-gray-300 hover:text-white text-sm font-semibold transition-colors"
-                      >
-                        <ImagePlus className="w-4 h-4" />
-                        {chatMode === "sell" ? "Upload / Pilih Foto Bukti" : chatMode === "jual_akun" ? "Kirim SS Spek Akun" : "Kirim Foto Bukti Transfer"}
-                      </button>
-                    </div>
-                  )}
-
+                <div className="shrink-0 flex flex-col border-t border-white/10">
                   {selectedFiles.length > 0 && (
                     <div className="flex gap-2 p-3 bg-white/5 overflow-x-auto border-b border-white/10">
                       {selectedFiles.map((f, i) => (
@@ -849,47 +494,35 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
                     </div>
                   )}
                   <form
-                    id="chat-form"
                     onSubmit={handleSendMessage}
                     className="p-3 flex items-center gap-2"
                   >
                     <input type="file" ref={fileInputRef} accept="image/*" multiple className="hidden" onChange={handleImageUpload} />
-                    {/* Only show input bar if: no mode selected, or files selected, or sell awaiting text input, or Jual Akun mode */}
-                    {(!quickReplyUsed || chatMode === "jual_akun" || selectedFiles.length > 0 || (chatMode === "sell" && (sellStage === "awaiting_number" || sellStage === "awaiting_name"))) && (
-                      <>
-                        {selectedFiles.length > 0 && (
-                          <button
-                            type="button"
-                            onClick={() => fileInputRef.current?.click()}
-                            disabled={uploading}
-                            className="w-10 h-10 shrink-0 bg-white/10 hover:bg-white/20 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-colors"
-                          >
-                            <ImagePlus className="w-4 h-4" />
-                          </button>
-                        )}
-                        <input
-                          ref={inputRef}
-                          type="text"
-                          value={newMessage}
-                          onChange={(e) => setNewMessage(e.target.value)}
-                          placeholder={
-                            uploading ? "Mengunggah..." :
-                            sellStage === "awaiting_number" ? `Nomor ${selectedPayoutMethod} kamu...` :
-                            sellStage === "awaiting_name" ? "Atas nama..." :
-                            selectedFiles.length > 0 ? "Tambahkan keterangan..." :
-                            "Ketik pesan..."
-                          }
-                          className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
-                        />
-                        <button
-                          type="submit"
-                          disabled={(!newMessage.trim() && selectedFiles.length === 0) || sending || uploading}
-                          className="w-10 h-10 shrink-0 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
-                        >
-                          <Send className="w-4 h-4" />
-                        </button>
-                      </>
-                    )}
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={uploading}
+                      className="w-10 h-10 shrink-0 bg-white/10 hover:bg-white/20 disabled:opacity-50 rounded-xl flex items-center justify-center text-gray-400 hover:text-white transition-colors"
+                    >
+                      <ImagePlus className="w-4 h-4" />
+                    </button>
+                    <input
+                      ref={inputRef}
+                      type="text"
+                      value={newMessage}
+                      onChange={(e) => setNewMessage(e.target.value)}
+                      placeholder={uploading ? "Mengunggah..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik pesan...")}
+                      className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
+                      maxLength={500}
+                      disabled={uploading}
+                    />
+                    <button
+                      type="submit"
+                      disabled={(!newMessage.trim() && selectedFiles.length === 0) || sending || uploading}
+                      className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
+                    >
+                      <Send className="w-4 h-4" />
+                    </button>
                   </form>
                 </div>
               )}
@@ -905,8 +538,8 @@ kalau beli akun , silahkan klik beli dari website ya 🥰
       >
         <div className="absolute inset-0 rounded-[20px] border-2 border-amber-500/40 scale-100 group-hover:scale-105 transition-transform duration-500" />
         <div className="relative z-10 flex flex-col items-end text-right leading-none">
-          <span className="font-black text-[13px] tracking-wide">Jual Akun?</span>
-          <span className="text-[10px] font-bold text-white/90 mt-1 uppercase tracking-wider">Klik Disini</span>
+          <span className="font-black text-[13px] tracking-wide">Live Chat</span>
+          <span className="text-[10px] font-bold text-white/90 mt-1 uppercase tracking-wider">Hubungi Kami</span>
         </div>
         <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Chat" width={36} height={36} className="relative z-10 rounded-full w-9 h-9 object-cover border-2 border-amber-400/50 shadow-md" />
         {unread > 0 && (
