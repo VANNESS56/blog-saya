@@ -131,7 +131,23 @@ export default function JualBeliPage() {
         }
       }).subscribe();
       
-    return () => { supabase.removeChannel(ch); }
+    // Handle tab switching / screen wake up to refetch missing messages
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        supabase.from("chat_messages").select("*").eq("session_id", sessionId).order("created_at", { ascending: true })
+          .then(({ data }) => {
+            if (data && data.length > 0) {
+              setMessages([{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }, ...data]);
+            }
+          });
+      }
+    };
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => { 
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      supabase.removeChannel(ch); 
+    }
   }, [sessionId]);
 
   const handleSelectMode = async (mode: "buy" | "sell") => {
