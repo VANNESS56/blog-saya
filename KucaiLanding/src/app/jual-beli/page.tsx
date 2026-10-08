@@ -236,6 +236,17 @@ export default function JualBeliPage() {
     setMessages([{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }]);
   };
 
+  const formatText = (text: string) => {
+    // Parse *bold*, _italic_, ~strike~
+    let html = text
+      .replace(/\*(.*?)\*/g, "<strong>$1</strong>")
+      .replace(/_(.*?)_/g, "<em>$1</em>")
+      .replace(/~(.*?)~/g, "<del>$1</del>");
+      
+    // Don't replace \n with <br/> if the parent already handles whitespace-pre-wrap or if we split by \n
+    return <span dangerouslySetInnerHTML={{ __html: html }} />;
+  };
+
   const renderMessageText = (msg: Msg) => {
     if (msg.image_url) {
       return (
@@ -297,12 +308,12 @@ export default function JualBeliPage() {
                 </div>
               );
             }
-            return <p key={i} className="min-h-[0.5rem] leading-relaxed">{line}</p>;
+            return <p key={i} className="min-h-[0.5rem] leading-relaxed">{formatText(line)}</p>;
           })}
         </div>
       );
     }
-    return msg.message;
+    return <div className="whitespace-pre-wrap leading-relaxed">{formatText(msg.message)}</div>;
   };
 
   return (
