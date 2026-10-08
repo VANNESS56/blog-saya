@@ -19,6 +19,7 @@ export default function JualBeliPage() {
   const [isFreeChat, setIsFreeChat] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [proofFiles, setProofFiles] = useState<File[]>([]);
+  const [trxMode, setTrxMode] = useState<"buy" | "sell">("buy");
   const [worldName, setWorldName] = useState("");
   const [growId, setGrowId] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -42,6 +43,9 @@ export default function JualBeliPage() {
       setSessionId(saved);
       setShowOptions(localStorage.getItem("kucaidl_options") === "true");
       setIsFreeChat(localStorage.getItem("kucaidl_free") === "true");
+      const savedMode = localStorage.getItem("kucaidl_trxMode");
+      if (savedMode === "sell" || savedMode === "buy") setTrxMode(savedMode);
+      
       supabase.from("chat_messages").select("*").eq("session_id", saved).order("created_at", { ascending: true })
         .then(({ data }) => {
            if (data && data.length > 0) {
@@ -57,6 +61,7 @@ export default function JualBeliPage() {
       localStorage.setItem("kucaidl_session", sessionId);
       localStorage.setItem("kucaidl_options", showOptions ? "true" : "false");
       localStorage.setItem("kucaidl_free", isFreeChat ? "true" : "false");
+      localStorage.setItem("kucaidl_trxMode", trxMode);
     } else {
       localStorage.removeItem("kucaidl_session");
       localStorage.removeItem("kucaidl_options");
@@ -86,6 +91,7 @@ export default function JualBeliPage() {
   const handleSelectMode = async (mode: "buy" | "sell") => {
     setShowOptions(false);
     setIsFreeChat(false);
+    setTrxMode(mode);
 
     let sid = sessionId;
     if (!sid) {
@@ -122,7 +128,7 @@ export default function JualBeliPage() {
 
     const adminReply = mode === "buy"
       ? (jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL")
-      : "Silakan kirimkan screenshot spek akun atau jumlah DL/BGL yang mau dijual ya, admin akan segera merespon! 👇";
+      : "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n🌍 WORLD : POSZIO\n🔐 OWNER : deleteALVIN";
 
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })
@@ -163,7 +169,9 @@ export default function JualBeliPage() {
   const handleSubmitProof = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!sessionId || proofFiles.length === 0) return;
-    if (!worldName.trim() || !growId.trim()) return alert("Nama World dan GrowID wajib diisi!");
+    if (!worldName.trim() || !growId.trim()) {
+      return alert(trxMode === "buy" ? "Nama World dan GrowID wajib diisi!" : "Nomor Rekening dan Atas Nama wajib diisi!");
+    }
 
     setUploading(true);
     let uploadedUrls: string[] = [];
@@ -183,7 +191,9 @@ export default function JualBeliPage() {
       }
     }
 
-    const caption = `World: ${worldName.trim()}\nGrowID: ${growId.trim()}`;
+    const caption = trxMode === "buy"
+      ? `World: ${worldName.trim()}\nGrowID: ${growId.trim()}`
+      : `No Rek/Wallet: ${worldName.trim()}\nAtas Nama: ${growId.trim()}`;
 
     if (uploadedUrls.length > 0) {
       for (let i = 0; i < uploadedUrls.length; i++) {
@@ -374,12 +384,25 @@ export default function JualBeliPage() {
               {proofFiles.length > 0 ? (
                 <form onSubmit={handleSubmitProof} className="bg-[#111928] p-4 rounded-2xl border border-white/5 space-y-3">
                   <p className="text-sm font-semibold text-white/80 mb-2">📸 {proofFiles.length} foto dipilih</p>
-                  <div>
-                    <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
-                  </div>
-                  <div>
-                    <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
-                  </div>
+                  {trxMode === "buy" ? (
+                    <>
+                      <div>
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                      </div>
+                      <div>
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <div>
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                      </div>
+                      <div>
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Atas Nama" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                      </div>
+                    </>
+                  )}
                   <button type="submit" disabled={uploading} className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl text-white text-sm font-bold transition-colors disabled:opacity-50 mt-2">
                     {uploading ? "Mengirim..." : "Kirim Bukti & Data"}
                   </button>

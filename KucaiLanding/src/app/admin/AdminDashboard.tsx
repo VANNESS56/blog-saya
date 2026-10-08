@@ -1752,7 +1752,7 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
            .order("created_at", { ascending: false })
            .limit(10);
            
-         const captionMsg = textMsgs?.find(m => m.message?.includes("World:"));
+         const captionMsg = textMsgs?.find(m => m.message?.includes("World:") || m.message?.includes("No Rek/Wallet:"));
          gridItems.push({
            session: s,
            proofs: recentProofs,
