@@ -174,7 +174,12 @@ export default function JualBeliPage() {
 
   const renderMessageText = (msg: Msg) => {
     if (msg.image_url) {
-       return <img src={msg.image_url} alt="Proof" className="w-full h-auto max-w-[200px] rounded-lg border border-white/10" />;
+       return (
+         <div className="flex flex-col space-y-2">
+           <img src={msg.image_url} alt="Proof" className="w-full h-auto max-w-[200px] rounded-lg border border-white/10" />
+           {msg.message && <p className="whitespace-pre-wrap leading-relaxed text-[13px]">{msg.message}</p>}
+         </div>
+       );
     }
     if (msg.message === "[QRIS_IMAGE]") {
       const handleDownload = () => {
