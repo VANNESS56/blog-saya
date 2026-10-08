@@ -145,6 +145,21 @@ export default function JualBeliPage() {
     setUploading(false);
     setProofFiles([]);
     setIsFreeChat(true); // Unlock chat
+    
+    // Auto replies
+    const { data: reply1 } = await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "admin",
+      message: "Terima kasih! 🙏 Mimin cek transferan kamu dulu ya 🥰"
+    }).select("*").single();
+    if (reply1) setMessages(prev => [...prev, reply1]);
+
+    const { data: reply2 } = await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "admin",
+      message: "Setelah cek  , mimin akan proses drop ke world mu estimasi 1 - 5 menit 🙏\nsesuai antrian ✌️"
+    }).select("*").single();
+    if (reply2) setMessages(prev => [...prev, reply2]);
   };
 
   const handleCancelTransaction = () => {
