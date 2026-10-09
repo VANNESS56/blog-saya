@@ -218,7 +218,12 @@ export default function JualBeliPage() {
       setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
     }
 
-    const adminReply = mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]";
+    const { data: ssData } = await supabase.from("site_settings").select("value").eq("key", "store_status").single();
+    const isStoreClose = ssData && ssData.value === "close";
+
+    const adminReply = isStoreClose 
+      ? "Toko close , nanti di infokan lagi di saluran wa ya"
+      : (mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]");
 
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })
@@ -227,7 +232,7 @@ export default function JualBeliPage() {
     if (replyMsg) {
       setMessages(prev => [...prev, replyMsg]);
 
-      if (mode === "buy") {
+      if (mode === "buy" && !isStoreClose) {
         const { data: qrisMsg } = await supabase.from("chat_messages")
           .insert({ session_id: sid, sender: "admin", message: "[QRIS_IMAGE]" })
           .select("*").single();

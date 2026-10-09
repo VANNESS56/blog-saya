@@ -27,7 +27,7 @@ async function adminUpload(file: File, folder: string): Promise<string | null> {
 }
 
 export function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats" | "kucaidl_settings">("dashboard");
+  const [activeTab, setActiveTab] = useState<"dashboard" | "testimonials" | "reputations" | "settings" | "orders" | "stock" | "products" | "profile" | "theme" | "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats" | "kucaidl_settings" | "kucaidl_operational">("dashboard");
   const [kucaiDLMenuOpen, setKucaiDLMenuOpen] = useState(false);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const router = useRouter();
@@ -300,6 +300,14 @@ export function AdminDashboard() {
                         Settings
                       </button>
                     </li>
+                    <li>
+                      <button suppressHydrationWarning
+                        onClick={() => setActiveTab("kucaidl_operational")}
+                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_operational' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                      >
+                        Operasional Toko
+                      </button>
+                    </li>
                   </ul>
                 )}
               </div>
@@ -351,6 +359,7 @@ export function AdminDashboard() {
             {activeTab === "kucaidl_sell" && <ManageKucaiDLGrid filter="kucaidl_sell" />}
             {activeTab === "kucaidl_chats" && <ManageLiveChat filter="kucaidl_chats" />}
             {activeTab === "kucaidl_settings" && <ManageKucaiDLSettings />}
+            {activeTab === "kucaidl_operational" && <ManageOperationalSettings />}
           </div>
           
           <footer className="mt-12 pb-4">
@@ -1942,6 +1951,61 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
            </div>
         ))}
       </div>
+    </div>
+  );
+}
+
+function ManageOperationalSettings() {
+  const [storeStatus, setStoreStatus] = useState("open");
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("value").eq("key", "store_status").single().then(({ data }) => {
+      if (data) setStoreStatus(data.value);
+    });
+  }, []);
+
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    const { error } = await supabase.from("site_settings").upsert({ key: "store_status", value: storeStatus });
+    setSaving(false);
+    if (error) {
+      Swal.fire("Gagal", "Gagal menyimpan pengaturan toko", "error");
+    } else {
+      Swal.fire("Tersimpan", "Status toko berhasil diubah", "success");
+    }
+  };
+
+  return (
+    <div className="bg-[#140e0b] border border-amber-900/20 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+      <div className="absolute top-0 right-0 p-32 bg-amber-500/5 blur-[120px] rounded-full pointer-events-none" />
+      <h3 className="text-lg font-semibold text-white/90">Pengaturan Operasional Toko</h3>
+      <p className="text-sm text-white/50 mb-6">Atur status buka / tutup toko dan dampaknya ke halaman utama / chat.</p>
+
+      <form onSubmit={handleSave} className="space-y-6 max-w-lg relative z-10">
+        <div>
+          <label className="block text-sm font-medium text-white/70 mb-2">Status Toko</label>
+          <select
+            value={storeStatus}
+            onChange={(e) => setStoreStatus(e.target.value)}
+            className="w-full bg-[#1a120e] border border-amber-900/30 rounded-lg px-4 py-3 text-white outline-none focus:border-amber-500 transition-colors"
+          >
+            <option value="open">🟢 Toko Buka</option>
+            <option value="close">🔴 Toko Tutup</option>
+          </select>
+          <p className="text-xs text-white/50 mt-2">
+            Jika diatur ke <b>Tutup</b>, badge di halaman utama berubah menjadi merah dan bot akan otomatis menolak transaksi (Beli/Jual) di menu Jual-Beli.
+          </p>
+        </div>
+        <button
+          type="submit"
+          disabled={saving}
+          className="bg-amber-600 text-white px-6 py-2.5 rounded shadow-[0_4px_20px_rgba(245,158,11,0.2)] hover:bg-amber-500 transition-colors font-medium text-sm disabled:opacity-50"
+        >
+          {saving ? "Menyimpan..." : "Simpan Status"}
+        </button>
+      </form>
     </div>
   );
 }

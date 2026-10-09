@@ -59,9 +59,17 @@ export function Hero() {
           const bglBuy = pData.find((p: any) => p.type === "bgl")?.price || 0;
           const dlBuy = pData.find((p: any) => p.type === "dl")?.price || 0;
           
+          const fetchSettings = async () => {
+            const { data: ssData } = await supabase.from("site_settings").select("*");
+            if (ssData) {
+              const statusRow = ssData.find((s: any) => s.key === "store_status");
+              setStoreStatus(statusRow?.value === "close" ? "tutup" : "buka");
+            }
+          };
+          fetchSettings();
+
           const configRow = sData.find((s: any) => s.key === "config");
           let bglSell = 0;
-          let shopOpen = true;
           if (configRow?.value) { 
             try { 
               const parsed = JSON.parse(configRow.value);
@@ -71,7 +79,6 @@ export function Hero() {
           }
           const dlSell = Math.floor(bglSell / 100);
           setPrices({ bglBuy, bglSell, dlBuy, dlSell });
-          setStoreStatus(shopOpen ? "buka" : "tutup");
         }
         setLoadingPrices(false);
       };
@@ -80,6 +87,7 @@ export function Hero() {
       const channel = supabase.channel("hero-rates")
         .on("postgres_changes", { event: "*", schema: "public", table: "products" }, fetchRates)
         .on("postgres_changes", { event: "*", schema: "public", table: "settings" }, fetchRates)
+        .on("postgres_changes", { event: "*", schema: "public", table: "site_settings" }, fetchRates)
         .subscribe();
       return () => { supabase.removeChannel(channel); };
     });
@@ -220,12 +228,22 @@ export function Hero() {
                   <p className="text-gray-500 text-[11px]">
                     Rate ini berlaku sementara dan bisa berubah sewaktu-waktu.
                   </p>
-                  <div className="px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 flex items-center gap-1.5 shadow-[0_0_10px_rgba(245,158,11,0.1)]">
-                    <svg className="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="currentColor">
-                      <path fillRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
-                    </svg>
-                    <span className="text-amber-500 font-bold text-[10px] tracking-widest uppercase">
-                      VERIFIED STORE
+                  <div className={`px-4 py-1.5 rounded-full border flex items-center gap-1.5 shadow-[0_0_10px_rgba(0,0,0,0.1)] ${
+                    storeStatus === 'buka' 
+                      ? 'border-emerald-500/30 bg-emerald-500/10 text-emerald-500' 
+                      : 'border-red-500/30 bg-red-500/10 text-red-500'
+                  }`}>
+                    {storeStatus === 'buka' ? (
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
+                        <path fillRule="evenodd" d="M8.603 3.799A4.49 4.49 0 0112 2.25c1.357 0 2.573.6 3.397 1.549a4.49 4.49 0 013.498 1.307 4.491 4.491 0 011.307 3.497A4.49 4.49 0 0121.75 12a4.49 4.49 0 01-1.549 3.397 4.491 4.491 0 01-1.307 3.497 4.491 4.491 0 01-3.497 1.307A4.49 4.49 0 0112 21.75a4.49 4.49 0 01-3.397-1.549 4.49 4.49 0 01-3.498-1.306 4.491 4.491 0 01-1.307-3.498A4.49 4.49 0 012.25 12c0-1.357.6-2.573 1.549-3.397a4.49 4.49 0 011.307-3.497 4.49 4.49 0 013.497-1.307zm7.007 6.387a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clipRule="evenodd" />
+                      </svg>
+                    ) : (
+                      <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                      </svg>
+                    )}
+                    <span className="font-bold text-[10px] tracking-widest uppercase">
+                      {storeStatus === 'buka' ? 'Toko open - order gas' : 'Toko close - tutup'}
                     </span>
                   </div>
                 </div>
