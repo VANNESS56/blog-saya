@@ -245,6 +245,16 @@ export default function InvoiceClient() {
                 <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto mb-4" />
                 <h2 className="text-emerald-400 text-xl font-bold mb-6">Pembayaran Berhasil!</h2>
                 
+                <div className="text-left text-sm text-gray-300 mb-6 bg-black/20 p-4 rounded-lg border border-white/10 space-y-2">
+                  <p className="font-bold text-white mb-2">Apa yang harus dilakuin setelah ini?</p>
+                  <ol className="list-decimal list-outside ml-4 space-y-1">
+                    <li>salin link change gmail yg di kasi , ke google lalu paste . trus masukin nama gmail kamu biar akunnya kesangkut sama gmail kamu , habis tu cek gmail notif</li>
+                    <li>tekan tombol verifikasi (tombol hijau), kalo udah tekan tombol hijau... gausah masukin growid sama email</li>
+                    <li>lalu langsung ganti pw kak. buka google, ketik growtopia change pass , abis tu cek gmail</li>
+                    <li>lalu tinggal login dah</li>
+                  </ol>
+                </div>
+                
                 {credentials ? (
                   <div className="text-left bg-background border border-border rounded-lg p-4">
                     <p className="text-muted-foreground text-sm mb-1 font-bold">Data Akun Anda:</p>
@@ -258,6 +268,11 @@ export default function InvoiceClient() {
                     >
                       <Copy className="w-4 h-4" /> SALIN DATA
                     </button>
+                    <div className="mt-4 text-center text-xs text-muted-foreground">
+                      Ada masalah ? chat admin : <strong className="text-primary">0895-3075-5807</strong>
+                      <br />
+                      <strong className="text-primary">SS HALAMAN INI YA !!</strong>
+                    </div>
                   </div>
                 ) : (
                   <div className="bg-primary/10 border border-primary/30 p-4 rounded-lg text-left">

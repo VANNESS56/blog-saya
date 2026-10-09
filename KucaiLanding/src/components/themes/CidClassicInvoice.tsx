@@ -156,9 +156,20 @@ export default function CidClassicInvoice({ invoice }: { invoice: string }) {
 
             <div className="panel" style={{ padding: '30px', textAlign: 'center' }}>
               {isPaid && (
-                <div className="notice notice-gem" style={{ justifyContent: 'center', marginBottom: '24px' }}>
-                  <b>✓ PEMBAYARAN BERHASIL</b>
-                </div>
+                <>
+                  <div className="notice notice-gem" style={{ justifyContent: 'center', marginBottom: '24px' }}>
+                    <b>✓ PEMBAYARAN BERHASIL</b>
+                  </div>
+                  <div style={{ background: 'var(--surface-2)', padding: '16px', borderRadius: '4px', textAlign: 'left', marginBottom: '24px', border: '1px solid var(--border)' }}>
+                    <p style={{ fontWeight: 'bold', marginBottom: '12px' }}>Apa yang harus dilakuin setelah ini?</p>
+                    <ol style={{ paddingLeft: '20px', margin: 0, fontSize: '13px', color: 'var(--text-dim)', lineHeight: '1.5' }}>
+                      <li style={{ marginBottom: '8px' }}>salin link change gmail yg di kasi , ke google lalu paste . trus masukin nama gmail kamu biar akunnya kesangkut sama gmail kamu , habis tu cek gmail notif</li>
+                      <li style={{ marginBottom: '8px' }}>tekan tombol verifikasi (tombol hijau), kalo udah tekan tombol hijau... gausah masukin growid sama email</li>
+                      <li style={{ marginBottom: '8px' }}>lalu langsung ganti pw kak. buka google, ketik growtopia change pass , abis tu cek gmail</li>
+                      <li>lalu tinggal login dah</li>
+                    </ol>
+                  </div>
+                </>
               )}
               {isExpired && (
                 <div className="notice notice-danger" style={{ justifyContent: 'center', marginBottom: '24px' }}>
@@ -214,6 +225,11 @@ export default function CidClassicInvoice({ invoice }: { invoice: string }) {
                       <button onClick={() => copyToClipboard(credentials)} className="btn btn-gem w-full" style={{ marginTop: '16px' }}>
                         SALIN DATA
                       </button>
+                      <div style={{ marginTop: '16px', textAlign: 'center', fontSize: '12px', color: 'var(--text-dim)' }}>
+                        Ada masalah ? chat admin : <strong style={{ color: 'var(--gem)' }}>0895-3075-5807</strong>
+                        <br />
+                        <strong style={{ color: 'var(--gem)' }}>SS HALAMAN INI YA !!</strong>
+                      </div>
                     </div>
                   ) : (
                     <div className="notice notice-gold" style={{ textAlign: 'left', display: 'block' }}>

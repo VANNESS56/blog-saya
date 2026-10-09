@@ -67,10 +67,17 @@ export function Navbar() {
           {/* Top Links */}
           <div className="hidden lg:flex items-center gap-5 flex-1 ml-6">
             {navLinks.map((link) => (
-              <Link key={link.label} href={link.href} className="flex items-center gap-1.5 text-gray-300 hover:text-white font-medium text-[13px] transition-colors">
-                <link.icon className="w-4 h-4" />
-                {link.label}
-              </Link>
+              link.href === "/jual-beli" ? (
+                <a key={link.label} href={link.href} className="flex items-center gap-1.5 text-gray-300 hover:text-white font-medium text-[13px] transition-colors">
+                  <link.icon className="w-4 h-4" />
+                  {link.label}
+                </a>
+              ) : (
+                <Link key={link.label} href={link.href} className="flex items-center gap-1.5 text-gray-300 hover:text-white font-medium text-[13px] transition-colors">
+                  <link.icon className="w-4 h-4" />
+                  {link.label}
+                </Link>
+              )
             ))}
           </div>
 
@@ -90,12 +97,12 @@ export function Navbar() {
             </div>
 
             {/* CTA */}
-            <Link
+            <a
               href="/jual-beli"
               className="hidden sm:inline-flex items-center justify-center h-[38px] px-6 rounded-lg font-bold text-[13px] text-white bg-gradient-to-b from-amber-500 to-amber-600 hover:brightness-110 transition-all"
             >
               Order Now
-            </Link>
+            </a>
 
             {/* Mobile Toggle */}
             <button
@@ -127,13 +134,13 @@ export function Navbar() {
               ))}
             </div>
 
-            <Link
+            <a
               href="/jual-beli"
               onClick={() => setMobileMenuOpen(false)}
               className="w-full flex items-center justify-center h-[42px] bg-amber-500 text-white rounded-lg font-bold text-[14px]"
             >
               Order Now
-            </Link>
+            </a>
           </div>
         )}
       </header>
