@@ -12,6 +12,9 @@ export function Hero() {
 
   const [gtStats, setGtStats] = useState({ online: "Loading...", wotd: "Loading..." });
   const [punches, setPunches] = useState<{id: number, x: number, y: number}[]>([]);
+  const [prices, setPrices] = useState({ dlBuy: 0, dlSell: 0, bglBuy: 0, bglSell: 0 });
+  const [loadingPrices, setLoadingPrices] = useState(true);
+  const [storeStatus, setStoreStatus] = useState("buka");
 
   const handlePunchAndNavigate = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
     e.preventDefault();
@@ -37,6 +40,40 @@ export function Hero() {
         setGtStats({ online: formattedOnline, wotd: data.wotd });
       })
       .catch(() => setGtStats({ online: "75.000+", wotd: "Harvest Festival" }));
+      
+    // Fetch prices from Supabase
+    import("@/lib/supabase").then(({ supabase }) => {
+      const fetchRates = async () => {
+        const { data: pData } = await supabase.from("products").select("*");
+        const { data: sData } = await supabase.from("settings").select("*");
+        if (pData && sData) {
+          const bglBuy = pData.find((p: any) => p.type === "bgl")?.price || 0;
+          const dlBuy = pData.find((p: any) => p.type === "dl")?.price || 0;
+          
+          const configRow = sData.find((s: any) => s.key === "config");
+          let bglSell = 0;
+          let shopOpen = true;
+          if (configRow?.value) { 
+            try { 
+              const parsed = JSON.parse(configRow.value);
+              bglSell = parsed.sellRate || 0; 
+              if (parsed.storeStatus) shopOpen = parsed.storeStatus === "open";
+            } catch {} 
+          }
+          const dlSell = Math.floor(bglSell / 100);
+          setPrices({ bglBuy, bglSell, dlBuy, dlSell });
+          setStoreStatus(shopOpen ? "buka" : "tutup");
+        }
+        setLoadingPrices(false);
+      };
+      
+      fetchRates();
+      const channel = supabase.channel("hero-rates")
+        .on("postgres_changes", { event: "*", schema: "public", table: "products" }, fetchRates)
+        .on("postgres_changes", { event: "*", schema: "public", table: "settings" }, fetchRates)
+        .subscribe();
+      return () => { supabase.removeChannel(channel); };
+    });
   }, []);
 
   return (
@@ -102,28 +139,67 @@ export function Hero() {
               backgroundImage: "repeating-linear-gradient(118deg, transparent 0 32px, rgba(255,255,255,0.7) 33px 34px)"
             }} />
 
-            {/* Content */}
-            <div className="relative z-10 p-8 md:p-12 lg:p-14 max-w-[640px] flex flex-col justify-center h-full text-white">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-black/20 backdrop-blur-sm border border-white/20 mb-6 w-fit">
-                <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.8)] animate-pulse" />
-                <span className="text-[10px] font-black tracking-[0.16em] uppercase text-white/90">
-                  MARKETPLACE GROWTOPIA | OFFICIAL KUCAIDL WEBSITE
-                </span>
+            {/* Content: Rate Card Style */}
+            <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 md:p-10">
+              
+              {/* Rate Box */}
+              <div className="bg-[#0b101a]/80 backdrop-blur-md border border-white/10 rounded-[20px] p-6 md:p-8 w-full max-w-[560px] shadow-2xl flex flex-col items-center relative mt-6">
+                
+                {/* Title */}
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#121b2b] border border-white/10 px-4 py-1.5 rounded-full whitespace-nowrap">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                    KUCAIDL - HARGA SAAT INI
+                  </span>
+                </div>
+
+                <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10 w-full mt-4">
+                  {/* Icon & Name */}
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="w-24 h-24 relative drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] hover:scale-110 transition-transform duration-500">
+                      <Image src="/dl.png" alt="Diamond Lock" fill className="object-contain" />
+                    </div>
+                    <div className="text-center leading-tight">
+                      <span className="block text-white font-bold text-[13px]">Diamond Lock</span>
+                      <span className="block text-sky-400 font-black text-[11px] uppercase">DL</span>
+                    </div>
+                  </div>
+
+                  {/* Price Boxes */}
+                  <div className="flex gap-4 w-full md:w-auto">
+                    {/* KAMU BELI */}
+                    <div className="flex-1 min-w-[120px] bg-[#121a2f]/50 border border-sky-500/30 hover:border-sky-500/50 transition-colors rounded-[16px] p-4 flex flex-col items-center justify-center text-center">
+                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1.5">Kamu Beli</span>
+                      <span className="text-sky-400 font-black text-2xl drop-shadow-md">
+                        {loadingPrices ? "..." : `Rp${prices.dlBuy}`}
+                      </span>
+                    </div>
+
+                    {/* KAMU JUAL */}
+                    <div className="flex-1 min-w-[120px] bg-[#1a1212]/50 border border-rose-500/30 hover:border-rose-500/50 transition-colors rounded-[16px] p-4 flex flex-col items-center justify-center text-center">
+                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1.5">Kamu Jual</span>
+                      <span className="text-rose-400 font-black text-2xl drop-shadow-md">
+                        {loadingPrices ? "..." : `Rp${prices.dlSell}`}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer Info inside box */}
+                <p className="text-gray-500 text-[10px] mt-8 text-center max-w-[80%]">
+                  Rate ini berlaku sementara dan bisa berubah sewaktu-waktu.
+                </p>
+
+                {/* Store Status Badge */}
+                {storeStatus === "tutup" && (
+                  <div className="mt-4 px-4 py-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
+                    <span className="text-rose-400 text-[10px] font-bold uppercase tracking-widest">Toko tutup sementara</span>
+                  </div>
+                )}
               </div>
 
-              <h1 className="text-[clamp(36px,5.5vw,72px)] font-black leading-[0.95] tracking-[-0.03em] text-white mb-6 drop-shadow-lg">
-                Beli atau Jual
-                <br />
-                <span className="text-amber-100 drop-shadow-[0_0_15px_rgba(255,255,255,0.5)]">BGL & DL</span>
-                <br />
-                dengan Mudah.
-              </h1>
-
-              <p className="text-[15px] leading-[1.7] text-white/90 font-medium max-w-[480px] mb-8 drop-shadow-md">
-                KUCAIDL menyediakan dua cara transaksi. Gunakan checkout website untuk membeli BGL/DL, atau gunakan WhatsApp untuk transaksi beli maupun jual langsung dengan CS kami.
-              </p>
-
-              <div className="flex gap-5 flex-col sm:flex-row">
+              {/* Action Buttons */}
+              <div className="flex gap-4 mt-8 w-full max-w-[560px]">
                 <style>{`
                   @keyframes punchEffect {
                     0% { transform: translate(-50%, -50%) scale(0.5) rotate(-20deg); opacity: 1; }
