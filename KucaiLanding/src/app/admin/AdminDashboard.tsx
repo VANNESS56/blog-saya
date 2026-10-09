@@ -1811,63 +1811,51 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
       .ilike("customer_name", "Customer_%")
       .order("created_at", { ascending: false });
       
-    if (!sessionsData) {
+    if (!sessionsData || sessionsData.length === 0) {
+      setItems([]);
       setLoading(false);
       return;
     }
 
-    const gridItems = [];
-    for (const s of sessionsData) {
-       // Check if it's buy or sell based on the most recent mode selection
-       const { data: firstCustomerMsg } = await supabase
-         .from("chat_messages")
-         .select("message")
-         .eq("session_id", s.id)
-         .eq("sender", "customer")
-         .order("created_at", { ascending: false });
+    const sessionIds = sessionsData.map((s: any) => s.id);
+    
+    // Fetch all customer messages for these sessions at once
+    const { data: allCustomerMsgs } = await supabase
+      .from("chat_messages")
+      .select("*")
+      .eq("sender", "customer")
+      .in("session_id", sessionIds)
+      .order("created_at", { ascending: false });
+
+    const gridItems: any[] = [];
+    if (allCustomerMsgs) {
+      for (const s of sessionsData) {
+         const sessionMsgs = allCustomerMsgs.filter((m: any) => m.session_id === s.id);
          
-       // Find the most recent buy/sell trigger message
-       const modeMsg = firstCustomerMsg?.find(m => m.message.includes("beli DL") || m.message.includes("jual DL"))?.message || "";
-       let isBuy = modeMsg.includes("beli DL");
-       let isSell = modeMsg.includes("jual DL");
-       
-       if (filter === "kucaidl_buy" && !isBuy) continue;
-       if (filter === "kucaidl_sell" && !isSell) continue;
-       
-       // Get proofs
-       const { data: proofs } = await supabase
-         .from("chat_messages")
-         .select("*")
-         .eq("session_id", s.id)
-         .eq("sender", "customer")
-         .not("image_url", "is", null)
-         .order("created_at", { ascending: false });
+         // Find the most recent buy/sell trigger message
+         const modeMsg = sessionMsgs.find((m: any) => m.message?.includes("beli DL") || m.message?.includes("jual DL"))?.message || "";
+         let isBuy = modeMsg.includes("beli DL");
+         let isSell = modeMsg.includes("jual DL");
          
-       if (proofs && proofs.length > 0) {
-         // The proofs might contain multiple transactions, we only want the most recent batch.
-         // Let's just group by time or take the latest proofs within 5 minutes.
-         // A simpler way: just take the most recent proof and any others near it, or just show all proofs for this session.
-         // To avoid showing old proofs, we can filter proofs that happened after the most recent modeMsg.
-         // Actually, if we just order ascending for display:
-         const recentProofs = proofs.slice(0, 2); // just take max 2 most recent
+         if (filter === "kucaidl_buy" && !isBuy) continue;
+         if (filter === "kucaidl_sell" && !isSell) continue;
          
-         const { data: textMsgs } = await supabase
-           .from("chat_messages")
-           .select("*")
-           .eq("session_id", s.id)
-           .eq("sender", "customer")
-           .order("created_at", { ascending: false })
-           .limit(10);
+         const proofs = sessionMsgs.filter((m: any) => m.image_url);
+         
+         if (proofs.length > 0) {
+           const recentProofs = proofs.slice(0, 2); // just take max 2 most recent
+           const captionMsg = sessionMsgs.find((m: any) => m.message?.includes("World:") || m.message?.includes("No Rek/Wallet:"));
            
-         const captionMsg = textMsgs?.find(m => m.message?.includes("World:") || m.message?.includes("No Rek/Wallet:"));
-         gridItems.push({
-           session: s,
-           proofs: recentProofs,
-           caption: captionMsg ? captionMsg.message : "Data tidak tersedia",
-           time: new Date(recentProofs[0].created_at).toLocaleString('id-ID')
-         });
-       }
+           gridItems.push({
+             session: s,
+             proofs: recentProofs,
+             caption: captionMsg ? captionMsg.message : "Data tidak tersedia",
+             time: new Date(recentProofs[0].created_at).toLocaleString('id-ID')
+           });
+         }
+      }
     }
+    
     setItems(gridItems);
     setLoading(false);
   }, [filter]);
