@@ -373,17 +373,17 @@ export default function JualBeliPage() {
   };
 
   const renderMessageText = (msg: Msg, msgIdx: number) => {
-    let safeMessage = msg.message || "";
+    let displayMessage = msg.message || "";
 
     if (msg.image_url) {
       return (
         <div className="flex flex-col space-y-2">
           <img src={msg.image_url} alt="Proof" className="w-full h-auto max-w-[200px] rounded-lg border border-white/10" />
-          {safeMessage && <p className="whitespace-pre-wrap leading-relaxed text-[13px]">{safeMessage}</p>}
+          {displayMessage && <p className="whitespace-pre-wrap leading-relaxed text-[13px]">{displayMessage}</p>}
         </div>
       );
     }
-    if (safeMessage === "[QRIS_IMAGE]") {
+    if (displayMessage === "[QRIS_IMAGE]") {
       const handleDownload = () => {
         const link = document.createElement("a");
         link.href = "/qris.jpg";
@@ -416,8 +416,8 @@ export default function JualBeliPage() {
 
     // Dynamically replace promo messages with the latest admin settings
     if (msg.sender === "admin") {
-      let isBuyPromo = safeMessage === "[PROMO_BELI]" || safeMessage.includes("Rate beli ke KucaiDL") || safeMessage.includes("Payment transfer ke ewallet");
-      let isSellPromo = safeMessage === "[PROMO_JUAL]" || safeMessage.includes("MINIM SELL") || safeMessage.includes("Rate Jual ke KucaiDL");
+      let isBuyPromo = displayMessage === "[PROMO_BELI]" || displayMessage.includes("Rate beli ke KucaiDL") || displayMessage.includes("Payment transfer ke ewallet");
+      let isSellPromo = displayMessage === "[PROMO_JUAL]" || displayMessage.includes("MINIM SELL") || displayMessage.includes("Rate Jual ke KucaiDL");
       
       // Fallback: reliably identify legacy promo messages based on the previous message
       if (!isBuyPromo && !isSellPromo && msgIdx > 0) {
@@ -429,13 +429,13 @@ export default function JualBeliPage() {
       }
 
       if (isBuyPromo) {
-        safeMessage = jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL";
+        displayMessage = jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL";
       } else if (isSellPromo) {
-        safeMessage = sellReply || "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]";
+        displayMessage = sellReply || "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]";
       }
     }
-    if (msg.sender === "admin" && safeMessage.includes("=")) {
-      const lines = safeMessage.split("\n");
+    if (msg.sender === "admin" && displayMessage.includes("=")) {
+      const lines = displayMessage.split("\n");
       return (
         <div className="space-y-1">
           {lines.map((line, i) => {
@@ -467,12 +467,12 @@ export default function JualBeliPage() {
       );
     }
 
-    if (safeMessage.includes("[WORLD_CARD:")) {
+    if (displayMessage.includes("[WORLD_CARD:")) {
       const worldCardRegex = /\[WORLD_CARD:(.*?)\|(.*?)\]/;
-      const match = safeMessage.match(worldCardRegex);
+      const match = displayMessage.match(worldCardRegex);
       if (match) {
-        const before = safeMessage.slice(0, match.index);
-        const after = safeMessage.slice(match.index! + match[0].length);
+        const before = displayMessage.slice(0, match.index);
+        const after = displayMessage.slice(match.index! + match[0].length);
         const world = match[1];
         const owner = match[2];
         const copyText = `World: ${world} | Owner: ${owner}`;
@@ -494,7 +494,7 @@ export default function JualBeliPage() {
       }
     }
 
-    return <div className="whitespace-pre-wrap leading-relaxed">{formatText(safeMessage)}</div>;
+    return <div className="whitespace-pre-wrap leading-relaxed">{formatText(displayMessage)}</div>;
   };
 
   return (
