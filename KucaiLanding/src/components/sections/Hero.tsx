@@ -132,15 +132,6 @@ export function Hero() {
             {/* Content: Rate Card Style */}
             <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 md:p-10">
               
-              {/* Rate Box */}
-              <div className="bg-[#151b23] border border-white/5 rounded-[24px] p-8 w-full max-w-[640px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col items-center relative mt-8">
-                
-                {/* Title */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1c2431] border border-white/10 px-5 py-1.5 rounded-full whitespace-nowrap">
-                  <span className="text-[11px] font-bold text-gray-300 tracking-widest uppercase">
-                    KUCAIDL · HARGA SAAT INI
-                  </span>
-                </div>
 
               {/* Rate Box */}
               <div className="relative bg-[#101010] border border-amber-500 rounded-[24px] p-6 md:p-8 w-full max-w-[800px] shadow-[0_0_40px_rgba(245,158,11,0.15)] flex flex-col mt-10 overflow-hidden">
