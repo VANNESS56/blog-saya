@@ -143,41 +143,41 @@ export function Hero() {
             <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 md:p-10">
               
               {/* Rate Box */}
-              <div className="bg-[#0b101a]/80 backdrop-blur-md border border-white/10 rounded-[20px] p-6 md:p-8 w-full max-w-[560px] shadow-2xl flex flex-col items-center relative mt-6">
+              <div className="bg-[#151b23] border border-white/5 rounded-[24px] p-8 w-full max-w-[640px] shadow-[0_20px_50px_rgba(0,0,0,0.5)] flex flex-col items-center relative mt-8">
                 
                 {/* Title */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#121b2b] border border-white/10 px-4 py-1.5 rounded-full whitespace-nowrap">
-                  <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                    KUCAIDL - HARGA SAAT INI
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#1c2431] border border-white/10 px-5 py-1.5 rounded-full whitespace-nowrap">
+                  <span className="text-[11px] font-bold text-gray-300 tracking-widest uppercase">
+                    KUCAIDL · HARGA SAAT INI
                   </span>
                 </div>
 
-                <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-10 w-full mt-4">
+                <div className="flex flex-col md:flex-row items-center justify-between w-full mt-4 gap-8 md:gap-4">
                   {/* Icon & Name */}
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="w-24 h-24 relative drop-shadow-[0_0_15px_rgba(255,255,255,0.15)] hover:scale-110 transition-transform duration-500">
+                  <div className="flex items-center gap-4 md:w-1/3">
+                    <div className="w-20 h-20 relative drop-shadow-[0_0_15px_rgba(255,255,255,0.15)]">
                       <Image src="/dl.png" alt="Diamond Lock" fill className="object-contain" />
                     </div>
-                    <div className="text-center leading-tight">
-                      <span className="block text-white font-bold text-[13px]">Diamond Lock</span>
-                      <span className="block text-sky-400 font-black text-[11px] uppercase">DL</span>
+                    <div className="flex flex-col">
+                      <span className="text-white font-bold text-[16px]">Diamond Lock</span>
+                      <span className="text-gray-500 font-medium text-[14px]">DL</span>
                     </div>
                   </div>
 
                   {/* Price Boxes */}
-                  <div className="flex gap-4 w-full md:w-auto">
+                  <div className="flex gap-4 w-full md:w-2/3 justify-end">
                     {/* KAMU BELI */}
-                    <div className="flex-1 min-w-[120px] bg-[#121a2f]/50 border border-sky-500/30 hover:border-sky-500/50 transition-colors rounded-[16px] p-4 flex flex-col items-center justify-center text-center">
-                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1.5">Kamu Beli</span>
-                      <span className="text-sky-400 font-black text-2xl drop-shadow-md">
+                    <div className="flex-1 max-w-[160px] bg-transparent border border-[#1e3a8a] rounded-[16px] p-4 flex flex-col items-center justify-center text-center">
+                      <span className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-2">KAMU BELI</span>
+                      <span className="text-[#38bdf8] font-bold text-3xl">
                         {loadingPrices ? "..." : `Rp${prices.dlBuy}`}
                       </span>
                     </div>
 
                     {/* KAMU JUAL */}
-                    <div className="flex-1 min-w-[120px] bg-[#1a1212]/50 border border-rose-500/30 hover:border-rose-500/50 transition-colors rounded-[16px] p-4 flex flex-col items-center justify-center text-center">
-                      <span className="text-[10px] text-gray-400 font-bold uppercase tracking-wider mb-1.5">Kamu Jual</span>
-                      <span className="text-rose-400 font-black text-2xl drop-shadow-md">
+                    <div className="flex-1 max-w-[160px] bg-transparent border border-[#7f1d1d] rounded-[16px] p-4 flex flex-col items-center justify-center text-center">
+                      <span className="text-[11px] text-gray-400 font-semibold uppercase tracking-wider mb-2">KAMU JUAL</span>
+                      <span className="text-[#38bdf8] font-bold text-3xl">
                         {loadingPrices ? "..." : `Rp${prices.dlSell}`}
                       </span>
                     </div>
@@ -185,17 +185,17 @@ export function Hero() {
                 </div>
 
                 {/* Footer Info inside box */}
-                <p className="text-gray-500 text-[10px] mt-8 text-center max-w-[80%]">
+                <p className="text-gray-400/80 text-[12px] mt-10 text-center">
                   Rate ini berlaku sementara dan bisa berubah sewaktu-waktu.
                 </p>
 
                 {/* Store Status Badge */}
-                {storeStatus === "tutup" && (
-                  <div className="mt-4 px-4 py-1.5 rounded-full border border-rose-500/30 bg-rose-500/10 flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-                    <span className="text-rose-400 text-[10px] font-bold uppercase tracking-widest">Toko tutup sementara</span>
-                  </div>
-                )}
+                <div className="mt-5 px-5 py-2 rounded-full border border-[#1e3a8a] bg-[#0f172a] flex items-center gap-2">
+                  <span className={`w-2 h-2 rounded-full ${storeStatus === "buka" ? "bg-emerald-500" : "bg-rose-500"} animate-pulse`} />
+                  <span className="text-gray-300 text-[12px] font-medium">
+                    {storeStatus === "buka" ? "Toko buka — order diproses bot" : "Toko tutup — offline sementara"}
+                  </span>
+                </div>
               </div>
 
               {/* Action Buttons */}
