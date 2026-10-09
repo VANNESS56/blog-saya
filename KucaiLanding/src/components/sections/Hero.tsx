@@ -15,6 +15,14 @@ export function Hero() {
   const [prices, setPrices] = useState({ dlBuy: 0, dlSell: 0, bglBuy: 0, bglSell: 0 });
   const [loadingPrices, setLoadingPrices] = useState(true);
   const [storeStatus, setStoreStatus] = useState("buka");
+  const [activeRate, setActiveRate] = useState<"DL" | "BGL">("DL");
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setActiveRate(prev => prev === "DL" ? "BGL" : "DL");
+    }, 4000);
+    return () => clearInterval(interval);
+  }, []);
 
   const handlePunchAndNavigate = (e: React.MouseEvent<HTMLAnchorElement>, url: string) => {
     e.preventDefault();
@@ -108,26 +116,28 @@ export function Hero() {
                 </div>
 
                 {/* Title Pill */}
-                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#101010] border border-amber-500 px-6 py-1.5 rounded-full whitespace-nowrap shadow-[0_0_15px_rgba(245,158,11,0.3)] z-10">
+                <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#101010] border border-amber-500 px-6 py-1.5 rounded-full whitespace-nowrap shadow-[0_0_15px_rgba(245,158,11,0.3)] z-10 transition-all duration-300">
                   <span className="text-[16px] font-black text-amber-500 tracking-[0.2em] uppercase flex items-center gap-3">
                     <span className="w-3 h-[2px] bg-amber-500"></span>
-                    KUCAI DL
+                    KUCAI {activeRate}
                     <span className="w-3 h-[2px] bg-amber-500"></span>
                   </span>
                 </div>
 
-                <div className="flex flex-col md:flex-row items-center justify-between w-full mt-4 gap-6 relative z-10">
+                <div key={activeRate} className="flex flex-col md:flex-row items-center justify-between w-full mt-4 gap-6 relative z-10 animate-[fadeIn_0.5s_ease-out]">
                   {/* Icon */}
                   <div className="flex items-center justify-center md:w-[30%]">
                     <div className="w-[140px] h-[140px] md:w-[180px] md:h-[180px] relative drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">
-                      <Image src="/dl.png" alt="Diamond Lock" fill className="object-contain" />
+                      <Image src={activeRate === "DL" ? "/dl.png" : "/bgl.png"} alt={activeRate === "DL" ? "Diamond Lock" : "Blue Gem Lock"} fill className="object-contain" />
                     </div>
                   </div>
 
                   {/* Right Side Content */}
                   <div className="flex flex-col w-full md:w-[70%] gap-4">
                     <div className="flex flex-col mb-1 text-center md:text-left">
-                      <h2 className="text-white font-bold text-[22px] tracking-wide">Diamond Lock <span className="text-gray-500 font-medium">DL</span></h2>
+                      <h2 className="text-white font-bold text-[22px] tracking-wide">
+                        {activeRate === "DL" ? "Diamond Lock" : "Blue Gem Lock"} <span className="text-gray-500 font-medium">{activeRate}</span>
+                      </h2>
                     </div>
 
                     {/* Price Boxes */}
@@ -136,7 +146,7 @@ export function Hero() {
                       <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
                         <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU BELI</span>
                         <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
-                          {loadingPrices ? "..." : `Rp${prices.dlBuy}`}
+                          {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlBuy : prices.bglBuy}`}
                         </span>
                       </div>
 
@@ -144,15 +154,15 @@ export function Hero() {
                       <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
                         <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU JUAL</span>
                         <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
-                          {loadingPrices ? "..." : `Rp${prices.dlSell}`}
+                          {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlSell : prices.bglSell}`}
                         </span>
                       </div>
                     </div>
 
                     {/* Action Buttons */}
                     <div className="flex gap-4 w-full mt-2">
-                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
-                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
+                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20${activeRate}`}
+                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20${activeRate}`)}
                         className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#ffd000] to-[#f59e0b] shadow-[inset_0_2px_2px_rgba(255,255,255,0.5),inset_0_-4px_4px_rgba(0,0,0,0.15),0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/20">
                         
                         {punches.map(p => (
@@ -165,15 +175,15 @@ export function Hero() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
                         </div>
                         <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                          BELI DL
+                          BELI {activeRate}
                         </div>
                         <div className="text-black shrink-0 relative z-10">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                         </div>
                       </a>
 
-                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
-                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
+                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20${activeRate}`}
+                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20${activeRate}`)}
                         className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] shadow-[inset_0_2px_2px_rgba(255,255,255,0.4),inset_0_-4px_4px_rgba(0,0,0,0.2),0_0_20px_rgba(234,88,12,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/10">
                         
                         {punches.map(p => (
@@ -186,7 +196,7 @@ export function Hero() {
                           <span className="font-black text-[16px]">$</span>
                         </div>
                         <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                          JUAL DL
+                          JUAL {activeRate}
                         </div>
                         <div className="text-black shrink-0 relative z-10">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
