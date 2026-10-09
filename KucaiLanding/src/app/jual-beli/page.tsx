@@ -34,11 +34,13 @@ export default function JualBeliPage() {
   const [searchPayment, setSearchPayment] = useState("");
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [savedPayouts, setSavedPayouts] = useState<SavedPayout[]>([]);
+  const [mounted, setMounted] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    setMounted(true);
     const saved = localStorage.getItem("kucaidl_saved_payouts");
     if (saved) {
       try { setSavedPayouts(JSON.parse(saved)); } catch (e) {}
@@ -475,8 +477,8 @@ export default function JualBeliPage() {
                   : "bg-[#162032] text-gray-100 rounded-bl-sm border border-white/5"
                 }`}>
                 {renderMessageText(msg)}
-                <div className={`absolute bottom-1.5 right-3 text-[10px] ${msg.sender === "customer" ? "text-white/70" : "text-white/40"}`}>
-                  {msg.created_at ? new Date(msg.created_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                <div suppressHydrationWarning className={`absolute bottom-1.5 right-3 text-[10px] ${msg.sender === "customer" ? "text-white/70" : "text-white/40"}`}>
+                  {mounted ? (msg.created_at ? new Date(msg.created_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })) : ""}
                 </div>
               </div>
             </div>
