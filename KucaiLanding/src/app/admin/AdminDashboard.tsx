@@ -64,7 +64,10 @@ export function AdminDashboard() {
       for (const session of sessionsData) {
         const msgs = (session.chat_messages as any[]) || [];
         if (msgs.length === 0) continue;
-        const lastMsg = msgs[0];
+        
+        // Sort in memory to guarantee we have the newest message first
+        const sortedMsgs = [...msgs].sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        const lastMsg = sortedMsgs[0];
         
         // If last message is from admin, it's read
         if (lastMsg.sender === "admin") continue;
@@ -78,8 +81,8 @@ export function AdminDashboard() {
         if (!session.customer_name?.startsWith("Customer_")) {
           livechat++;
         } else {
-          // get the first message to know if it's buy or sell
-          const firstCustomerMsg = msgs.slice().reverse().find(m => m.sender === "customer");
+          // get the first message to know if it's buy or sell (oldest customer message)
+          const firstCustomerMsg = sortedMsgs.slice().reverse().find(m => m.sender === "customer");
           const msgText = firstCustomerMsg?.message || "";
           if (msgText.includes("beli DL")) {
             buy++;
