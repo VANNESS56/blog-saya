@@ -2335,8 +2335,11 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
                                       <div className="text-xs text-white/80">
                                         ‼️ <strong>QRIS untuk tf dari bank yg ga bisa tf ke e-wallet</strong><br/>
                                         ‼️ <strong>QRIS untuk tf dari Ewallet yg belum premium</strong>
+                                        <br/><br/>
+                                        <span className="text-amber-400">✔</span> Pembelian di bawah 100k gratis tax .<br/>
+                                        <span className="text-amber-400">✔</span> Biaya 1% jika pembelian di atas 500k .
                                       </div>
-                                      <div className="bg-white rounded p-1 max-w-[200px]">
+                                      <div className="bg-white rounded p-1 w-[120px]">
                                         <img src="/qris.jpg" alt="QRIS" className="w-full h-auto rounded" />
                                       </div>
                                     </div>
