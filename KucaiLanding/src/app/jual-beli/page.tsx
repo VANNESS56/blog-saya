@@ -534,13 +534,23 @@ export default function JualBeliPage() {
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
-          <div className="text-center pb-2">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 relative">
+          {/* Wallpaper Layer */}
+          <div 
+            className="absolute inset-0 z-0 opacity-[0.15] pointer-events-none" 
+            style={{ 
+              backgroundImage: "url('/wa-bg.png')", 
+              backgroundRepeat: "repeat",
+              backgroundSize: "400px",
+              backgroundAttachment: "local"
+            }} 
+          />
+          <div className="relative z-10 text-center pb-2">
             <span className="bg-blue-900/20 text-blue-200/50 text-[10px] font-medium px-3 py-1 rounded-full">Hari ini</span>
           </div>
 
           {messages.map((msg, idx) => (
-            <div key={msg.id || idx} className={`flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
+            <div key={msg.id || idx} className={`relative z-10 flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
               <div className={`relative max-w-[85%] md:max-w-[75%] px-4 pt-3 pb-6 rounded-[20px] text-sm leading-relaxed shadow-sm ${msg.sender === "customer"
                   ? "bg-[#0088cc] text-white rounded-br-sm"
                   : "bg-[#202c33] text-gray-100 rounded-bl-sm border border-white/5"
