@@ -493,21 +493,21 @@ export default function JualBeliPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#070b14] flex justify-center">
-      <div className="w-full max-w-2xl bg-[#0a0f1c] flex flex-col min-h-screen relative shadow-2xl md:border-x border-white/5">
+    <div className="min-h-screen bg-[#0c0805] flex justify-center">
+      <div className="w-full max-w-2xl bg-[#140e0b] flex flex-col min-h-screen relative shadow-2xl md:border-x border-amber-900/20">
 
         {/* Header */}
-        <div className="flex items-center gap-4 px-5 py-4 border-b border-white/5 bg-[#0d1424]/95 backdrop-blur-md sticky top-0 z-10">
-          <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-white/5 -ml-2">
+        <div className="flex items-center gap-4 px-5 py-4 border-b border-amber-900/20 bg-[#140e0b]/95 backdrop-blur-md sticky top-0 z-10">
+          <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-amber-900/20 -ml-2">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border border-white/10">
+          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border border-amber-900/30">
             <img src="/kucaidl-profile.jpg" className="w-full h-full object-cover" alt="Kucai DL" />
           </div>
           <div>
             <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
-            <p className="text-emerald-400 text-xs flex items-center gap-1.5 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]" /> Online
+            <p className="text-amber-400 text-xs flex items-center gap-1.5 mt-0.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)]" /> Online
             </p>
           </div>
         </div>
@@ -515,14 +515,14 @@ export default function JualBeliPage() {
         {/* Chat Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           <div className="text-center pb-2">
-            <span className="bg-white/5 text-white/40 text-[10px] font-medium px-3 py-1 rounded-full">Hari ini</span>
+            <span className="bg-amber-900/20 text-amber-200/50 text-[10px] font-medium px-3 py-1 rounded-full">Hari ini</span>
           </div>
 
           {messages.map((msg, idx) => (
             <div key={msg.id || idx} className={`flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
               <div className={`relative max-w-[85%] md:max-w-[75%] px-4 pt-3 pb-6 rounded-[20px] text-sm leading-relaxed shadow-sm ${msg.sender === "customer"
                   ? "bg-amber-600 text-white rounded-br-sm"
-                  : "bg-[#162032] text-gray-100 rounded-bl-sm border border-white/5"
+                  : "bg-[#1a120e] text-gray-100 rounded-bl-sm border border-amber-900/20"
                 }`}>
                 {renderMessageText(msg, idx)}
                 <div suppressHydrationWarning className={`absolute bottom-1.5 right-3 text-[10px] ${msg.sender === "customer" ? "text-white/70" : "text-white/40"}`}>
@@ -538,13 +538,13 @@ export default function JualBeliPage() {
         </div>
 
         {/* Input Area / Keyboard Options */}
-        <div className="p-4 bg-[#0d1424] border-t border-white/5 sticky bottom-0 z-10">
+        <div className="p-4 bg-[#140e0b] border-t border-amber-900/20 sticky bottom-0 z-10">
           {showOptions ? (
             <div className="flex gap-2 w-full max-w-4xl mx-auto">
-              <button onClick={() => handleSelectMode("buy")} className="flex-1 py-4 bg-[#1e2b40] hover:bg-[#25354e] border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button onClick={() => handleSelectMode("buy")} className="flex-1 py-4 bg-[#1a120e] hover:bg-amber-900/30 border border-amber-900/30 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
                 🛒 Beli DL/BGL
               </button>
-              <button onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#1e2b40] hover:bg-[#25354e] border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#1a120e] hover:bg-amber-900/30 border border-amber-900/30 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
                 💰 Jual DL/BGL
               </button>
             </div>
@@ -556,24 +556,24 @@ export default function JualBeliPage() {
                   {trxMode === "buy" ? (
                     <>
                       <div>
-                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                       <div>
-                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="relative">
                          <div 
-                           className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors cursor-pointer flex justify-between items-center"
+                           className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors cursor-pointer flex justify-between items-center"
                            onClick={() => setShowPaymentOptions(!showPaymentOptions)}
                          >
                            <span className={paymentMethod ? "text-white" : "text-white/50"}>{paymentMethod || "Pilih Metode Pembayaran"}</span>
                            <span className="text-white/30 text-xs">▼</span>
                          </div>
                          {showPaymentOptions && (
-                           <div className="absolute bottom-[calc(100%+8px)] left-0 w-full bg-[#1e2b40] border border-white/10 rounded-xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] overflow-hidden z-20">
+                           <div className="absolute bottom-[calc(100%+8px)] left-0 w-full bg-[#1a120e] border border-amber-900/30 rounded-xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] overflow-hidden z-20">
                              <input 
                                type="text" 
                                value={searchPayment} 
@@ -632,10 +632,10 @@ export default function JualBeliPage() {
                          )}
                       </div>
                       <div>
-                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                       <div>
-                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Atas Nama" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Atas Nama" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                     </>
                   )}
@@ -666,7 +666,7 @@ export default function JualBeliPage() {
                 onChange={e => setInput(e.target.value)}
                 disabled={!sessionId}
                 placeholder="Ketik pesan..."
-                className="flex-1 bg-[#162032] border border-white/10 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 focus:bg-[#1a263a] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+                className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 focus:bg-[#1e150f] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
               />
               <button
                 type="submit"
