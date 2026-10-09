@@ -119,7 +119,7 @@ export function Hero() {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#101010] border border-amber-500 px-6 py-1.5 rounded-full whitespace-nowrap shadow-[0_0_15px_rgba(245,158,11,0.3)] z-10 transition-all duration-300">
                   <span className="text-[16px] font-black text-amber-500 tracking-[0.2em] uppercase flex items-center gap-3">
                     <span className="w-3 h-[2px] bg-amber-500"></span>
-                    KUCAI{activeRate}
+                    KUCAIDL
                     <span className="w-3 h-[2px] bg-amber-500"></span>
                   </span>
                 </div>
@@ -161,8 +161,8 @@ export function Hero() {
 
                     {/* Action Buttons */}
                     <div className="flex gap-4 w-full mt-2">
-                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20${activeRate}`}
-                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20${activeRate}`)}
+                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
+                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
                         className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#ffd000] to-[#f59e0b] shadow-[inset_0_2px_2px_rgba(255,255,255,0.5),inset_0_-4px_4px_rgba(0,0,0,0.15),0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/20">
                         
                         {punches.map(p => (
@@ -175,15 +175,15 @@ export function Hero() {
                           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
                         </div>
                         <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                          BELI {activeRate}
+                          BELI DL
                         </div>
                         <div className="text-black shrink-0 relative z-10">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                         </div>
                       </a>
 
-                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20${activeRate}`}
-                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20${activeRate}`)}
+                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
+                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
                         className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] shadow-[inset_0_2px_2px_rgba(255,255,255,0.4),inset_0_-4px_4px_rgba(0,0,0,0.2),0_0_20px_rgba(234,88,12,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/10">
                         
                         {punches.map(p => (
@@ -196,7 +196,7 @@ export function Hero() {
                           <span className="font-black text-[16px]">$</span>
                         </div>
                         <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                          JUAL {activeRate}
+                          JUAL DL
                         </div>
                         <div className="text-black shrink-0 relative z-10">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
