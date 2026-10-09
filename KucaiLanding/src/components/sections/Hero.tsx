@@ -128,17 +128,7 @@ export function Hero() {
 
         <div className="flex justify-center w-full">
           {/* Main Banner */}
-          <div className="relative w-full max-w-[800px] min-h-[440px] lg:min-h-[500px] rounded-[24px] overflow-hidden glass-card !border-amber-400/40 shadow-[0_22px_70px_rgba(245,158,11,0.2)]">
-            {/* Bright Patterned Background */}
-            <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-amber-500 to-orange-500" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.4),transparent_60%)]" />
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_80%,rgba(255,255,255,0.2),transparent_50%)]" />
-
-            {/* Tokodl-style diagonal repeating lines */}
-            <div className="absolute inset-0 opacity-40 mix-blend-overlay" style={{
-              backgroundImage: "repeating-linear-gradient(118deg, transparent 0 32px, rgba(255,255,255,0.7) 33px 34px)"
-            }} />
-
+          <div className="relative w-full flex flex-col items-center justify-center min-h-[400px] lg:min-h-[500px]">
             {/* Content: Rate Card Style */}
             <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 md:p-10">
               
@@ -257,16 +247,7 @@ export function Hero() {
               </div>
             </div>
 
-            {/* Floating items */}
-            <div className="absolute z-[2] right-[-5%] bottom-[-5%] w-[min(55%,400px)] pointer-events-none opacity-20 mix-blend-overlay rotate-[-5deg]">
-              <Image src="/logo.png" alt="KUCAIDL" width={400} height={400} />
-            </div>
-            <div className="absolute z-[3] right-[5%] top-[10%] w-[110px] pointer-events-none" style={{ animation: "float 6s ease-in-out infinite" }}>
-              <Image src="/bgl.png" alt="BGL" width={110} height={110} className="drop-shadow-[0_20px_30px_rgba(0,0,0,0.4)] rotate-[8deg]" />
-            </div>
-            <div className="absolute z-[3] right-[30%] bottom-[12%] w-[90px] pointer-events-none" style={{ animation: "float 6s ease-in-out infinite 2s" }}>
-              <Image src="/dl.png" alt="DL" width={90} height={90} className="drop-shadow-[0_20px_30px_rgba(0,0,0,0.4)]" />
-            </div>
+
           </div>
 
 
