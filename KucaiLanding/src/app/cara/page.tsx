@@ -75,7 +75,7 @@ export default function CaraPage() {
                     <MessageSquare size={24} />
                   </div>
                   <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
-                    Dari transaksi sampai bukti dicek admin
+                    Langkah Pembelian
                   </h2>
                 </div>
                 
@@ -86,49 +86,19 @@ export default function CaraPage() {
                   </li>
                   <li className="flex gap-4">
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">2</span>
-                    <p className="pt-1">Pilih metode pembayaran — nomor rekening langsung muncul di chat WhatsApp.</p>
+                    <p className="pt-1">Pilih metode pembayaran — nomor rekening langsung muncul di chat dan transfer.</p>
                   </li>
                   <li className="flex gap-4">
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">3</span>
-                    <p className="pt-1">Transfer, kirim foto bukti transfernya, dan konfirmasi ke admin.</p>
+                    <p className="pt-1">Kirim foto bukti transfernya & nama world, dan admin akan mengecek.</p>
                   </li>
                   <li className="flex gap-4">
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">4</span>
-                    <p className="pt-1">Tunggu admin memverifikasi bukti transfer kamu.</p>
-                  </li>
-                </ol>
-              </div>
-
-              <div className="bg-[#101010] border border-white/5 rounded-[24px] p-6 md:p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                    <Download size={24} />
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
-                    Cara ambil lock
-                  </h2>
-                </div>
-                
-                <ol className="space-y-4 text-gray-300">
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">1</span>
-                    <p className="pt-1">Setelah bukti dicek, nama world muncul di chat — tekan Salin.</p>
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">2</span>
-                    <p className="pt-1">Tempel di kolom World Name di Growtopia, lalu masuk.</p>
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">3</span>
-                    <p className="pt-1">Tunggu bot datang dan menjatuhkan lock pesananmu.</p>
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">4</span>
-                    <p className="pt-1">Langsung ambil lock-nya!</p>
+                    <p className="pt-1">Setelah cek admin akan nge drop dl / bgl nya ke world kamu.</p>
                   </li>
                 </ol>
 
-                <div className="mt-6 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
+                <div className="mt-8 p-4 bg-amber-500/10 border border-amber-500/20 rounded-xl">
                   <p className="text-amber-500/90 text-sm font-medium">
                     <strong className="text-amber-500">Penting:</strong> Jangan tinggalkan lock di lantai world! World bisa sewaktu-waktu ter-nuke atau dibersihkan moderator, dan lock yang hilang akibat kelalaian pembeli tidak bisa diganti.
                   </p>
