@@ -470,11 +470,14 @@ export default function JualBeliPage() {
 
           {messages.map((msg, idx) => (
             <div key={msg.id || idx} className={`flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
-              <div className={`whitespace-pre-wrap max-w-[85%] md:max-w-[75%] px-4 py-3 rounded-[20px] text-sm leading-relaxed shadow-sm ${msg.sender === "customer"
+              <div className={`relative max-w-[85%] md:max-w-[75%] px-4 pt-3 pb-6 rounded-[20px] text-sm leading-relaxed shadow-sm ${msg.sender === "customer"
                   ? "bg-sky-600 text-white rounded-br-sm"
                   : "bg-[#162032] text-gray-100 rounded-bl-sm border border-white/5"
                 }`}>
                 {renderMessageText(msg)}
+                <div className={`absolute bottom-1.5 right-3 text-[10px] ${msg.sender === "customer" ? "text-white/70" : "text-white/40"}`}>
+                  {msg.created_at ? new Date(msg.created_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
+                </div>
               </div>
             </div>
           ))}

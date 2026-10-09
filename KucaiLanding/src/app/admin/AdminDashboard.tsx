@@ -2292,7 +2292,7 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
                     }`}
                   >
                     <div
-                      className={`max-w-[70%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-[0_4px_20px_rgba(0,0,0,0.3)] ${
+                      className={`relative max-w-[70%] px-4 pt-2.5 pb-6 rounded-2xl text-sm leading-relaxed shadow-[0_4px_20px_rgba(0,0,0,0.3)] ${
                         msg.sender === "admin"
                           ? "bg-amber-600 text-white rounded-br-md"
                           : "bg-[#140e0b] text-white/90 border border-amber-900/30 rounded-bl-md"
@@ -2303,8 +2303,8 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
                       )}
                       {msg.message && <span>{renderMessageText(msg.message)}</span>}
                       <div
-                        className={`text-[10px] mt-1 ${
-                          msg.sender === "admin" ? "text-amber-200" : "text-gray-400"
+                        className={`absolute bottom-1.5 right-3 text-[9px] font-medium ${
+                          msg.sender === "admin" ? "text-amber-200/70" : "text-white/40"
                         }`}
                       >
                         {new Date(msg.created_at).toLocaleTimeString("id-ID", {
