@@ -69,17 +69,33 @@ export function LiveReputation() {
           </div>
 
           {/* Right Side: Grid of Pills */}
-          <div className="flex-1">
-            <div className="flex flex-wrap gap-2.5">
-              {reputations.map(rep => (
-                <div key={rep.id} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-lg text-xs transition-colors cursor-default group">
-                  <span className="text-emerald-400 font-bold group-hover:text-emerald-300 transition-colors">+rep kucaidl</span>
-                  <span className="text-gray-300 max-w-[120px] truncate">{rep.message}</span>
-                  <span className="text-white font-bold max-w-[80px] truncate">{rep.buyer_name}</span>
+          <div className="flex-1 overflow-hidden relative group">
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 md:w-20 bg-gradient-to-r from-[#0a0f1c] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 md:w-20 bg-gradient-to-l from-[#0a0f1c] to-transparent z-10 pointer-events-none" />
+
+            <div className="flex flex-col gap-3">
+              {[0, 1, 2].map((rowIndex) => (
+                <div key={rowIndex} 
+                  className={`flex w-max group-hover:[animation-play-state:paused] ${
+                    rowIndex === 0 ? "animate-[ticker_30s_linear_infinite]" : 
+                    rowIndex === 1 ? "animate-[ticker_35s_linear_infinite]" : 
+                    "animate-[ticker_40s_linear_infinite]"
+                  }`}>
+                  {[...reputations, ...reputations].map((rep, idx) => {
+                    if (idx % 3 !== rowIndex) return null;
+                    return (
+                      <div key={`${rep.id}-${idx}`} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-lg text-xs transition-colors cursor-default group/pill mx-1.5">
+                        <span className="text-emerald-400 font-bold group-hover/pill:text-emerald-300 transition-colors">+rep kucaidl</span>
+                        <span className="text-gray-300 max-w-[120px] truncate">{rep.message}</span>
+                        <span className="text-white font-bold max-w-[80px] truncate">{rep.buyer_name}</span>
+                      </div>
+                    );
+                  })}
                 </div>
               ))}
               {reputations.length === 0 && (
-                <div className="text-gray-500 text-sm">Belum ada reputasi yang ditampilkan.</div>
+                <div className="text-gray-500 text-sm pl-4">Belum ada reputasi yang ditampilkan.</div>
               )}
             </div>
           </div>
