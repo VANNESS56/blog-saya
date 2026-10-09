@@ -7,13 +7,11 @@ import { Menu, X, Search, ShoppingCart, LayoutGrid, ShoppingBag, Receipt, Messag
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useSettings } from "@/lib/settings/SettingsContext";
 
-const bottomNavLeft = [
-  { label: "Home", href: "#home", icon: LayoutGrid, active: true },
-  { label: "Beli", href: "#products", icon: ShoppingBag, active: false },
-  { label: "Cek Pesanan", href: "/order", icon: Receipt, active: false },
-];
-
-const bottomNavRight = [
+const navLinks = [
+  { label: "Beranda", href: "/", icon: LayoutGrid },
+  { label: "Order", href: "/jual-beli", icon: ShoppingBag },
+  { label: "Cara", href: "/cara", icon: HelpCircle },
+  { label: "Cek Pesanan", href: "/order", icon: Receipt },
   { label: "Testimoni", href: "#reviews", icon: MessageSquare },
   { label: "Reputasi", href: "#reputation", icon: Star },
   { label: "FAQ", href: "#faq", icon: HelpCircle },
@@ -72,19 +70,13 @@ export function Navbar() {
           </Link>
 
           {/* Top Links */}
-          <div className="hidden md:flex items-center gap-6 flex-1 ml-8">
-            <Link href="/" className="flex items-center gap-2 text-gray-300 hover:text-white font-medium text-[15px] transition-colors">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
-              Beranda
-            </Link>
-            <Link href="/jual-beli" className="flex items-center gap-2 text-gray-300 hover:text-white font-medium text-[15px] transition-colors">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-              Order
-            </Link>
-            <Link href="/cara" className="flex items-center gap-2 text-gray-300 hover:text-white font-medium text-[15px] transition-colors">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
-              Cara
-            </Link>
+          <div className="hidden lg:flex items-center gap-5 flex-1 ml-6">
+            {navLinks.map((link) => (
+              <Link key={link.label} href={link.href} className="flex items-center gap-1.5 text-gray-300 hover:text-white font-medium text-[13px] transition-colors">
+                <link.icon className="w-4 h-4" />
+                {link.label}
+              </Link>
+            ))}
           </div>
 
           {/* Actions */}
@@ -122,40 +114,7 @@ export function Navbar() {
           </div>
         </div>
 
-        {/* Bottom Tier (Desktop Only) */}
-        <div className="max-w-[1320px] mx-auto h-[48px] px-4 md:px-6 hidden lg:flex items-center justify-between border-t border-gray-800">
-          {/* Left Links */}
-          <div className="flex items-center gap-2">
-            {bottomNavLeft.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-md text-[13px] font-bold transition-all ${
-                  link.active 
-                    ? 'bg-amber-600 text-white' 
-                    : 'text-gray-300 hover:text-white hover:bg-white/5'
-                }`}
-              >
-                <link.icon size={16} className={link.active ? 'text-white' : 'text-gray-400'} />
-                {link.label}
-              </Link>
-            ))}
-          </div>
 
-          {/* Right Links */}
-          <div className="flex items-center gap-6">
-            {bottomNavRight.map((link) => (
-              <Link
-                key={link.label}
-                href={link.href}
-                className="flex items-center gap-1.5 text-[12px] font-medium text-gray-400 hover:text-amber-400 transition-colors"
-              >
-                <link.icon size={14} />
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </div>
 
         {/* Mobile Menu */}
         {mobileMenuOpen && (
@@ -167,7 +126,7 @@ export function Navbar() {
             </div>
 
             <div className="grid grid-cols-2 gap-2 mb-2">
-              {[...bottomNavLeft, ...bottomNavRight].map((link) => (
+              {navLinks.map((link) => (
                 <Link
                   key={link.label}
                   href={link.href}
