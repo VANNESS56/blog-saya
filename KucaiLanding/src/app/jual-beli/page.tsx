@@ -496,28 +496,34 @@ export default function JualBeliPage() {
     <div className="min-h-screen bg-[#0c0805] flex justify-center">
       <div className="w-full max-w-2xl bg-[#140e0b] flex flex-col min-h-screen relative shadow-2xl md:border-x border-amber-900/20">
 
-        {/* Header */}
-        <div className="flex items-center gap-4 px-5 py-4 border-b border-amber-900/20 bg-[#140e0b]/95 backdrop-blur-md sticky top-0 z-10">
-          <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-amber-900/20 -ml-2">
-            <ArrowLeft className="w-5 h-5" />
-          </button>
-          <div className="relative">
-            {/* Notes Bubble */}
-            <div className="absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full z-20 whitespace-nowrap">
-              <div className="bg-[#1a120e] border border-amber-900/30 rounded-full px-3 py-1 shadow-lg">
-                <span className="text-white/90 text-[10px] font-semibold">UPDATE / INFO DI SALURAN WA YA 🥰</span>
-              </div>
-              <div className="w-2.5 h-2.5 bg-[#1a120e] border-r border-b border-amber-900/30 rotate-45 mx-auto -mt-[5px]" />
-            </div>
-            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-amber-500">
+        {/* Header with WhatsApp-style Notes */}
+        <div className="flex flex-col sticky top-0 z-10 border-b border-amber-900/20 bg-[#140e0b]/95 backdrop-blur-md">
+          <div className="flex items-center gap-4 px-5 pt-4 pb-2 relative">
+            <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-amber-900/20 -ml-2">
+              <ArrowLeft className="w-5 h-5" />
+            </button>
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-amber-500 relative z-10">
               <img src="/kucaidl-profile.jpg" className="w-full h-full object-cover" alt="Kucai DL" />
             </div>
+            <div>
+              <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
+              <p className="text-amber-400 text-xs flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)]" /> Online
+              </p>
+            </div>
           </div>
-          <div>
-            <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
-            <p className="text-amber-400 text-xs flex items-center gap-1.5 mt-0.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)]" /> Online
-            </p>
+          
+          <div className="px-5 pb-4 relative z-0">
+            {/* Tail Circles */}
+            <div className="absolute -top-1 left-[64px] flex flex-col items-center gap-[3px]">
+               <div className="w-1.5 h-1.5 rounded-full bg-[#1a120e] border border-amber-900/30"></div>
+               <div className="w-2.5 h-2.5 rounded-full bg-[#1a120e] border border-amber-900/30 -ml-3"></div>
+            </div>
+            
+            <div className="bg-[#1a120e] border border-amber-900/30 rounded-full px-4 py-2 inline-flex items-center gap-2.5 relative shadow-lg ml-2">
+              <div className="w-3 h-3 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
+              <span className="text-white/90 text-[11px] font-bold tracking-wide uppercase">UPDATE / INFO DI SALURAN WA YA 🥰</span>
+            </div>
           </div>
         </div>
 
