@@ -538,8 +538,8 @@ function LiveChatInner() {
       >
         <div className="absolute inset-0 rounded-[20px] border-2 border-blue-500/40 scale-100 group-hover:scale-105 transition-transform duration-500" />
         <div className="relative z-10 flex flex-col items-end text-right leading-none">
-          <span className="font-black text-[13px] tracking-wide">Live Chat</span>
-          <span className="text-[10px] font-bold text-white/90 mt-1 uppercase tracking-wider">Hubungi Kami</span>
+          <span className="font-black text-[13px] tracking-wide">Jual Akun GT</span>
+          <span className="text-[10px] font-bold text-white/90 mt-1 uppercase tracking-wider">KLIK DISINI</span>
         </div>
         <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Chat" width={36} height={36} className="relative z-10 rounded-full w-9 h-9 object-cover border-2 border-blue-400/50 shadow-md" />
         {unread > 0 && (
