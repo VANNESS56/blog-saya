@@ -549,14 +549,14 @@ export default function JualBeliPage() {
                                      <div 
                                        key={idx} 
                                        onClick={() => { 
-                                         setPaymentMethod(p.method); 
-                                         setWorldName(p.accountNo);
-                                         setGrowId(p.accountName);
+                                         setPaymentMethod(p.method || ""); 
+                                         setWorldName(p.accountNo || "");
+                                         setGrowId(p.accountName || "");
                                          setShowPaymentOptions(false); 
                                        }}
                                        className="px-4 py-3 hover:bg-sky-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 font-medium flex justify-between items-center"
                                      >
-                                       <span>{p.method} <span className="text-white/50 text-xs tracking-wider">{(p.accountNo.length > 5 ? p.accountNo.substring(0,2) + "•".repeat(4) + p.accountNo.slice(-3) : p.accountNo)}</span></span>
+                                       <span>{p.method} <span className="text-white/50 text-xs tracking-wider">{((p.accountNo || "").length > 5 ? (p.accountNo || "").substring(0,2) + "•".repeat(4) + (p.accountNo || "").slice(-3) : (p.accountNo || ""))}</span></span>
                                        <span className="text-white/40 text-xs max-w-[100px] truncate">{p.accountName}</span>
                                      </div>
                                    ))}
