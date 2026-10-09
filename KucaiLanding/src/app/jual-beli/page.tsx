@@ -358,7 +358,7 @@ export default function JualBeliPage() {
   const formatText = (text: string) => {
     // Parse URLs, *bold*, _italic_, ~strike~
     let html = text
-      .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-sky-400 hover:underline break-all">$1</a>')
+      .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline break-all">$1</a>')
       .replace(/\*(.*?)\*/g, "<strong>$1</strong>")
       .replace(/_(.*?)_/g, "<em>$1</em>")
       .replace(/~(.*?)~/g, "<del>$1</del>");
@@ -394,11 +394,11 @@ export default function JualBeliPage() {
             ‼️ <strong>QRIS untuk tf dari bank yg ga bisa tf ke e-wallet</strong><br/>
             ‼️ <strong>QRIS untuk tf dari Ewallet yg belum premium</strong>
             <br/><br/>
-            Pembelian di bawah 100k gratis tax .<br/>
-            Biaya 1% jika pembelian di atas 100k .
+            <span className="text-amber-400">✔</span> Pembelian di bawah 100k gratis tax .<br/>
+            <span className="text-amber-400">✔</span> Biaya 1% jika pembelian di atas 500k .
           </div>
           
-          <div className="bg-white rounded-xl p-2 pb-0">
+          <div className="bg-white rounded-xl p-2 pb-0 w-[160px]">
             <img src="/qris.jpg" alt="QRIS Kucai DL" className="w-full h-auto rounded-lg border border-gray-100" />
           </div>
 
@@ -449,7 +449,7 @@ export default function JualBeliPage() {
                     <span className="text-white/60">{value}</span>
                   </div>
                   {copyText && (
-                    <button onClick={() => navigator.clipboard.writeText(copyText)} className="px-3 py-1.5 bg-sky-600/20 hover:bg-sky-600/40 border border-sky-500/20 text-sky-400 rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0">
+                    <button onClick={() => navigator.clipboard.writeText(copyText)} className="px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/20 text-amber-400 rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0">
                       Salin
                     </button>
                   )}
@@ -478,8 +478,8 @@ export default function JualBeliPage() {
             
             <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3.5 shadow-inner mt-1 mb-1">
               <div className="flex flex-col gap-2 font-mono text-[14px] font-bold tracking-wide">
-                <div className="text-white">🌎 WORLD : <span className="text-sky-400">{world}</span></div>
-                <div className="text-white">🤴 OWNER : <span className="text-sky-400">{owner}</span></div>
+                <div className="text-white">🌎 WORLD : <span className="text-amber-400">{world}</span></div>
+                <div className="text-white">🤴 OWNER : <span className="text-amber-400">{owner}</span></div>
               </div>
             </div>
 
@@ -521,7 +521,7 @@ export default function JualBeliPage() {
           {messages.map((msg, idx) => (
             <div key={msg.id || idx} className={`flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
               <div className={`relative max-w-[85%] md:max-w-[75%] px-4 pt-3 pb-6 rounded-[20px] text-sm leading-relaxed shadow-sm ${msg.sender === "customer"
-                  ? "bg-sky-600 text-white rounded-br-sm"
+                  ? "bg-amber-600 text-white rounded-br-sm"
                   : "bg-[#162032] text-gray-100 rounded-bl-sm border border-white/5"
                 }`}>
                 {renderMessageText(msg, idx)}
@@ -556,10 +556,10 @@ export default function JualBeliPage() {
                   {trxMode === "buy" ? (
                     <>
                       <div>
-                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                       <div>
-                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                     </>
                   ) : (
@@ -595,7 +595,7 @@ export default function JualBeliPage() {
                                          setGrowId(p.accountName || "");
                                          setShowPaymentOptions(false); 
                                        }}
-                                       className="px-4 py-3 hover:bg-sky-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 font-medium flex justify-between items-center"
+                                       className="px-4 py-3 hover:bg-amber-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 font-medium flex justify-between items-center"
                                      >
                                        <span>{p.method} <span className="text-white/50 text-xs tracking-wider">{((p.accountNo || "").length > 5 ? (p.accountNo || "").substring(0,2) + "•".repeat(4) + (p.accountNo || "").slice(-3) : (p.accountNo || ""))}</span></span>
                                        <span className="text-white/40 text-xs max-w-[100px] truncate">{p.accountName}</span>
@@ -619,7 +619,7 @@ export default function JualBeliPage() {
                                    <div 
                                      key={p} 
                                      onClick={() => { setPaymentMethod(p); setShowPaymentOptions(false); setSearchPayment(""); }}
-                                     className="px-4 py-3 hover:bg-sky-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 last:border-0"
+                                     className="px-4 py-3 hover:bg-amber-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 last:border-0"
                                    >
                                      {p}
                                    </div>
@@ -632,14 +632,14 @@ export default function JualBeliPage() {
                          )}
                       </div>
                       <div>
-                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                       <div>
-                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Atas Nama" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-sky-500 transition-colors" />
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Atas Nama" className="w-full bg-[#1e2b40] border border-white/10 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
                       </div>
                     </>
                   )}
-                  <button type="submit" disabled={uploading} className="w-full py-3.5 bg-sky-600 hover:bg-sky-500 rounded-xl text-white text-sm font-bold transition-colors disabled:opacity-50 mt-2">
+                  <button type="submit" disabled={uploading} className="w-full py-3.5 bg-amber-600 hover:bg-amber-500 rounded-xl text-white text-sm font-bold transition-colors disabled:opacity-50 mt-2">
                     {uploading ? "Mengirim..." : "Kirim Bukti & Data"}
                   </button>
                   <button type="button" onClick={() => setProofFiles([])} disabled={uploading} className="w-full py-2 text-white/50 hover:text-white/80 text-xs transition-colors">
@@ -666,12 +666,12 @@ export default function JualBeliPage() {
                 onChange={e => setInput(e.target.value)}
                 disabled={!sessionId}
                 placeholder="Ketik pesan..."
-                className="flex-1 bg-[#162032] border border-white/10 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-sky-500 focus:bg-[#1a263a] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+                className="flex-1 bg-[#162032] border border-white/10 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 focus:bg-[#1a263a] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || sending || !sessionId}
-                className="w-12 h-12 shrink-0 bg-sky-600 hover:bg-sky-500 disabled:bg-[#1e293b] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
+                className="w-12 h-12 shrink-0 bg-amber-600 hover:bg-amber-500 disabled:bg-[#1e293b] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
               >
                 <Send className="w-5 h-5 ml-1" />
               </button>
