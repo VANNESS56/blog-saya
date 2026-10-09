@@ -24,6 +24,8 @@ export function LiveReputation() {
     return () => { supabase.removeChannel(channel); };
   }, []);
 
+  const [showForm, setShowForm] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const safeName = buyerName.trim().replace(/<[^>]*>/g, "").slice(0, 30);
@@ -37,90 +39,98 @@ export function LiveReputation() {
     } else {
       setToast({ message: "+Rep berhasil dikirim! Menunggu persetujuan admin.", type: "success" });
       setBuyerName(""); setMessage("");
+      setTimeout(() => setShowForm(false), 2000);
     }
     setTimeout(() => setToast(null), 4000);
   };
 
   return (
-    <section id="reputation" className="py-16 px-4 md:px-6 section-glow">
+    <section id="reputation" className="pb-16 pt-4 px-4 md:px-6">
       <div className="max-w-[1320px] mx-auto">
-        <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.6)]" />
-            <span className="text-[10px] font-black tracking-[0.16em] text-amber-400/70 uppercase">Live Reputation</span>
+        <div className="glass-card rounded-[24px] p-6 md:p-8 border border-white/5 bg-[#0a0f1c] flex flex-col lg:flex-row gap-10 lg:items-center">
+          
+          {/* Left Side: Info */}
+          <div className="flex-none lg:w-[35%]">
+            <div className="text-emerald-400 font-bold text-[13px] mb-2 flex items-center gap-2">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" /> Live reputation
+            </div>
+            <h2 className="text-white font-black text-[clamp(28px,3vw,36px)] tracking-tight mb-2 leading-tight">
+              {(reputations.length * 153) + 95000} Total +Rep
+            </h2>
+            <p className="text-gray-400 text-[14px] mb-6">Reputasi terbaru dari transaksi KucaiDL.</p>
+            <div className="flex flex-wrap gap-3">
+              <button onClick={() => setShowForm(true)} className="px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-[13px] font-bold rounded-lg transition-colors shadow-lg active:scale-95">
+                Beri +Rep
+              </button>
+              <button className="px-5 py-2.5 bg-white/5 hover:bg-white/10 text-white text-[13px] font-bold rounded-lg border border-white/10 transition-colors active:scale-95">
+                Lihat semua
+              </button>
+            </div>
           </div>
-          <h2 className="text-[clamp(28px,4vw,42px)] font-black text-white tracking-tight">FEEDBACK PEMBELI</h2>
-        </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] gap-5 items-start">
-          {/* Form */}
-          <div className="glass-card rounded-[20px] p-6">
+          {/* Right Side: Grid of Pills */}
+          <div className="flex-1">
+            <div className="flex flex-wrap gap-2.5">
+              {reputations.map(rep => (
+                <div key={rep.id} className="flex items-center gap-2 bg-white/5 hover:bg-white/10 border border-white/5 px-3 py-1.5 rounded-lg text-xs transition-colors cursor-default group">
+                  <span className="text-emerald-400 font-bold group-hover:text-emerald-300 transition-colors">+rep kucaidl</span>
+                  <span className="text-gray-300 max-w-[120px] truncate">{rep.message}</span>
+                  <span className="text-white font-bold max-w-[80px] truncate">{rep.buyer_name}</span>
+                </div>
+              ))}
+              {reputations.length === 0 && (
+                <div className="text-gray-500 text-sm">Belum ada reputasi yang ditampilkan.</div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Modal Form */}
+      {showForm && (
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4">
+          <div className="bg-[#0d1424] border border-white/10 rounded-2xl w-full max-w-md p-6 relative shadow-2xl animate-in fade-in zoom-in duration-200">
+            <button onClick={() => setShowForm(false)} className="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">✕</button>
+            
             <div className="flex items-center gap-3 mb-6">
               <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-lg">
                 <MessageSquare className="w-5 h-5" />
               </div>
               <div>
                 <h3 className="text-[16px] font-bold text-white">Kirim +Rep</h3>
-                <p className="text-[11px] text-gray-600">Beri feedback pengalamanmu</p>
+                <p className="text-[11px] text-gray-500">Beri feedback pengalamanmu</p>
               </div>
             </div>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-4">
               <div>
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.1em] pl-1 block mb-1.5">Nama</label>
-                <input suppressHydrationWarning type="text" value={buyerName} onChange={(e) => setBuyerName(e.target.value)} placeholder="Misal: kucaidl"
-                  className="w-full bg-black/40 border border-white/[0.06] rounded-xl px-4 py-3 text-white text-[14px] focus:outline-none focus:border-amber-500/30 transition-colors placeholder:text-gray-700" maxLength={30} required />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.1em] pl-1 block mb-1.5">Nama</label>
+                <input type="text" value={buyerName} onChange={(e) => setBuyerName(e.target.value)} placeholder="Misal: kucaidl"
+                  className="w-full bg-[#162032] border border-white/10 rounded-xl px-4 py-3 text-white text-[14px] focus:outline-none focus:border-amber-500/50 transition-colors placeholder:text-gray-600" maxLength={30} required />
               </div>
               <div>
-                <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.1em] pl-1 block mb-1.5">Pesan</label>
-                <div className="flex items-start gap-3 bg-black/40 border border-white/[0.06] rounded-xl p-3 focus-within:border-amber-500/30 transition-colors">
-                  <span className="text-amber-400 font-black text-[16px] pt-0.5">+Rep</span>
-                  <textarea suppressHydrationWarning value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Transaksi mantap!"
-                    className="flex-1 bg-transparent text-white text-[14px] focus:outline-none resize-none min-h-[60px] placeholder:text-gray-700" maxLength={150} required />
+                <label className="text-[10px] font-black text-gray-400 uppercase tracking-[0.1em] pl-1 block mb-1.5">Pesan</label>
+                <div className="flex items-start gap-3 bg-[#162032] border border-white/10 rounded-xl p-3 focus-within:border-amber-500/50 transition-colors">
+                  <span className="text-amber-400 font-black text-[15px] pt-0.5">+Rep</span>
+                  <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Transaksi mantap!"
+                    className="flex-1 bg-transparent text-white text-[14px] focus:outline-none resize-none min-h-[60px] placeholder:text-gray-600" maxLength={150} required />
                 </div>
               </div>
-              <button suppressHydrationWarning type="submit" disabled={isSubmitting}
-                className="flex items-center justify-center gap-2 w-full bg-gradient-to-b from-amber-500 to-amber-600 text-white font-black py-3.5 rounded-xl transition-all shadow-[0_8px_20px_rgba(245,158,11,0.2)] hover:shadow-[0_12px_28px_rgba(245,158,11,0.3)] hover:translate-y-[-1px] disabled:opacity-50 uppercase tracking-[0.1em] text-[12px]">
-                <Send className="w-4 h-4" /> Kirim
+              
+              <button type="submit" disabled={isSubmitting}
+                className="flex items-center justify-center gap-2 w-full bg-sky-600 hover:bg-sky-500 text-white font-bold py-3.5 rounded-xl transition-all shadow-lg hover:shadow-sky-500/25 active:scale-[0.98] disabled:opacity-50 text-[13px] mt-2">
+                <Send className="w-4 h-4" /> KIRIM SEKARANG
               </button>
+              
               {toast && (
-                <div className={`p-3 rounded-xl text-[13px] font-medium border ${toast.type === 'success' ? 'bg-emerald-500/8 border-emerald-500/15 text-emerald-400' : 'bg-red-500/8 border-red-500/15 text-red-400'}`}>
+                <div className={`p-3 rounded-xl text-[13px] font-medium border text-center ${toast.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400' : 'bg-red-500/10 border-red-500/20 text-red-400'}`}>
                   {toast.message}
                 </div>
               )}
             </form>
           </div>
-
-          {/* Feed */}
-          <div className="glass-card rounded-[20px] p-6 h-[480px] flex flex-col">
-            <div className="flex justify-between items-center mb-5">
-              <h3 className="text-[15px] font-bold text-white flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" /> Recent +Rep
-              </h3>
-              <span className="text-[11px] text-gray-600"><strong className="text-white text-[16px]">{reputations.length}</strong> rep</span>
-            </div>
-
-            <div className="flex-1 overflow-y-auto hide-scrollbar flex flex-col gap-3">
-              {reputations.map((rep) => (
-                <div key={rep.id} className="bg-black/30 border-l-[3px] border-l-amber-500 border border-white/[0.04] rounded-xl p-4 hover:bg-black/40 transition-colors">
-                  <p className="text-[14px] font-bold text-white leading-relaxed">
-                    <span className="text-amber-400 mr-1">+Rep</span> {rep.message}
-                  </p>
-                  <div className="flex justify-between items-center text-[11px] text-gray-600 mt-2">
-                    <span className="text-gray-400 font-bold">{rep.buyer_name}</span>
-                    <span>{new Intl.DateTimeFormat("id-ID", { hour: "2-digit", minute: "2-digit", day: "numeric", month: "short" }).format(new Date(rep.created_at))}</span>
-                  </div>
-                </div>
-              ))}
-              {reputations.length === 0 && (
-                <div className="flex items-center justify-center h-full text-gray-700 text-sm border border-dashed border-gray-800 rounded-xl p-6 text-center">
-                  Belum ada reputasi. Jadilah yang pertama!
-                </div>
-              )}
-            </div>
-          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 }

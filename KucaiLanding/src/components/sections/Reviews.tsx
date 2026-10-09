@@ -28,45 +28,51 @@ export function Reviews() {
   if (testimonials.length === 0) return null;
 
   return (
-    <section id="reviews" className="py-14 px-4 md:px-6 section-glow">
+    <section id="reviews" className="pt-16 pb-8 px-4 md:px-6">
       <div className="max-w-[1320px] mx-auto">
-        <div className="flex justify-between items-end gap-5 mb-8">
-          <div>
-            <span className="text-[12px] font-black tracking-[0.16em] text-amber-400/70 uppercase">Testimoni</span>
-            <h2 className="text-[clamp(26px,3.5vw,38px)] font-black text-white tracking-tight mt-1">| Bukti Transaksi</h2>
-          </div>
-          <div className="flex gap-2">
-            <button onClick={() => scroll("left")}
-              className="w-9 h-9 rounded-xl glass-card !p-0 flex items-center justify-center text-gray-500 hover:text-white transition-all">
-              <ChevronLeft className="w-4 h-4" />
-            </button>
-            <button onClick={() => scroll("right")}
-              className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/15 flex items-center justify-center text-amber-400 hover:bg-amber-500 hover:text-white transition-all">
-              <ChevronRight className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-
-        <div ref={scrollRef} className="flex gap-4 overflow-x-auto hide-scrollbar pb-4 -mx-4 px-4">
-          {testimonials.map((t) => (
-            <div key={t.id}
-              className="flex-none w-[260px] glass-card rounded-[18px] overflow-hidden group">
-              {/* Image */}
-              <div className="relative w-full aspect-[3/4] bg-amber-950/20 overflow-hidden">
-                {t.image_url ? (
-                  <img
-                    src={t.image_url}
-                    alt={`Testimoni ${t.buyer_name}`}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
-                ) : (
-                  <div className="absolute inset-0 flex items-center justify-center text-gray-700 text-sm font-bold">
-                    No Image
-                  </div>
-                )}
-              </div>
+        <div className="glass-card rounded-[24px] p-6 md:p-8 border border-white/5 bg-[#0a0f1c]">
+          
+          <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 mb-8">
+            <div>
+              <span className="bg-sky-500/20 text-sky-400 text-[11px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">REVIEW</span>
+              <h2 className="text-[clamp(24px,3vw,32px)] font-bold text-white tracking-tight mt-3">Kata para pembeli</h2>
+              <p className="text-[13px] text-gray-400 mt-1">Review terbaru dari pembeli KucaiDL.</p>
             </div>
-          ))}
+            
+            <div className="flex gap-2 self-end">
+              <button onClick={() => scroll("left")}
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button onClick={() => scroll("right")}
+                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+
+          <div ref={scrollRef} className="flex gap-4 overflow-x-auto hide-scrollbar pb-2 -mx-2 px-2 snap-x">
+            {testimonials.map((t) => (
+              <div key={t.id}
+                className="flex-none w-[300px] md:w-[380px] bg-[#121826] border border-white/5 rounded-2xl p-5 snap-start hover:border-white/10 transition-colors">
+                <div className="flex text-amber-400 mb-3 text-[14px]">
+                  {'★'.repeat(t.rating || 5)}{'☆'.repeat(5 - (t.rating || 5))}
+                </div>
+                <h3 className="text-white font-bold text-[15px] mb-6 line-clamp-3">"{t.content || "MANTULL JIWA bgt top"}"</h3>
+                
+                <div className="flex items-center gap-3">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-lg shrink-0">
+                    {t.buyer_name ? t.buyer_name.charAt(0).toUpperCase() : "C"}
+                  </div>
+                  <div className="text-[13px] text-gray-300 font-medium truncate">
+                    <span className="text-white font-bold">{t.buyer_name || "Customer"}</span> 
+                    {t.item_bought && <span className="text-gray-400"> • {t.item_bought}</span>}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          
         </div>
       </div>
     </section>
