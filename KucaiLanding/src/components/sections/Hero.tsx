@@ -126,9 +126,9 @@ export function Hero() {
           </a>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_0.65fr] gap-4">
+        <div className="flex justify-center w-full">
           {/* Main Banner */}
-          <div className="relative min-h-[440px] lg:min-h-[500px] rounded-[24px] overflow-hidden glass-card !border-amber-400/40 shadow-[0_22px_70px_rgba(245,158,11,0.2)]">
+          <div className="relative w-full max-w-[800px] min-h-[440px] lg:min-h-[500px] rounded-[24px] overflow-hidden glass-card !border-amber-400/40 shadow-[0_22px_70px_rgba(245,158,11,0.2)]">
             {/* Bright Patterned Background */}
             <div className="absolute inset-0 bg-gradient-to-br from-amber-600 via-amber-500 to-orange-500" />
             <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_30%_20%,rgba(255,255,255,0.4),transparent_60%)]" />
@@ -269,54 +269,7 @@ export function Hero() {
             </div>
           </div>
 
-          {/* Side Cards */}
-          <div className="grid gap-4">
-            <div className="relative min-h-[240px] rounded-[24px] overflow-hidden glass-card p-7 flex flex-col justify-between border-emerald-500/30 bg-gradient-to-br from-emerald-950/80 via-teal-900/60 to-[#041a14]/90 shadow-[0_0_30px_rgba(16,185,129,0.2)]">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_20%,rgba(16,185,129,0.25),transparent_60%)]" />
-              <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%23ffffff\\' fill-opacity=\\'1\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }} />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_12px_rgba(52,211,153,0.9)] animate-pulse" />
-                  <span className="text-[9px] font-black tracking-[0.16em] text-emerald-300 uppercase">Live Rate & Stok</span>
-                </div>
-                <h3 className="text-[24px] font-black text-white leading-[1.1] max-w-[220px]">
-                  Harga Real-Time Terupdate
-                </h3>
-                <p className="text-[12px] text-emerald-100/70 leading-relaxed mt-2 max-w-[250px]">
-                  Rate otomatis diperbarui setiap saat dari database kami.
-                </p>
-              </div>
-              <div className="absolute right-[-10px] bottom-[-20px] w-[140px] pointer-events-none group-hover:scale-110 transition-transform duration-500">
-                <Image src="/dl.png" alt="DL" width={140} height={140} className="drop-shadow-[0_20px_25px_rgba(0,0,0,0.5)]" />
-              </div>
-            </div>
 
-            <div className="relative min-h-[240px] rounded-[24px] overflow-hidden glass-card p-7 flex flex-col justify-between border-amber-500/30 bg-gradient-to-br from-amber-950/80 via-yellow-900/60 to-[#1a1105]/90 shadow-[0_0_30px_rgba(245,158,11,0.2)]">
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_80%_80%,rgba(245,158,11,0.25),transparent_60%)]" />
-              <div className="absolute inset-0 opacity-20 mix-blend-overlay" style={{ backgroundImage: "url('data:image/svg+xml,%3Csvg width=\\'60\\' height=\\'60\\' viewBox=\\'0 0 60 60\\' xmlns=\\'http://www.w3.org/2000/svg\\'%3E%3Cg fill=\\'none\\' fill-rule=\\'evenodd\\'%3E%3Cg fill=\\'%23ffffff\\' fill-opacity=\\'1\\'%3E%3Cpath d=\\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')" }} />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-3">
-                  <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[9px] font-black tracking-[0.16em] text-violet-300 uppercase flex items-center gap-1.5">
-                    Growtopia Live Stats
-                  </span>
-                </div>
-                <h3 className="text-[28px] font-black text-white leading-[1.1] mt-2">
-                  {gtStats.online}
-                </h3>
-                <p className="text-[12px] text-violet-200 font-bold mb-3 uppercase tracking-wider">
-                  Players Online
-                </p>
-                <div className="mt-4 pt-3 border-t border-violet-500/30">
-                  <span className="block text-[10px] text-violet-300/70 uppercase tracking-widest font-bold mb-1">World of the Day</span>
-                  <span className="block text-[14px] font-black text-amber-400">{gtStats.wotd}</span>
-                </div>
-              </div>
-              <div className="absolute right-[-10px] bottom-[-20px] w-[140px] pointer-events-none group-hover:scale-110 transition-transform duration-500">
-                <Image src="/bgl.png" alt="BGL" width={140} height={140} className="drop-shadow-[0_20px_25px_rgba(0,0,0,0.5)]" />
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </section>
