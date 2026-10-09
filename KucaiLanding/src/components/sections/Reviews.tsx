@@ -38,39 +38,47 @@ export function Reviews() {
               <h2 className="text-[clamp(24px,3vw,32px)] font-bold text-white tracking-tight mt-3">Kata para pembeli</h2>
               <p className="text-[13px] text-gray-400 mt-1">Review terbaru dari pembeli KucaiDL.</p>
             </div>
-            
-            <div className="flex gap-2 self-end">
-              <button onClick={() => scroll("left")}
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button onClick={() => scroll("right")}
-                className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 transition-all">
-                <ChevronRight className="w-5 h-5" />
-              </button>
-            </div>
           </div>
 
-          <div ref={scrollRef} className="flex gap-4 overflow-x-auto hide-scrollbar pb-2 -mx-2 px-2 snap-x">
-            {testimonials.map((t) => (
-              <div key={t.id}
-                className="flex-none w-[300px] md:w-[380px] bg-[#121826] border border-white/5 rounded-2xl p-5 snap-start hover:border-white/10 transition-colors">
-                <div className="flex text-amber-400 mb-3 text-[14px]">
-                  {'★'.repeat(t.rating || 5)}{'☆'.repeat(5 - (t.rating || 5))}
-                </div>
-                <h3 className="text-white font-bold text-[15px] mb-6 line-clamp-3">"{t.content || "MANTULL JIWA bgt top"}"</h3>
-                
-                <div className="flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white text-xs font-bold shadow-lg shrink-0">
-                    {t.buyer_name ? t.buyer_name.charAt(0).toUpperCase() : "C"}
+          <div className="overflow-hidden relative -mx-2 px-2 group">
+            {/* Fade edges */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 md:w-20 bg-gradient-to-r from-[#0a0f1c] to-transparent z-10 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-8 md:w-20 bg-gradient-to-l from-[#0a0f1c] to-transparent z-10 pointer-events-none" />
+            
+            <div className="flex w-max animate-[ticker_40s_linear_infinite] group-hover:[animation-play-state:paused]">
+              {[...testimonials, ...testimonials].map((t, idx) => (
+                <div key={`${t.id}-${idx}`}
+                  className="flex-none w-[240px] md:w-[280px] bg-[#121826] border border-white/5 rounded-2xl p-4 mx-2 hover:border-white/10 transition-colors flex flex-col gap-3">
+                  
+                  {/* Image */}
+                  <div className="relative w-full aspect-[3/4] rounded-xl overflow-hidden bg-amber-950/20">
+                    {t.image_url ? (
+                      <img src={t.image_url} alt={`Testimoni ${t.buyer_name || 'pembeli'}`} className="w-full h-full object-cover hover:scale-105 transition-transform duration-500" />
+                    ) : (
+                       <div className="flex items-center justify-center h-full text-gray-500 text-xs">No Image</div>
+                    )}
                   </div>
-                  <div className="text-[13px] text-gray-300 font-medium truncate">
-                    <span className="text-white font-bold">{t.buyer_name || "Customer"}</span> 
-                    {t.item_bought && <span className="text-gray-400"> • {t.item_bought}</span>}
+
+                  {/* Details */}
+                  <div>
+                    <div className="flex text-amber-400 mb-1.5 text-[12px]">
+                      {'★'.repeat(t.rating || 5)}{'☆'.repeat(5 - (t.rating || 5))}
+                    </div>
+                    {t.content && <p className="text-white font-bold text-[13px] line-clamp-2 mb-2">"{t.content}"</p>}
+                    
+                    <div className="flex items-center gap-2 mt-auto">
+                      <div className="w-7 h-7 rounded-full bg-gradient-to-tr from-sky-500 to-blue-600 flex items-center justify-center text-white text-[10px] font-bold shrink-0 shadow-lg">
+                        {t.buyer_name ? t.buyer_name.charAt(0).toUpperCase() : "C"}
+                      </div>
+                      <div className="text-[12px] text-gray-300 font-medium truncate">
+                        <span className="text-white font-bold">{t.buyer_name || "Customer"}</span> 
+                        {t.item_bought && <span className="text-gray-400"> • {t.item_bought}</span>}
+                      </div>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
           
         </div>
