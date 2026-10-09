@@ -119,11 +119,6 @@ export function Navbar() {
         {/* Mobile Menu */}
         {mobileMenuOpen && (
           <div className="lg:hidden border-t border-amber-900/20 bg-[#050505] p-4 flex flex-col gap-2 shadow-2xl">
-            {/* Mobile Search */}
-            <div className="relative w-full mb-2">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
-              <input type="text" placeholder="Cari Item Growtopia..." className="w-full bg-white text-black text-sm rounded-lg pl-10 pr-4 py-2" />
-            </div>
 
             <div className="grid grid-cols-2 gap-2 mb-2">
               {navLinks.map((link) => (
