@@ -43,7 +43,12 @@ export default function JualBeliPage() {
     setMounted(true);
     const saved = localStorage.getItem("kucaidl_saved_payouts");
     if (saved) {
-      try { setSavedPayouts(JSON.parse(saved)); } catch (e) {}
+      try { 
+        const parsed = JSON.parse(saved);
+        if (Array.isArray(parsed)) {
+          setSavedPayouts(parsed);
+        }
+      } catch (e) {}
     }
     
     // Request notification permission
@@ -348,15 +353,16 @@ export default function JualBeliPage() {
   };
 
   const renderMessageText = (msg: Msg) => {
+    const safeMessage = msg.message || "";
     if (msg.image_url) {
       return (
         <div className="flex flex-col space-y-2">
           <img src={msg.image_url} alt="Proof" className="w-full h-auto max-w-[200px] rounded-lg border border-white/10" />
-          {msg.message && <p className="whitespace-pre-wrap leading-relaxed text-[13px]">{msg.message}</p>}
+          {safeMessage && <p className="whitespace-pre-wrap leading-relaxed text-[13px]">{safeMessage}</p>}
         </div>
       );
     }
-    if (msg.message === "[QRIS_IMAGE]") {
+    if (safeMessage === "[QRIS_IMAGE]") {
       const handleDownload = () => {
         const link = document.createElement("a");
         link.href = "/qris.jpg";
@@ -381,8 +387,8 @@ export default function JualBeliPage() {
       );
     }
 
-    if (msg.sender === "admin" && msg.message.includes("=")) {
-      const lines = msg.message.split("\n");
+    if (msg.sender === "admin" && safeMessage.includes("=")) {
+      const lines = safeMessage.split("\n");
       return (
         <div className="space-y-1">
           {lines.map((line, i) => {
@@ -414,12 +420,12 @@ export default function JualBeliPage() {
       );
     }
 
-    if (msg.message.includes("[WORLD_CARD:")) {
+    if (safeMessage.includes("[WORLD_CARD:")) {
       const worldCardRegex = /\[WORLD_CARD:(.*?)\|(.*?)\]/;
-      const match = msg.message.match(worldCardRegex);
+      const match = safeMessage.match(worldCardRegex);
       if (match) {
-        const before = msg.message.slice(0, match.index);
-        const after = msg.message.slice(match.index! + match[0].length);
+        const before = safeMessage.slice(0, match.index);
+        const after = safeMessage.slice(match.index! + match[0].length);
         const world = match[1];
         const owner = match[2];
         const copyText = `World: ${world} | Owner: ${owner}`;
@@ -441,7 +447,7 @@ export default function JualBeliPage() {
       }
     }
 
-    return <div className="whitespace-pre-wrap leading-relaxed">{formatText(msg.message)}</div>;
+    return <div className="whitespace-pre-wrap leading-relaxed">{formatText(safeMessage)}</div>;
   };
 
   return (
@@ -534,7 +540,7 @@ export default function JualBeliPage() {
                                className="w-full bg-[#162032] border-b border-white/10 px-4 py-3 text-white text-sm outline-none"
                                autoFocus
                              />
-                             <div className="max-h-48 overflow-y-auto pb-2">
+                             <div className="max-h-72 overflow-y-auto pb-2">
                                {savedPayouts.length > 0 && !searchPayment && (
                                  <div className="mb-2">
                                    <div className="px-4 py-2 text-[10px] font-bold text-white/40 uppercase tracking-wider bg-white/5">Tersimpan</div>
