@@ -77,7 +77,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="pt-[88px] pb-6 px-4 md:px-6 relative">
+    <section className="pt-[108px] pb-6 px-4 md:px-6 relative">
       {/* Background Image with fade out at bottom */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-10" 
            style={{
@@ -98,48 +98,6 @@ export function Hero() {
             {/* Content: Rate Card Style */}
             <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 md:p-10">
               
-
-              {/* Running Text */}
-              <div className="relative w-full max-w-[800px] mx-auto mb-4 overflow-hidden rounded-full border border-amber-500/20 bg-amber-500/5 backdrop-blur-sm py-2.5 z-10 shadow-[0_0_15px_rgba(245,158,11,0.05)]">
-                <style>{`
-                  @keyframes marquee {
-                    0% { transform: translateX(0%); }
-                    100% { transform: translateX(-50%); }
-                  }
-                  .animate-marquee {
-                    display: flex;
-                    width: max-content;
-                    animation: marquee 60s linear infinite;
-                  }
-                `}</style>
-                
-                <div className="absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#101010] to-transparent z-10"></div>
-                <div className="absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[#101010] to-transparent z-10"></div>
-                
-                <div className="animate-marquee gap-8">
-                  {[...Array(6)].map((_, i) => (
-                    <div key={i} className="flex items-center gap-8">
-                      <span className="text-amber-500/80 text-[11px] font-medium tracking-widest uppercase">
-                        LANGSUNG BALES
-                      </span>
-                      <span className="text-amber-500/30 text-[10px]">✦</span>
-                      <span className="text-amber-500/80 text-[11px] font-medium tracking-widest uppercase">
-                        CUKUP KETIK = BUY / SELL / RATE
-                      </span>
-                      <span className="text-amber-500/30 text-[10px]">✦</span>
-                      <span className="text-amber-500/80 text-[11px] font-medium tracking-widest uppercase">
-                        Stok BGL Selalu Ready
-                      </span>
-                      <span className="text-amber-500/30 text-[10px]">✦</span>
-                      <span className="text-amber-500/80 text-[11px] font-medium tracking-widest uppercase">
-                        Jual Akun Growtopia Sultan (Full Akses)
-                      </span>
-                      <span className="text-amber-500/30 text-[10px]">✦</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
               {/* Rate Box */}
               <div className="relative bg-[#101010] border border-amber-500 rounded-[24px] p-6 md:p-8 w-full max-w-[800px] shadow-[0_0_40px_rgba(245,158,11,0.15)] flex flex-col mt-10">
                 
