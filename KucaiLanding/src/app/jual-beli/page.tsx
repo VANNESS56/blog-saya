@@ -201,9 +201,7 @@ export default function JualBeliPage() {
       setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
     }
 
-    const adminReply = mode === "buy"
-      ? (jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL")
-      : (sellReply || "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]");
+    const adminReply = mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]";
 
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })
@@ -387,6 +385,15 @@ export default function JualBeliPage() {
       );
     }
 
+    // Dynamically replace promo messages with the latest admin settings
+    if (msg.sender === "admin") {
+      // Check for exact token or fallback to heuristic match for legacy messages in DB
+      if (safeMessage === "[PROMO_BELI]" || safeMessage.includes("Rate beli ke KucaiDL") || safeMessage.includes("Payment transfer ke ewallet")) {
+        safeMessage = jualBeliReply || "Rate beli ke KucaiDL 🤗\nDL : 785\nBGL : 78.500\n\nGopay = 081367232472 an Desi\nDana = 081367232472 an Desi\nBank = Khusus Bank TF ke QRIS\n\n‼️Payment transfer ke ewallet di atas ya thankyou 🥰\n\nNOTE ❗️ : klo udah tf kirim nama world, growid \n\n👸 Admin Desi KUCAIDL";
+      } else if (safeMessage === "[PROMO_JUAL]" || safeMessage.includes("MINIM SELL") || safeMessage.includes("Rate Jual ke KucaiDL")) {
+        safeMessage = sellReply || "MINIM SELL 30 DL YAH 🥰\n\nRate Jual ke KucaiDL\nDL : Rp750\nBGL : Rp75.000\n\n❗️ Kalo udah drop dl nya, send ss sama kirim nomor pembayar dan atas nama \n\n[WORLD_CARD:POSZIO|deleteALVIN]";
+      }
+    }
     if (msg.sender === "admin" && safeMessage.includes("=")) {
       const lines = safeMessage.split("\n");
       return (
