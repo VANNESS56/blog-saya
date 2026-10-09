@@ -77,8 +77,19 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="pt-[108px] pb-6 px-4 md:px-6">
-      <div className="max-w-[1320px] mx-auto">
+    <section className="pt-[108px] pb-6 px-4 md:px-6 relative">
+      {/* Background Image with fade out at bottom */}
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.07]" 
+           style={{
+             backgroundImage: "url('/hero-bg.png')",
+             backgroundSize: "cover",
+             backgroundPosition: "center top",
+             maskImage: "linear-gradient(to bottom, black 0%, transparent 100%)",
+             WebkitMaskImage: "linear-gradient(to bottom, black 0%, transparent 100%)"
+           }} 
+      />
+
+      <div className="max-w-[1320px] mx-auto relative z-10">
 
 
         <div className="flex justify-center w-full">
