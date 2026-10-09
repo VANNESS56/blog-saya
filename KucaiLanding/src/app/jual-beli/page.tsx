@@ -455,7 +455,7 @@ export default function JualBeliPage() {
                     <span className="text-white/60">{value}</span>
                   </div>
                   {copyText && (
-                    <button onClick={() => navigator.clipboard.writeText(copyText)} className="px-3 py-1.5 bg-[#0088cc]/20 hover:bg-[#0088cc]/40 border border-[#0088cc]/20 text-[#0088cc] rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0">
+                    <button onClick={() => navigator.clipboard.writeText(copyText)} className="px-3 py-1.5 bg-[#0ea5e9]/20 hover:bg-[#0ea5e9]/40 border border-[#0ea5e9]/20 text-[#0ea5e9] rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0">
                       Salin
                     </button>
                   )}
@@ -484,8 +484,8 @@ export default function JualBeliPage() {
             
             <div className="bg-[#0b141a] border border-white/5 rounded-xl p-3.5 shadow-inner mt-1 mb-1">
               <div className="flex flex-col gap-2 font-mono text-[14px] font-bold tracking-wide">
-                <div className="text-white">🌎 WORLD : <span className="text-blue-400">{world}</span></div>
-                <div className="text-white">🤴 OWNER : <span className="text-blue-400">{owner}</span></div>
+                <div className="text-white">🌎 WORLD : <span className="text-[#0ea5e9]">{world}</span></div>
+                <div className="text-white">🤴 OWNER : <span className="text-[#0ea5e9]">{owner}</span></div>
               </div>
             </div>
 
@@ -552,8 +552,8 @@ export default function JualBeliPage() {
           {messages.map((msg, idx) => (
             <div key={msg.id || idx} className={`relative z-10 flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
               <div className={`relative max-w-[85%] md:max-w-[75%] px-4 pt-3 pb-6 rounded-[20px] text-sm leading-relaxed shadow-sm ${msg.sender === "customer"
-                  ? "bg-[#0088cc] text-white rounded-br-sm"
-                  : "bg-[#202c33] text-gray-100 rounded-bl-sm border border-white/5"
+                  ? "bg-[#0ea5e9] text-white rounded-br-sm"
+                  : "bg-[#1f2c34] text-gray-100 rounded-bl-sm border border-white/5"
                 }`}>
                 {renderMessageText(msg, idx)}
                 <div suppressHydrationWarning className={`absolute bottom-1.5 right-3 text-[10px] ${msg.sender === "customer" ? "text-white/70" : "text-white/40"}`}>
@@ -680,10 +680,10 @@ export default function JualBeliPage() {
               ) : (
                 <>
                   <input type="file" ref={fileInputRef} accept="image/*" multiple onChange={handleSelectProof} className="hidden" />
-                  <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="w-full py-4 bg-emerald-600 hover:bg-emerald-500 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
+                  <button onClick={() => fileInputRef.current?.click()} disabled={uploading} className="w-full py-4 bg-[#00a884] hover:bg-[#00bfa5] rounded-[24px] text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
                     📸 Ambil / pilih foto bukti (Maks 2)
                   </button>
-                  <button onClick={handleCancelTransaction} disabled={uploading} className="w-full py-3 bg-red-900/40 hover:bg-red-900/60 border border-red-500/30 rounded-2xl text-red-200 text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
+                  <button onClick={handleCancelTransaction} disabled={uploading} className="w-full py-3 bg-[#4a1622] hover:bg-[#5a1b28] rounded-[24px] text-[#f9d7d9] text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98] disabled:opacity-50">
                     ❌ Batalkan transaksi
                   </button>
                 </>
@@ -697,12 +697,12 @@ export default function JualBeliPage() {
                 onChange={e => setInput(e.target.value)}
                 disabled={!sessionId}
                 placeholder="Ketik pesan..."
-                className="flex-1 bg-[#202c33] border border-white/5 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 focus:bg-[#2a3942] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+                className="flex-1 bg-[#1f2c34] border border-white/5 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-[#0ea5e9] focus:bg-[#2a3942] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || sending || !sessionId}
-                className="w-12 h-12 shrink-0 bg-[#0088cc] hover:bg-[#0099e6] disabled:bg-[#2a3942] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
+                className="w-12 h-12 shrink-0 bg-[#0ea5e9] hover:bg-[#0284c7] disabled:bg-[#1f2c34] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
               >
                 <Send className="w-5 h-5 ml-1" />
               </button>
