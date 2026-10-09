@@ -527,14 +527,6 @@ export default function JualBeliPage() {
           </div>
         </div>
 
-        {/* Notes Bubble */}
-        <div className="px-4 py-2.5 bg-[#1a120e]/80 border-b border-amber-900/20">
-          <div className="flex items-center gap-2.5 bg-[#1a120e] border border-amber-900/30 rounded-full px-4 py-2 shadow-inner">
-            <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shrink-0 shadow-[0_0_6px_rgba(245,158,11,0.6)]" />
-            <span className="text-white/90 text-[13px] font-semibold tracking-wide">UPDATE / INFO DI SALURAN WA YA 🥰</span>
-          </div>
-        </div>
-
         {/* Chat Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           <div className="text-center pb-2">
