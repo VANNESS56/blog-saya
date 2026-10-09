@@ -58,17 +58,34 @@ export default function JualBeliPage() {
   }, []);
 
   useEffect(() => {
-    supabase.from("site_settings").select("value").eq("key", "jual_beli_reply").single().then(({ data }) => {
-      if (data) setJualBeliReply(data.value);
-    });
-    supabase.from("site_settings").select("value").eq("key", "sell_reply").single().then(({ data }) => {
-      if (data) setSellReply(data.value);
-    });
-    supabase.from("site_settings").select("value").eq("key", "payment_methods").single().then(({ data }) => {
-      if (data && data.value) {
-        setPaymentMethodList(data.value.split(",").map((s: string) => s.trim()).filter(Boolean));
+    // Fetch initial values
+    supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply", "payment_methods"]).then(({ data }) => {
+      if (data) {
+        data.forEach(item => {
+          if (item.key === "jual_beli_reply") setJualBeliReply(item.value);
+          if (item.key === "sell_reply") setSellReply(item.value);
+          if (item.key === "payment_methods" && item.value) {
+            setPaymentMethodList(item.value.split(",").map((s: string) => s.trim()).filter(Boolean));
+          }
+        });
       }
     });
+
+    // Subscribe to realtime changes
+    const settingsChannel = supabase.channel('public:site_settings')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, (payload: any) => {
+        const { key, value } = payload.new;
+        if (key === "jual_beli_reply") setJualBeliReply(value);
+        if (key === "sell_reply") setSellReply(value);
+        if (key === "payment_methods" && value) {
+          setPaymentMethodList(value.split(",").map((s: string) => s.trim()).filter(Boolean));
+        }
+      })
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(settingsChannel);
+    };
   }, []);
 
   useEffect(() => {
