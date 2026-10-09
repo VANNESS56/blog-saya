@@ -351,7 +351,7 @@ export default function JualBeliPage() {
   };
 
   const renderMessageText = (msg: Msg) => {
-    const safeMessage = msg.message || "";
+    let safeMessage = msg.message || "";
     if (msg.image_url) {
       return (
         <div className="flex flex-col space-y-2">
