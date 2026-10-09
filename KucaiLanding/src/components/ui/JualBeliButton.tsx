@@ -1,10 +1,32 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase";
 
 export function JualBeliButton() {
   const pathname = usePathname();
+  const [enabled, setEnabled] = useState(true);
+
+  useEffect(() => {
+    supabase.from("site_settings").select("value").eq("key", "floating_button_enabled").single().then(({ data }) => {
+      if (data && data.value === "false") {
+        setEnabled(false);
+      }
+    });
+    
+    // Listen for realtime updates to this setting
+    const ch = supabase.channel("site_settings_floating_btn")
+      .on("postgres_changes", { event: "UPDATE", schema: "public", table: "site_settings", filter: "key=eq.floating_button_enabled" }, (payload: any) => {
+        setEnabled(payload.new.value === "true");
+      }).subscribe();
+      
+    return () => { supabase.removeChannel(ch); };
+  }, []);
+
   if (pathname?.startsWith("/admin") || pathname?.startsWith("/jual-beli")) return null;
+  if (!enabled) return null;
+
   return <JualBeliInner />;
 }
 

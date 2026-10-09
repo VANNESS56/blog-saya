@@ -248,7 +248,7 @@ export async function POST(req: NextRequest) {
       }
 
       case "saveKucaiDLSettings": {
-        const { jualBeliReply, sellReply, paymentMethods } = data;
+        const { jualBeliReply, sellReply, paymentMethods, floatingButtonEnabled } = data;
         if (jualBeliReply !== undefined) {
           await supabaseAdmin.from("site_settings").upsert({
             key: "jual_beli_reply",
@@ -268,6 +268,13 @@ export async function POST(req: NextRequest) {
             key: "payment_methods",
             value: paymentMethods,
             description: "Daftar metode pembayaran Kucai DL",
+          });
+        }
+        if (floatingButtonEnabled !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "floating_button_enabled",
+            value: floatingButtonEnabled,
+            description: "Menampilkan/menyembunyikan tombol floating Jual/Beli",
           });
         }
         return NextResponse.json({ success: true });

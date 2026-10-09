@@ -1852,6 +1852,7 @@ function ManageKucaiDLSettings() {
   const [jualBeliReply, setJualBeliReply] = useState("");
   const [sellReply, setSellReply] = useState("");
   const [paymentMethods, setPaymentMethods] = useState("Gopay, Dana, OVO, ShopeePay, LinkAja, BCA, Mandiri, BNI, BRI, SeaBank, Jago, BSI, Permata, CIMB Niaga, Blu");
+  const [floatingButtonEnabled, setFloatingButtonEnabled] = useState(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
@@ -1866,6 +1867,9 @@ function ManageKucaiDLSettings() {
       const { data: dataPayment } = await supabase.from("site_settings").select("value").eq("key", "payment_methods").single();
       if (dataPayment) setPaymentMethods(dataPayment.value);
 
+      const { data: dataFloatingBtn } = await supabase.from("site_settings").select("value").eq("key", "floating_button_enabled").single();
+      if (dataFloatingBtn) setFloatingButtonEnabled(dataFloatingBtn.value === "true");
+
       setLoading(false);
     }
     fetchSettings();
@@ -1875,7 +1879,12 @@ function ManageKucaiDLSettings() {
     e.preventDefault();
     setSaving(true);
     try {
-      const result = await adminApi("saveKucaiDLSettings", { jualBeliReply, sellReply, paymentMethods });
+      const result = await adminApi("saveKucaiDLSettings", { 
+        jualBeliReply, 
+        sellReply, 
+        paymentMethods,
+        floatingButtonEnabled: floatingButtonEnabled ? "true" : "false" 
+      });
       if (result.error) throw new Error(result.error);
       Swal.fire({ title: "Berhasil!", text: "Teks balasan promosi berhasil diperbarui.", icon: "success" });
     } catch (err: any) {
@@ -1888,8 +1897,18 @@ function ManageKucaiDLSettings() {
 
   return (
     <div className="bg-[#140e0b] rounded-lg shadow-[0_4px_20px_rgba(0,0,0,0.3)] border border-amber-900/20 overflow-hidden m-6">
-      <div className="px-6 py-4 border-b border-amber-900/20">
+      <div className="px-6 py-4 border-b border-amber-900/20 flex justify-between items-center">
         <h3 className="text-lg font-semibold text-white/90">Kucai DL Settings</h3>
+        <div className="flex items-center gap-3">
+          <span className="text-sm font-medium text-white/70">Tampilkan Tombol Floating:</span>
+          <button
+            type="button"
+            onClick={() => setFloatingButtonEnabled(!floatingButtonEnabled)}
+            className={`w-12 h-6 rounded-full p-1 transition-colors relative ${floatingButtonEnabled ? "bg-emerald-500" : "bg-red-500/50"}`}
+          >
+            <div className={`w-4 h-4 bg-white rounded-full transition-transform absolute top-1 ${floatingButtonEnabled ? "translate-x-6 left-1" : "translate-x-0 left-1"}`} />
+          </button>
+        </div>
       </div>
       <form onSubmit={handleSave} className="p-6 grid grid-cols-1 gap-6">
         <div>
