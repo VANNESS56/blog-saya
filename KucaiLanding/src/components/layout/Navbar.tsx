@@ -95,14 +95,12 @@ export function Navbar() {
             </div>
 
             {/* CTA */}
-            <a
-              href={`https://wa.me/${activeWa}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/jual-beli"
               className="hidden sm:inline-flex items-center justify-center h-[38px] px-6 rounded-lg font-bold text-[13px] text-white bg-gradient-to-b from-amber-500 to-amber-600 hover:brightness-110 transition-all"
             >
               Order Now
-            </a>
+            </Link>
 
             {/* Mobile Toggle */}
             <button
@@ -134,14 +132,13 @@ export function Navbar() {
               ))}
             </div>
 
-            <a
-              href={`https://wa.me/${activeWa}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/jual-beli"
+              onClick={() => setMobileMenuOpen(false)}
               className="w-full flex items-center justify-center h-[42px] bg-amber-500 text-white rounded-lg font-bold text-[14px]"
             >
-              Order via WhatsApp
-            </a>
+              Order Now
+            </Link>
           </div>
         )}
       </header>
