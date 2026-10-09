@@ -503,7 +503,7 @@ export default function JualBeliPage() {
       <div className="w-full max-w-2xl bg-[#0b141a] flex flex-col min-h-screen relative shadow-2xl md:border-x border-white/5">
 
         {/* Header with WhatsApp-style Notes */}
-        <div className="flex flex-col sticky top-0 z-10 border-b border-white/5 bg-[#0b141a]/95 backdrop-blur-md">
+        <div className="flex flex-col sticky top-0 z-50 border-b border-white/5 bg-[#0b141a]/95 backdrop-blur-md">
           <div className="flex items-center gap-4 px-5 pt-4 pb-2 relative">
             <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-blue-900/20 -ml-2">
               <ArrowLeft className="w-5 h-5" />
