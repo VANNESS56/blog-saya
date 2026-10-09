@@ -1968,13 +1968,14 @@ function ManageOperationalSettings() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
-    const { error } = await supabase.from("site_settings").upsert({ key: "store_status", value: storeStatus });
-    setSaving(false);
-    if (error) {
-      Swal.fire("Gagal", "Gagal menyimpan pengaturan toko", "error");
-    } else {
+    try {
+      const result = await adminApi("saveStoreStatus", { storeStatus });
+      if (result.error) throw new Error(result.error);
       Swal.fire("Tersimpan", "Status toko berhasil diubah", "success");
+    } catch (error: any) {
+      Swal.fire("Gagal", "Gagal menyimpan pengaturan toko", "error");
     }
+    setSaving(false);
   };
 
   return (

@@ -247,6 +247,18 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ success: true });
       }
 
+      case "saveStoreStatus": {
+        const { storeStatus } = data;
+        if (storeStatus !== undefined) {
+          await supabaseAdmin.from("site_settings").upsert({
+            key: "store_status",
+            value: storeStatus,
+            description: "Status operasional toko (open/close)",
+          });
+        }
+        return NextResponse.json({ success: true });
+      }
+
       case "saveKucaiDLSettings": {
         const { jualBeliReply, sellReply, paymentMethods, floatingButtonEnabled } = data;
         if (jualBeliReply !== undefined) {
