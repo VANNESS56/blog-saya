@@ -363,7 +363,7 @@ export default function JualBeliPage() {
   const formatText = (text: string) => {
     // Parse URLs, *bold*, _italic_, ~strike~
     let html = text
-      .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-amber-400 hover:underline break-all">$1</a>')
+      .replace(/(https?:\/\/[^\s]+)/g, '<a href="$1" target="_blank" rel="noopener noreferrer" class="text-blue-400 hover:underline break-all">$1</a>')
       .replace(/\*(.*?)\*/g, "<strong>$1</strong>")
       .replace(/_(.*?)_/g, "<em>$1</em>")
       .replace(/~(.*?)~/g, "<del>$1</del>");
@@ -399,8 +399,8 @@ export default function JualBeliPage() {
             ‼️ <strong>QRIS untuk tf dari bank yg ga bisa tf ke e-wallet</strong><br/>
             ‼️ <strong>QRIS untuk tf dari Ewallet yg belum premium</strong>
             <br/><br/>
-            <span className="text-amber-400">✔</span> Pembelian di bawah 100k gratis tax .<br/>
-            <span className="text-amber-400">✔</span> Biaya 1% jika pembelian di atas 500k .
+            <span className="text-blue-400">✔</span> Pembelian di bawah 100k gratis tax .<br/>
+            <span className="text-blue-400">✔</span> Biaya 1% jika pembelian di atas 500k .
           </div>
           
           <div className="bg-white rounded-xl p-2 pb-0 w-[160px]">
@@ -418,9 +418,10 @@ export default function JualBeliPage() {
     if (msg.sender === "admin") {
       let isBuyPromo = displayMessage === "[PROMO_BELI]" || displayMessage.includes("Rate beli ke KucaiDL") || displayMessage.includes("Payment transfer ke ewallet");
       let isSellPromo = displayMessage === "[PROMO_JUAL]" || displayMessage.includes("MINIM SELL") || displayMessage.includes("Rate Jual ke KucaiDL");
+      let isStoreCloseMsg = displayMessage.includes("Toko close");
       
       // Fallback: reliably identify legacy promo messages based on the previous message
-      if (!isBuyPromo && !isSellPromo && msgIdx > 0) {
+      if (!isBuyPromo && !isSellPromo && !isStoreCloseMsg && msgIdx > 0) {
         const prevMsg = messages[msgIdx - 1];
         if (prevMsg && prevMsg.sender === "customer") {
           if (prevMsg.message === "Bang, saya mau beli DL 🙏") isBuyPromo = true;
@@ -454,7 +455,7 @@ export default function JualBeliPage() {
                     <span className="text-white/60">{value}</span>
                   </div>
                   {copyText && (
-                    <button onClick={() => navigator.clipboard.writeText(copyText)} className="px-3 py-1.5 bg-amber-600/20 hover:bg-amber-600/40 border border-amber-500/20 text-amber-400 rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0">
+                    <button onClick={() => navigator.clipboard.writeText(copyText)} className="px-3 py-1.5 bg-blue-600/20 hover:bg-blue-600/40 border border-blue-500/20 text-blue-400 rounded-lg text-xs font-bold transition-colors active:scale-95 shrink-0">
                       Salin
                     </button>
                   )}
@@ -483,8 +484,8 @@ export default function JualBeliPage() {
             
             <div className="bg-[#0b101a] border border-white/5 rounded-xl p-3.5 shadow-inner mt-1 mb-1">
               <div className="flex flex-col gap-2 font-mono text-[14px] font-bold tracking-wide">
-                <div className="text-white">🌎 WORLD : <span className="text-amber-400">{world}</span></div>
-                <div className="text-white">🤴 OWNER : <span className="text-amber-400">{owner}</span></div>
+                <div className="text-white">🌎 WORLD : <span className="text-blue-400">{world}</span></div>
+                <div className="text-white">🤴 OWNER : <span className="text-blue-400">{owner}</span></div>
               </div>
             </div>
 
@@ -499,21 +500,21 @@ export default function JualBeliPage() {
 
   return (
     <div className="min-h-screen bg-[#0c0805] flex justify-center">
-      <div className="w-full max-w-2xl bg-[#140e0b] flex flex-col min-h-screen relative shadow-2xl md:border-x border-amber-900/20">
+      <div className="w-full max-w-2xl bg-[#140e0b] flex flex-col min-h-screen relative shadow-2xl md:border-x border-blue-900/20">
 
         {/* Header with WhatsApp-style Notes */}
-        <div className="flex flex-col sticky top-0 z-10 border-b border-amber-900/20 bg-[#140e0b]/95 backdrop-blur-md">
+        <div className="flex flex-col sticky top-0 z-10 border-b border-blue-900/20 bg-[#140e0b]/95 backdrop-blur-md">
           <div className="flex items-center gap-4 px-5 pt-4 pb-2 relative">
-            <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-amber-900/20 -ml-2">
+            <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-blue-900/20 -ml-2">
               <ArrowLeft className="w-5 h-5" />
             </button>
-            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-amber-500 relative z-10">
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-blue-500 relative z-10">
               <img src="/kucaidl-profile.jpg" className="w-full h-full object-cover" alt="Kucai DL" />
             </div>
             <div>
               <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
-              <p className="text-amber-400 text-xs flex items-center gap-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)]" /> Online
+              <p className="text-blue-400 text-xs flex items-center gap-1.5 mt-0.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)]" /> Online
               </p>
             </div>
           </div>
@@ -521,11 +522,11 @@ export default function JualBeliPage() {
           <div className="px-5 pb-4 relative z-0">
             {/* Tail Circles */}
             <div className="absolute -top-1 left-[64px] flex flex-col items-center gap-[3px]">
-               <div className="w-1.5 h-1.5 rounded-full bg-[#1a120e] border border-amber-900/30"></div>
-               <div className="w-2.5 h-2.5 rounded-full bg-[#1a120e] border border-amber-900/30 -ml-3"></div>
+               <div className="w-1.5 h-1.5 rounded-full bg-[#1a120e] border border-blue-900/30"></div>
+               <div className="w-2.5 h-2.5 rounded-full bg-[#1a120e] border border-blue-900/30 -ml-3"></div>
             </div>
             
-            <div className="bg-[#1a120e] border border-amber-900/30 rounded-full px-4 py-2 inline-flex items-center gap-2.5 relative shadow-lg ml-2">
+            <div className="bg-[#1a120e] border border-blue-900/30 rounded-full px-4 py-2 inline-flex items-center gap-2.5 relative shadow-lg ml-2">
               <div className="w-3 h-3 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
               <span className="text-white/90 text-[11px] font-bold tracking-wide uppercase">UPDATE / INFO DI SALURAN WA YA 🥰</span>
             </div>
@@ -535,14 +536,14 @@ export default function JualBeliPage() {
         {/* Chat Area */}
         <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4">
           <div className="text-center pb-2">
-            <span className="bg-amber-900/20 text-amber-200/50 text-[10px] font-medium px-3 py-1 rounded-full">Hari ini</span>
+            <span className="bg-blue-900/20 text-blue-200/50 text-[10px] font-medium px-3 py-1 rounded-full">Hari ini</span>
           </div>
 
           {messages.map((msg, idx) => (
             <div key={msg.id || idx} className={`flex ${msg.sender === "customer" ? "justify-end" : "justify-start"}`}>
               <div className={`relative max-w-[85%] md:max-w-[75%] px-4 pt-3 pb-6 rounded-[20px] text-sm leading-relaxed shadow-sm ${msg.sender === "customer"
-                  ? "bg-amber-600 text-white rounded-br-sm"
-                  : "bg-[#1a120e] text-gray-100 rounded-bl-sm border border-amber-900/20"
+                  ? "bg-blue-600 text-white rounded-br-sm"
+                  : "bg-[#1a120e] text-gray-100 rounded-bl-sm border border-blue-900/20"
                 }`}>
                 {renderMessageText(msg, idx)}
                 <div suppressHydrationWarning className={`absolute bottom-1.5 right-3 text-[10px] ${msg.sender === "customer" ? "text-white/70" : "text-white/40"}`}>
@@ -558,13 +559,13 @@ export default function JualBeliPage() {
         </div>
 
         {/* Input Area / Keyboard Options */}
-        <div className="p-4 bg-[#140e0b] border-t border-amber-900/20 sticky bottom-0 z-10">
+        <div className="p-4 bg-[#140e0b] border-t border-blue-900/20 sticky bottom-0 z-10">
           {showOptions ? (
             <div className="flex gap-2 w-full max-w-4xl mx-auto">
-              <button onClick={() => handleSelectMode("buy")} className="flex-1 py-4 bg-[#1a120e] hover:bg-amber-900/30 border border-amber-900/30 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button onClick={() => handleSelectMode("buy")} className="flex-1 py-4 bg-[#1a120e] hover:bg-blue-900/30 border border-blue-900/30 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
                 🛒 Beli DL/BGL
               </button>
-              <button onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#1a120e] hover:bg-amber-900/30 border border-amber-900/30 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#1a120e] hover:bg-blue-900/30 border border-blue-900/30 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
                 💰 Jual DL/BGL
               </button>
             </div>
@@ -576,24 +577,24 @@ export default function JualBeliPage() {
                   {trxMode === "buy" ? (
                     <>
                       <div>
-                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Isi Nama World" className="w-full bg-[#1a120e] border border-blue-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-blue-500 transition-colors" />
                       </div>
                       <div>
-                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Isi Nama GrowID" className="w-full bg-[#1a120e] border border-blue-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-blue-500 transition-colors" />
                       </div>
                     </>
                   ) : (
                     <>
                       <div className="relative">
                          <div 
-                           className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors cursor-pointer flex justify-between items-center"
+                           className="w-full bg-[#1a120e] border border-blue-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none transition-colors cursor-pointer flex justify-between items-center"
                            onClick={() => setShowPaymentOptions(!showPaymentOptions)}
                          >
                            <span className={paymentMethod ? "text-white" : "text-white/50"}>{paymentMethod || "Pilih Metode Pembayaran"}</span>
                            <span className="text-white/30 text-xs">▼</span>
                          </div>
                          {showPaymentOptions && (
-                           <div className="absolute bottom-[calc(100%+8px)] left-0 w-full bg-[#1a120e] border border-amber-900/30 rounded-xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] overflow-hidden z-20">
+                           <div className="absolute bottom-[calc(100%+8px)] left-0 w-full bg-[#1a120e] border border-blue-900/30 rounded-xl shadow-[0_-8px_30px_rgba(0,0,0,0.5)] overflow-hidden z-20">
                              <input 
                                type="text" 
                                value={searchPayment} 
@@ -615,7 +616,7 @@ export default function JualBeliPage() {
                                          setGrowId(p.accountName || "");
                                          setShowPaymentOptions(false); 
                                        }}
-                                       className="px-4 py-3 hover:bg-amber-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 font-medium flex justify-between items-center"
+                                       className="px-4 py-3 hover:bg-blue-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 font-medium flex justify-between items-center"
                                      >
                                        <span>{p.method} <span className="text-white/50 text-xs tracking-wider">{((p.accountNo || "").length > 5 ? (p.accountNo || "").substring(0,2) + "•".repeat(4) + (p.accountNo || "").slice(-3) : (p.accountNo || ""))}</span></span>
                                        <span className="text-white/40 text-xs max-w-[100px] truncate">{p.accountName}</span>
@@ -639,7 +640,7 @@ export default function JualBeliPage() {
                                    <div 
                                      key={p} 
                                      onClick={() => { setPaymentMethod(p); setShowPaymentOptions(false); setSearchPayment(""); }}
-                                     className="px-4 py-3 hover:bg-amber-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 last:border-0"
+                                     className="px-4 py-3 hover:bg-blue-600/20 text-white text-sm cursor-pointer transition-colors border-b border-white/5 last:border-0"
                                    >
                                      {p}
                                    </div>
@@ -652,14 +653,14 @@ export default function JualBeliPage() {
                          )}
                       </div>
                       <div>
-                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={worldName} onChange={e => setWorldName(e.target.value)} required placeholder="Nomor Rekening / E-Wallet" className="w-full bg-[#1a120e] border border-blue-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-blue-500 transition-colors" />
                       </div>
                       <div>
-                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Atas Nama" className="w-full bg-[#1a120e] border border-amber-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-amber-500 transition-colors" />
+                        <input type="text" value={growId} onChange={e => setGrowId(e.target.value)} required placeholder="Atas Nama" className="w-full bg-[#1a120e] border border-blue-900/30 rounded-xl px-4 py-3 text-white text-sm outline-none focus:border-blue-500 transition-colors" />
                       </div>
                     </>
                   )}
-                  <button type="submit" disabled={uploading} className="w-full py-3.5 bg-amber-600 hover:bg-amber-500 rounded-xl text-white text-sm font-bold transition-colors disabled:opacity-50 mt-2">
+                  <button type="submit" disabled={uploading} className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 rounded-xl text-white text-sm font-bold transition-colors disabled:opacity-50 mt-2">
                     {uploading ? "Mengirim..." : "Kirim Bukti & Data"}
                   </button>
                   <button type="button" onClick={() => setProofFiles([])} disabled={uploading} className="w-full py-2 text-white/50 hover:text-white/80 text-xs transition-colors">
@@ -686,12 +687,12 @@ export default function JualBeliPage() {
                 onChange={e => setInput(e.target.value)}
                 disabled={!sessionId}
                 placeholder="Ketik pesan..."
-                className="flex-1 bg-[#1a120e] border border-amber-900/30 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 focus:bg-[#1e150f] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+                className="flex-1 bg-[#1a120e] border border-blue-900/30 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 focus:bg-[#1e150f] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
               />
               <button
                 type="submit"
                 disabled={!input.trim() || sending || !sessionId}
-                className="w-12 h-12 shrink-0 bg-amber-600 hover:bg-amber-500 disabled:bg-[#1e293b] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
+                className="w-12 h-12 shrink-0 bg-blue-600 hover:bg-blue-500 disabled:bg-[#1e293b] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
               >
                 <Send className="w-5 h-5 ml-1" />
               </button>

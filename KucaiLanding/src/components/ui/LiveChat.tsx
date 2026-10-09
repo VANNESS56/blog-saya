@@ -365,7 +365,7 @@ function LiveChatInner() {
         >
           {/* Header */}
           <div 
-            className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-600 to-orange-600 shrink-0 select-none cursor-grab active:cursor-grabbing"
+            className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-500 shrink-0 select-none cursor-grab active:cursor-grabbing"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -404,7 +404,7 @@ function LiveChatInner() {
           {!nameSubmitted ? (
             /* Name Input Form */
             <div className="flex-1 flex flex-col items-center justify-center p-6">
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-amber-600/20 flex items-center justify-center mb-4">
+              <div className="w-14 h-14 rounded-full overflow-hidden bg-blue-600/20 flex items-center justify-center mb-4">
                 <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Kucai" width={56} height={56} className="object-cover w-full h-full" />
               </div>
               <h3 className="text-white font-bold text-lg mb-1">
@@ -426,7 +426,7 @@ function LiveChatInner() {
                 <button
                   type="submit"
                   disabled={!customerName.trim()}
-                  className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
                 >
                   Mulai Chat
                 </button>
@@ -534,14 +534,14 @@ function LiveChatInner() {
       {/* Floating Button */}
       <button
         onClick={handleOpen}
-        className="h-[52px] md:h-14 px-4 bg-amber-600 hover:bg-amber-700 text-white rounded-[20px] flex items-center gap-3 shadow-[0_8px_24px_rgba(245,158,11,0.4)] hover:scale-105 transition-all duration-300 relative group overflow-hidden pointer-events-auto"
+        className="h-[52px] md:h-14 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-[20px] flex items-center gap-3 shadow-[0_8px_24px_rgba(245,158,11,0.4)] hover:scale-105 transition-all duration-300 relative group overflow-hidden pointer-events-auto"
       >
-        <div className="absolute inset-0 rounded-[20px] border-2 border-amber-500/40 scale-100 group-hover:scale-105 transition-transform duration-500" />
+        <div className="absolute inset-0 rounded-[20px] border-2 border-blue-500/40 scale-100 group-hover:scale-105 transition-transform duration-500" />
         <div className="relative z-10 flex flex-col items-end text-right leading-none">
           <span className="font-black text-[13px] tracking-wide">Live Chat</span>
           <span className="text-[10px] font-bold text-white/90 mt-1 uppercase tracking-wider">Hubungi Kami</span>
         </div>
-        <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Chat" width={36} height={36} className="relative z-10 rounded-full w-9 h-9 object-cover border-2 border-amber-400/50 shadow-md" />
+        <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Chat" width={36} height={36} className="relative z-10 rounded-full w-9 h-9 object-cover border-2 border-blue-400/50 shadow-md" />
         {unread > 0 && (
           <span className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center z-20 animate-bounce">
             {unread}
@@ -555,7 +555,7 @@ function LiveChatInner() {
           <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center">
             <button
               onClick={() => setPreviewImage(null)}
-              className="absolute top-4 right-4 text-white hover:text-amber-500 bg-black/50 w-10 h-10 flex items-center justify-center rounded-full transition-colors z-10 text-xl font-bold"
+              className="absolute top-4 right-4 text-white hover:text-blue-500 bg-black/50 w-10 h-10 flex items-center justify-center rounded-full transition-colors z-10 text-xl font-bold"
             >
               ✕
             </button>
