@@ -1891,7 +1891,30 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
 
   useEffect(() => {
     fetchData();
-  }, [fetchData]);
+    
+    // Auto-refresh when there are changes to chat_messages or chat_sessions
+    const channel = supabase
+      .channel(`kucaidl_grid_${filter}_changes`)
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'chat_messages' },
+        () => {
+          fetchData();
+        }
+      )
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'chat_sessions' },
+        () => {
+          fetchData();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [fetchData, filter]);
 
   if (loading) {
     return <div className="p-8 text-center text-white/50 animate-pulse">Memuat data...</div>;
