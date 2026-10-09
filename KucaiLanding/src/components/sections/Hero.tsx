@@ -86,7 +86,7 @@ export function Hero() {
   }, []);
 
   return (
-    <section className="pt-[160px] pb-6 px-4 md:px-6 relative">
+    <section className="pt-[120px] pb-6 px-4 md:px-6 relative">
       {/* Background Image with fade out at bottom */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-10" 
            style={{
@@ -107,8 +107,7 @@ export function Hero() {
             {/* Content: Rate Card Style */}
             <div className="relative z-10 w-full h-full flex flex-col items-center justify-center p-6 md:p-10">
               
-              {/* Rate Box */}
-              <div className="relative bg-[#101010] border border-amber-500 rounded-[24px] p-6 md:p-8 w-full max-w-[800px] shadow-[0_0_40px_rgba(245,158,11,0.15)] flex flex-col mt-10">
+              <div className="relative bg-[#101010] border border-amber-500 rounded-[24px] p-6 md:p-8 w-full max-w-[800px] shadow-[0_0_40px_rgba(245,158,11,0.15)] flex flex-col mt-6">
                 
                 {/* Diagonal light streaks */}
                 <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[24px]">
