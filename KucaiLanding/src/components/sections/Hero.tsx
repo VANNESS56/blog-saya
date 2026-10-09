@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useSettings } from "@/lib/settings/SettingsContext";
 import { MessageCircle } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Hero() {
   const { t } = useLanguage();
@@ -124,87 +125,96 @@ export function Hero() {
                   </span>
                 </div>
 
-                <div key={activeRate} className="flex flex-col md:flex-row items-center justify-between w-full mt-4 gap-6 relative z-10 animate-[fadeIn_0.5s_ease-out]">
-                  {/* Icon */}
-                  <div className="flex items-center justify-center md:w-[30%]">
-                    <div className="w-[140px] h-[140px] md:w-[180px] md:h-[180px] relative drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">
-                      <Image src={activeRate === "DL" ? "/dl.png" : "/bgl.png"} alt={activeRate === "DL" ? "Diamond Lock" : "Blue Gem Lock"} fill className="object-contain" />
-                    </div>
-                  </div>
-
-                  {/* Right Side Content */}
-                  <div className="flex flex-col w-full md:w-[70%] gap-4">
-                    <div className="flex flex-col mb-1 text-center md:text-left">
-                      <h2 className="text-white font-bold text-[22px] tracking-wide">
-                        {activeRate === "DL" ? "Diamond Lock" : "Blue Gem Lock"} <span className="text-gray-500 font-medium">{activeRate}</span>
-                      </h2>
-                    </div>
-
-                    {/* Price Boxes */}
-                    <div className="flex gap-4 w-full">
-                      {/* KAMU BELI */}
-                      <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
-                        <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU BELI</span>
-                        <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
-                          {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlBuy : prices.bglBuy}`}
-                        </span>
-                      </div>
-
-                      {/* KAMU JUAL */}
-                      <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
-                        <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU JUAL</span>
-                        <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
-                          {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlSell : prices.bglSell}`}
-                        </span>
+                <AnimatePresence mode="wait">
+                  <motion.div 
+                    key={activeRate} 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.4, ease: "easeOut" }}
+                    className="flex flex-col md:flex-row items-center justify-between w-full mt-4 gap-6 relative z-10"
+                  >
+                    {/* Icon */}
+                    <div className="flex items-center justify-center md:w-[30%]">
+                      <div className="w-[140px] h-[140px] md:w-[180px] md:h-[180px] relative drop-shadow-[0_0_30px_rgba(245,158,11,0.4)]">
+                        <Image src={activeRate === "DL" ? "/dl.png" : "/bgl.png"} alt={activeRate === "DL" ? "Diamond Lock" : "Blue Gem Lock"} fill className="object-contain" />
                       </div>
                     </div>
 
-                    {/* Action Buttons */}
-                    <div className="flex gap-4 w-full mt-2">
-                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
-                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
-                        className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#ffd000] to-[#f59e0b] shadow-[inset_0_2px_2px_rgba(255,255,255,0.5),inset_0_-4px_4px_rgba(0,0,0,0.15),0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/20">
-                        
-                        {punches.map(p => (
-                          <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
-                            👊
+                    {/* Right Side Content */}
+                    <div className="flex flex-col w-full md:w-[70%] gap-4">
+                      <div className="flex flex-col mb-1 text-center md:text-left">
+                        <h2 className="text-white font-bold text-[22px] tracking-wide">
+                          {activeRate === "DL" ? "Diamond Lock" : "Blue Gem Lock"} <span className="text-gray-500 font-medium">{activeRate}</span>
+                        </h2>
+                      </div>
+
+                      {/* Price Boxes */}
+                      <div className="flex gap-4 w-full">
+                        {/* KAMU BELI */}
+                        <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+                          <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU BELI</span>
+                          <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
+                            {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlBuy : prices.bglBuy}`}
+                          </span>
+                        </div>
+
+                        {/* KAMU JUAL */}
+                        <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
+                          <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU JUAL</span>
+                          <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
+                            {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlSell : prices.bglSell}`}
+                          </span>
+                        </div>
+                      </div>
+
+                      {/* Action Buttons */}
+                      <div className="flex gap-4 w-full mt-2">
+                        <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
+                          onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
+                          className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#ffd000] to-[#f59e0b] shadow-[inset_0_2px_2px_rgba(255,255,255,0.5),inset_0_-4px_4px_rgba(0,0,0,0.15),0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/20">
+                          
+                          {punches.map(p => (
+                            <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
+                              👊
+                            </div>
+                          ))}
+
+                          <div className="w-8 h-8 rounded-full bg-black/90 flex items-center justify-center text-amber-500 shrink-0">
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
                           </div>
-                        ))}
-
-                        <div className="w-8 h-8 rounded-full bg-black/90 flex items-center justify-center text-amber-500 shrink-0">
-                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
-                        </div>
-                        <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                          BELI DL
-                        </div>
-                        <div className="text-black shrink-0 relative z-10">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                        </div>
-                      </a>
-
-                      <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
-                        onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
-                        className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] shadow-[inset_0_2px_2px_rgba(255,255,255,0.4),inset_0_-4px_4px_rgba(0,0,0,0.2),0_0_20px_rgba(234,88,12,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/10">
-                        
-                        {punches.map(p => (
-                          <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
-                            👊
+                          <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
+                            BELI DL
                           </div>
-                        ))}
+                          <div className="text-black shrink-0 relative z-10">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                          </div>
+                        </a>
 
-                        <div className="w-8 h-8 rounded-full bg-black/90 flex items-center justify-center text-[#ea580c] shrink-0">
-                          <span className="font-black text-[16px]">$</span>
-                        </div>
-                        <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                          JUAL DL
-                        </div>
-                        <div className="text-black shrink-0 relative z-10">
-                          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
-                        </div>
-                      </a>
+                        <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
+                          onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
+                          className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] shadow-[inset_0_2px_2px_rgba(255,255,255,0.4),inset_0_-4px_4px_rgba(0,0,0,0.2),0_0_20px_rgba(234,88,12,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/10">
+                          
+                          {punches.map(p => (
+                            <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
+                              👊
+                            </div>
+                          ))}
+
+                          <div className="w-8 h-8 rounded-full bg-black/90 flex items-center justify-center text-[#ea580c] shrink-0">
+                            <span className="font-black text-[16px]">$</span>
+                          </div>
+                          <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
+                            JUAL DL
+                          </div>
+                          <div className="text-black shrink-0 relative z-10">
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
+                          </div>
+                        </a>
+                      </div>
                     </div>
-                  </div>
-                </div>
+                  </motion.div>
+                </AnimatePresence>
 
                 {/* Footer Info inside box */}
                 <div className="flex flex-col items-center gap-2 mt-8 relative z-10">
