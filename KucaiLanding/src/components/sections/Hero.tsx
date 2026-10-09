@@ -119,7 +119,7 @@ export function Hero() {
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#101010] border border-amber-500 px-6 py-1.5 rounded-full whitespace-nowrap shadow-[0_0_15px_rgba(245,158,11,0.3)] z-10 transition-all duration-300">
                   <span className="text-[16px] font-black text-amber-500 tracking-[0.2em] uppercase flex items-center gap-3">
                     <span className="w-3 h-[2px] bg-amber-500"></span>
-                    KUCAI {activeRate}
+                    KUCAI{activeRate}
                     <span className="w-3 h-[2px] bg-amber-500"></span>
                   </span>
                 </div>
