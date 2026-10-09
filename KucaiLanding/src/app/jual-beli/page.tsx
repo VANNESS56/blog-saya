@@ -389,16 +389,22 @@ export default function JualBeliPage() {
       };
 
       return (
-        <div className="w-[240px] md:w-[280px] -mx-4 -my-3 flex flex-col">
-          <img src="/qris.jpg" alt="QRIS Kucai DL" className="w-full h-auto object-cover rounded-t-[19px] border-b border-white/5" />
-          <div className="p-3 bg-[#111928] rounded-b-[19px] rounded-bl-sm">
-            <button onClick={handleDownload} className="w-full py-2 bg-transparent hover:bg-white/5 border border-white/10 rounded-lg text-white text-[13px] font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
-              Simpan gambar QR
-            </button>
-            <p className="text-[10px] text-white/40 mt-2 text-center leading-relaxed px-1">
-              Di HP: simpan dulu, lalu pilih dari galeri saat bayar di aplikasi bank/e-wallet.
-            </p>
+        <div className="w-[240px] md:w-[280px] flex flex-col gap-3">
+          <div className="text-[13px] leading-relaxed text-gray-200">
+            ‼️ <strong>QRIS untuk tf dari bank yg ga bisa tf ke e-wallet</strong><br/>
+            ‼️ <strong>QRIS untuk tf dari Ewallet yg belum premium</strong>
+            <br/><br/>
+            Pembelian di bawah 100k gratis tax .<br/>
+            Biaya 1% jika pembelian di atas 100k .
           </div>
+          
+          <div className="bg-white rounded-xl p-2 pb-0">
+            <img src="/qris.jpg" alt="QRIS Kucai DL" className="w-full h-auto rounded-lg border border-gray-100" />
+          </div>
+
+          <button onClick={handleDownload} className="w-full py-2 bg-transparent hover:bg-white/5 border border-white/10 rounded-lg text-white text-[13px] font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
+            Simpan gambar QR
+          </button>
         </div>
       );
     }
