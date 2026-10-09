@@ -1972,6 +1972,9 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [readSessions, setReadSessions] = useState<Record<string, string>>({});
   const notifAudioRef = useRef<HTMLAudioElement | null>(null);
+  
+  const [jualBeliReply, setJualBeliReply] = useState<string>("");
+  const [sellReply, setSellReply] = useState<string>("");
 
   // Load read status from localStorage + request notification permission
   useEffect(() => {
@@ -1983,6 +1986,25 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
       Notification.requestPermission();
     }
     notifAudioRef.current = new Audio("/notif.mp3");
+
+    supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply"]).then(({ data }) => {
+      if (data) {
+        data.forEach(item => {
+          if (item.key === "jual_beli_reply") setJualBeliReply(item.value);
+          if (item.key === "sell_reply") setSellReply(item.value);
+        });
+      }
+    });
+
+    const settingsChannel = supabase.channel('admin_livechat_settings')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, (payload: any) => {
+        const { key, value } = payload.new;
+        if (key === "jual_beli_reply") setJualBeliReply(value);
+        if (key === "sell_reply") setSellReply(value);
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(settingsChannel); };
   }, []);
 
   const markAsRead = (sessionId: string, lastMessageAt: string) => {
@@ -2301,7 +2323,27 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
                       {(msg as any).image_url && (
                         <img src={(msg as any).image_url} alt="" className="rounded-lg max-w-full max-h-[200px] object-cover mb-1 cursor-pointer" onClick={() => setPreviewImage((msg as any).image_url)} />
                       )}
-                      {msg.message && <span>{renderMessageText(msg.message)}</span>}
+                      {msg.message && (
+                        <span>
+                          {msg.message === "[PROMO_BELI]" 
+                            ? renderMessageText(jualBeliReply || "[PROMO_BELI]") 
+                            : msg.message === "[PROMO_JUAL]" 
+                              ? renderMessageText(sellReply || "[PROMO_JUAL]") 
+                              : msg.message === "[QRIS_IMAGE]" 
+                                ? (
+                                    <div className="flex flex-col gap-2 mt-1">
+                                      <div className="text-xs text-white/80">
+                                        ‼️ <strong>QRIS untuk tf dari bank yg ga bisa tf ke e-wallet</strong><br/>
+                                        ‼️ <strong>QRIS untuk tf dari Ewallet yg belum premium</strong>
+                                      </div>
+                                      <div className="bg-white rounded p-1 max-w-[200px]">
+                                        <img src="/qris.jpg" alt="QRIS" className="w-full h-auto rounded" />
+                                      </div>
+                                    </div>
+                                  )
+                                : renderMessageText(msg.message)}
+                        </span>
+                      )}
                       <div
                         className={`absolute bottom-1.5 right-3 text-[9px] font-medium ${
                           msg.sender === "admin" ? "text-amber-200/70" : "text-white/40"
