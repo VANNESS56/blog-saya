@@ -11,11 +11,6 @@ const navLinks = [
   { label: "Beranda", href: "/", icon: LayoutGrid },
   { label: "Order", href: "/jual-beli", icon: ShoppingBag },
   { label: "Cara", href: "/cara", icon: HelpCircle },
-  { label: "Cek Pesanan", href: "/order", icon: Receipt },
-  { label: "Testimoni", href: "#reviews", icon: MessageSquare },
-  { label: "Reputasi", href: "#reputation", icon: Star },
-  { label: "FAQ", href: "#faq", icon: HelpCircle },
-  { label: "Bantuan", href: "#bantuan", icon: Headphones },
 ];
 
 export function Navbar() {

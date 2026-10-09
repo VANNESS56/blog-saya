@@ -37,9 +37,9 @@ export function MobileNav() {
   };
 
   const navItems = [
-    { name: "BELI/JUAL\nDL", href: "/#home", path: "/", hash: "#home", icon: Home, action: "link" },
-    { name: "Stock Akun", href: "/#products", path: "/", hash: "#products", icon: ShoppingBag, action: "link" },
-    { name: "BELI/JUAL\nAKUN", href: "#", path: "", hash: "", icon: FileText, action: "chat" },
+    { name: "Beranda", href: "/", path: "/", hash: "", icon: Home, action: "link" },
+    { name: "Order", href: "/jual-beli", path: "/jual-beli", hash: "", icon: ShoppingBag, action: "link" },
+    { name: "Cara", href: "/cara", path: "/cara", hash: "", icon: FileText, action: "link" },
   ];
 
   return (
