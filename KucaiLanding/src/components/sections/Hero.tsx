@@ -74,7 +74,6 @@ export function Hero() {
             try { 
               const parsed = JSON.parse(configRow.value);
               bglSell = parsed.sellRate || 0; 
-              if (parsed.storeStatus) shopOpen = parsed.storeStatus === "open";
             } catch {} 
           }
           const dlSell = Math.floor(bglSell / 100);
