@@ -22,11 +22,9 @@ export function CidDarkTheme() {
         <Hero />
         <SocialMedia />
         <OtherProducts />
-        <WhyChooseUs />
         <Reviews />
         <LiveReputation />
         <FAQ />
-        <CTA />
       </div>
 
       <Footer />
