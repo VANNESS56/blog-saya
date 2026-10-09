@@ -1850,7 +1850,9 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
              session: s,
              proofs: recentProofs,
              caption: captionMsg ? captionMsg.message : "Data tidak tersedia",
-             time: new Date(recentProofs[0].created_at).toLocaleString('id-ID')
+             time: recentProofs[0]?.created_at 
+               ? new Date(recentProofs[0].created_at).toLocaleString('id-ID')
+               : "Baru saja"
            });
          }
       }
@@ -1890,28 +1892,32 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
   };
 
   useEffect(() => {
+    let mounted = true;
     fetchData();
     
     // Auto-refresh when there are changes to chat_messages or chat_sessions
-    const channel = supabase
-      .channel(`kucaidl_grid_${filter}_changes`)
+    const channelName = `kucaidl_grid_${filter}_changes_${Math.random().toString(36).substring(7)}`;
+    const channel = supabase.channel(channelName);
+    
+    channel
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'chat_messages' },
         () => {
-          fetchData();
+          if (mounted) fetchData();
         }
       )
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'chat_sessions' },
         () => {
-          fetchData();
+          if (mounted) fetchData();
         }
       )
       .subscribe();
 
     return () => {
+      mounted = false;
       supabase.removeChannel(channel);
     };
   }, [fetchData, filter]);
