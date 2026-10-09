@@ -501,8 +501,17 @@ export default function JualBeliPage() {
           <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-amber-900/20 -ml-2">
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border border-amber-900/30">
-            <img src="/kucaidl-profile.jpg" className="w-full h-full object-cover" alt="Kucai DL" />
+          <div className="relative">
+            {/* Notes Bubble */}
+            <div className="absolute -top-2 left-1/2 -translate-x-1/2 -translate-y-full z-20 whitespace-nowrap">
+              <div className="bg-[#1a120e] border border-amber-900/30 rounded-full px-3 py-1 shadow-lg">
+                <span className="text-white/90 text-[10px] font-semibold">UPDATE / INFO DI SALURAN WA YA 🥰</span>
+              </div>
+              <div className="w-2.5 h-2.5 bg-[#1a120e] border-r border-b border-amber-900/30 rotate-45 mx-auto -mt-[5px]" />
+            </div>
+            <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-amber-500">
+              <img src="/kucaidl-profile.jpg" className="w-full h-full object-cover" alt="Kucai DL" />
+            </div>
           </div>
           <div>
             <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
