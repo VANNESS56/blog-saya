@@ -449,6 +449,7 @@ export default function JualBeliPage() {
 
     return <div className="whitespace-pre-wrap leading-relaxed">{formatText(safeMessage)}</div>;
   };
+  if (!mounted) return <div className="min-h-screen bg-[#070b14]" />;
 
   return (
     <div className="min-h-screen bg-[#070b14] flex justify-center">
