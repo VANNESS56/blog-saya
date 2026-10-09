@@ -119,63 +119,33 @@ export default function CaraPage() {
               <div className="bg-[#101010] border border-white/5 rounded-[24px] p-6 md:p-8">
                 <div className="flex items-center gap-4 mb-6">
                   <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                    <MapPin size={24} />
+                    <DollarSign size={24} />
                   </div>
                   <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
-                    Cara drop lock di world
+                    Langkah Penjualan
                   </h2>
                 </div>
                 
                 <ol className="space-y-4 text-gray-300">
                   <li className="flex gap-4">
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">1</span>
-                    <p className="pt-1">Tekan <strong>Order Now</strong> di navbar, lalu pilih Jual DL/BGL — nama world drop akan diberikan oleh admin.</p>
+                    <p className="pt-1">Tekan <strong>Order Now</strong> di navbar, lalu pilih Jual DL/BGL — nama world akan diberikan oleh admin.</p>
                   </li>
                   <li className="flex gap-4">
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">2</span>
-                    <p className="pt-1">Masuk ke Growtopia, tempel nama World Name tersebut.</p>
+                    <p className="pt-1">Tinggal drop ke world sell nya, abis tu ss (screenshot) kirim ke web nya + kirim detail pembayaran kamu.</p>
                   </li>
                   <li className="flex gap-4">
                     <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">3</span>
-                    <p className="pt-1">Jatuhkan (drop) lock yang mau kamu jual di world itu.</p>
+                    <p className="pt-1">Setelah terverifikasi admin bakal transfer duit ke kamu sesuai nomimal BGL/DL yang kalian jual.</p>
                   </li>
                 </ol>
 
-                <div className="mt-6 p-4 bg-white/5 border border-white/10 rounded-xl">
+                <div className="mt-8 p-4 bg-white/5 border border-white/10 rounded-xl">
                   <p className="text-gray-400 text-sm">
                     <strong>Catatan:</strong> Yang kami terima hanya Diamond Lock (DL) dan Blue Gem Lock (BGL).
                   </p>
                 </div>
-              </div>
-
-              <div className="bg-[#101010] border border-white/5 rounded-[24px] p-6 md:p-8">
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-white shadow-[0_0_20px_rgba(245,158,11,0.3)]">
-                    <DollarSign size={24} />
-                  </div>
-                  <h2 className="text-xl md:text-2xl font-bold text-white tracking-wide">
-                    Setelah drop sampai uang ditransfer
-                  </h2>
-                </div>
-                
-                <ol className="space-y-4 text-gray-300">
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">1</span>
-                    <p className="pt-1">Kembali ke WhatsApp, berikan nomor rekening atau e-wallet (DANA, OVO, dll) ke admin.</p>
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">2</span>
-                    <p className="pt-1">Konfirmasikan bahwa kamu <strong>Sudah drop</strong> lock-nya.</p>
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">3</span>
-                    <p className="pt-1">Tunggu admin/bot kami masuk untuk mengambil dan menghitung lock kamu.</p>
-                  </li>
-                  <li className="flex gap-4">
-                    <span className="flex-shrink-0 w-8 h-8 rounded-full bg-[#1a1a1a] text-amber-500 font-bold flex items-center justify-center border border-white/10">4</span>
-                    <p className="pt-1">Dana cair! Uang kamu akan langsung ditransfer ke rekening tujuan.</p>
-                  </li>
-                </ol>
               </div>
             </motion.div>
           )}
