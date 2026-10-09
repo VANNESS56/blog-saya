@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { type Account, type Testimonial, type Reputation } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 import { LayoutDashboard, Users, MessageSquare, Star, LogOut, Menu, Search, Bell, Settings, ShoppingCart, Database, Package, User, Palette, Headphones, ImagePlus, X, ChevronDown } from "lucide-react";
 import Image from "next/image";
@@ -35,6 +36,87 @@ export function AdminDashboard() {
     await fetch("/api/admin/auth", { method: "DELETE" });
     router.refresh();
   };
+
+  const [unreadCounts, setUnreadCounts] = useState({
+    livechat: 0,
+    buy: 0,
+    sell: 0,
+    chats: 0
+  });
+
+  const fetchUnreadCounts = useCallback(async () => {
+    try {
+      const stored = localStorage.getItem("kucaidl_read_sessions");
+      const readSessions = stored ? JSON.parse(stored) : {};
+
+      const { data: sessionsData } = await supabase
+        .from("chat_sessions")
+        .select("*, chat_messages!inner(message, sender, created_at)")
+        .order("created_at", { referencedTable: "chat_messages", ascending: false });
+
+      if (!sessionsData) return;
+
+      let livechat = 0;
+      let buy = 0;
+      let sell = 0;
+      let chats = 0;
+
+      for (const session of sessionsData) {
+        const msgs = (session.chat_messages as any[]) || [];
+        if (msgs.length === 0) continue;
+        const lastMsg = msgs[0];
+        
+        // If last message is from admin, it's read
+        if (lastMsg.sender === "admin") continue;
+
+        // If last message time <= read time, it's read
+        if (readSessions[session.id] && new Date(session.last_message_at).getTime() <= new Date(readSessions[session.id]).getTime()) {
+          continue;
+        }
+
+        // It is unread. Categorize it.
+        if (!session.customer_name?.startsWith("Customer_")) {
+          livechat++;
+        } else {
+          // get the first message to know if it's buy or sell
+          const firstCustomerMsg = msgs.slice().reverse().find(m => m.sender === "customer");
+          const msgText = firstCustomerMsg?.message || "";
+          if (msgText.includes("beli DL")) {
+            buy++;
+          } else if (msgText.includes("jual DL")) {
+            sell++;
+          }
+          // "chats" shows all kucaidl chats, so we add to chats as well
+          chats++;
+        }
+      }
+
+      setUnreadCounts({ livechat, buy, sell, chats });
+    } catch (err) {
+      console.error(err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchUnreadCounts();
+
+    const ch = supabase.channel("admin-sidebar-unread")
+      .on("postgres_changes", { event: "*", schema: "public", table: "chat_messages" }, () => {
+        fetchUnreadCounts();
+      })
+      .on("postgres_changes", { event: "*", schema: "public", table: "chat_sessions" }, () => {
+        fetchUnreadCounts();
+      })
+      .subscribe();
+
+    // Re-fetch periodically to sync with localstorage read state
+    const interval = setInterval(fetchUnreadCounts, 3000);
+
+    return () => { 
+      supabase.removeChannel(ch); 
+      clearInterval(interval);
+    };
+  }, [fetchUnreadCounts]);
 
   return (
     <div className="min-h-screen bg-[#0c0805] text-white/90 font-sans">
@@ -151,9 +233,14 @@ export function AdminDashboard() {
             <li>
               <button suppressHydrationWarning 
                 onClick={() => setActiveTab("livechat")}
-                className={`w-full flex items-center gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'livechat' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                className={`w-full flex items-center justify-between gap-4 px-4 py-3 rounded-lg font-medium transition-colors ${activeTab === 'livechat' ? 'text-amber-500 bg-amber-500/10' : 'text-white/70 hover:text-amber-500 hover:bg-[#0c0805]'}`}
               >
-                <Headphones className="w-5 h-5" /> Live Chat
+                <div className="flex items-center gap-4">
+                  <Headphones className="w-5 h-5" /> Live Chat
+                </div>
+                {unreadCounts.livechat > 0 && (
+                  <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">{unreadCounts.livechat}</span>
+                )}
               </button>
             </li>
             <li>
@@ -172,25 +259,34 @@ export function AdminDashboard() {
                     <li>
                       <button suppressHydrationWarning
                         onClick={() => setActiveTab("kucaidl_buy")}
-                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_buy' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                        className={`w-full flex items-center justify-between px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_buy' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
                       >
                         Buy
+                        {unreadCounts.buy > 0 && (
+                          <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">{unreadCounts.buy}</span>
+                        )}
                       </button>
                     </li>
                     <li>
                       <button suppressHydrationWarning
                         onClick={() => setActiveTab("kucaidl_sell")}
-                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_sell' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                        className={`w-full flex items-center justify-between px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_sell' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
                       >
                         Sell
+                        {unreadCounts.sell > 0 && (
+                          <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">{unreadCounts.sell}</span>
+                        )}
                       </button>
                     </li>
                     <li>
                       <button suppressHydrationWarning
                         onClick={() => setActiveTab("kucaidl_chats")}
-                        className={`w-full text-left px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_chats' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
+                        className={`w-full flex items-center justify-between px-4 py-2 rounded-lg font-medium text-sm transition-colors ${activeTab === 'kucaidl_chats' ? 'text-amber-500 bg-amber-500/10' : 'text-white/50 hover:text-amber-500 hover:bg-[#0c0805]'}`}
                       >
                         Chats
+                        {unreadCounts.chats > 0 && (
+                          <span className="bg-red-500 text-white text-[10px] font-bold px-2 py-0.5 rounded-full min-w-[20px] text-center">{unreadCounts.chats}</span>
+                        )}
                       </button>
                     </li>
                     <li>
@@ -1652,7 +1748,6 @@ function ManageTheme() {
 }
 
 // ─── LIVE CHAT MANAGEMENT ───
-import { supabase } from "@/lib/supabase";
 
 interface ChatSession {
   id: string;
