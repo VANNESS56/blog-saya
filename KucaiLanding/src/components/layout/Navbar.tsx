@@ -16,7 +16,6 @@ const bottomNavLeft = [
 const bottomNavRight = [
   { label: "Testimoni", href: "#reviews", icon: MessageSquare },
   { label: "Reputasi", href: "#reputasi", icon: Star },
-  { label: "Influencer GT", href: "#influencer", icon: PlayCircle },
   { label: "FAQ", href: "#faq", icon: HelpCircle },
   { label: "Bantuan", href: "#bantuan", icon: Headphones },
 ];
