@@ -134,10 +134,10 @@ export function Hero() {
               
 
               {/* Rate Box */}
-              <div className="relative bg-[#101010] border border-amber-500 rounded-[24px] p-6 md:p-8 w-full max-w-[800px] shadow-[0_0_40px_rgba(245,158,11,0.15)] flex flex-col mt-10 overflow-hidden">
+              <div className="relative bg-[#101010] border border-amber-500 rounded-[24px] p-6 md:p-8 w-full max-w-[800px] shadow-[0_0_40px_rgba(245,158,11,0.15)] flex flex-col mt-10">
                 
                 {/* Diagonal light streaks */}
-                <div className="absolute inset-0 pointer-events-none overflow-hidden">
+                <div className="absolute inset-0 pointer-events-none overflow-hidden rounded-[24px]">
                   <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[150%] bg-gradient-to-r from-transparent via-white/5 to-transparent rotate-[35deg] blur-md" />
                   <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[150%] bg-gradient-to-r from-transparent via-white/5 to-transparent rotate-[35deg] blur-md" />
                 </div>
