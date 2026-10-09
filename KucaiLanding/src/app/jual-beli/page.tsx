@@ -449,7 +449,6 @@ export default function JualBeliPage() {
 
     return <div className="whitespace-pre-wrap leading-relaxed">{formatText(safeMessage)}</div>;
   };
-  if (!mounted) return <div className="min-h-screen bg-[#070b14]" />;
 
   return (
     <div className="min-h-screen bg-[#070b14] flex justify-center">
@@ -485,7 +484,7 @@ export default function JualBeliPage() {
                 }`}>
                 {renderMessageText(msg)}
                 <div suppressHydrationWarning className={`absolute bottom-1.5 right-3 text-[10px] ${msg.sender === "customer" ? "text-white/70" : "text-white/40"}`}>
-                  {mounted ? (msg.created_at ? new Date(msg.created_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })) : ""}
+                  {msg.created_at ? new Date(msg.created_at).toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }) : new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" })}
                 </div>
               </div>
             </div>
