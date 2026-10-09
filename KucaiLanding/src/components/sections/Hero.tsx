@@ -143,7 +143,7 @@ export function Hero() {
                     <div className="flex gap-4 w-full mt-2">
                       <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
                         onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
-                        className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#ffd000] to-[#f59e0b] shadow-[0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6">
+                        className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#ffd000] to-[#f59e0b] shadow-[inset_0_2px_2px_rgba(255,255,255,0.5),inset_0_-4px_4px_rgba(0,0,0,0.15),0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/20">
                         
                         {punches.map(p => (
                           <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
@@ -164,7 +164,7 @@ export function Hero() {
 
                       <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
                         onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
-                        className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] shadow-[0_0_20px_rgba(234,88,12,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6">
+                        className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] shadow-[inset_0_2px_2px_rgba(255,255,255,0.4),inset_0_-4px_4px_rgba(0,0,0,0.2),0_0_20px_rgba(234,88,12,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/10">
                         
                         {punches.map(p => (
                           <div key={p.id} className="absolute pointer-events-none z-50 text-4xl drop-shadow-lg" style={{ left: p.x, top: p.y, animation: 'punchEffect 0.4s ease-out forwards' }}>
