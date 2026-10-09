@@ -30,25 +30,9 @@ export function Navbar() {
 
   return (
     <>
-      {/* Ticker */}
-      <div className="fixed top-0 left-0 right-0 z-[100] h-[34px] bg-gradient-to-r from-amber-400 via-amber-500 to-amber-400 flex items-center overflow-hidden shadow-[0_2px_10px_rgba(245,158,11,0.2)]">
-        <div className="flex gap-8 whitespace-nowrap min-w-max animate-[ticker_30s_linear_infinite] text-[11px] font-black uppercase tracking-widest text-amber-950">
-          {[...Array(2)].map((_, i) => (
-            <div key={i} className="flex gap-8 items-center">
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.1")}</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.2")}</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.3")}</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.4")}</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.5")}</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.6")}</span>
-            </div>
-          ))}
-        </div>
-      </div>
-
       {/* Main Nav */}
       <header
-        className={`fixed top-[34px] left-0 right-0 z-[90] transition-all duration-300 ${
+        className={`fixed top-0 left-0 right-0 z-[90] transition-all duration-300 ${
           isScrolled
             ? "glass-card border-b !border-amber-500/20"
             : "bg-[#030303]/80 backdrop-blur-md border-b border-amber-900/20"
