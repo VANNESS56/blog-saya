@@ -46,9 +46,14 @@ export function AdminDashboard() {
   const orderAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    orderAudioRef.current = new Audio('/notif.mp3');
+    orderAudioRef.current = new Audio('/notifikasi.mpeg');
     const unlock = () => {
-      if (orderAudioRef.current) orderAudioRef.current.load();
+      if (orderAudioRef.current) {
+        orderAudioRef.current.play().then(() => {
+          orderAudioRef.current?.pause();
+          if (orderAudioRef.current) orderAudioRef.current.currentTime = 0;
+        }).catch(() => {});
+      }
       window.removeEventListener('click', unlock);
     };
     window.addEventListener('click', unlock, { once: true });
@@ -122,7 +127,13 @@ export function AdminDashboard() {
           try {
             if (orderAudioRef.current) {
               orderAudioRef.current.currentTime = 0;
-              orderAudioRef.current.play().catch(() => {});
+              orderAudioRef.current.play().catch(() => {
+                const fallback = new Audio('/notifikasi.mpeg');
+                fallback.play().catch(() => {});
+              });
+            } else {
+              const fallback = new Audio('/notifikasi.mpeg');
+              fallback.play().catch(() => {});
             }
           } catch {}
           if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
@@ -163,7 +174,18 @@ export function AdminDashboard() {
             <input suppressHydrationWarning type="text" placeholder="Search for data & reports..." className="bg-transparent border-none outline-none text-sm w-full text-white/80" />
           </div>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4">
+          <button 
+            type="button" 
+            onClick={() => {
+              const a = new Audio('/notifikasi.mpeg');
+              a.play().catch(() => new Audio('/notifikasi.mp3').play().catch(() => {}));
+            }} 
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
+            title="Tes Suara Notifikasi & Aktifkan Izin Audio Browser"
+          >
+            🔊 Tes Suara
+          </button>
           <button suppressHydrationWarning className="relative text-white/50 hover:text-amber-500">
             <Bell className="w-6 h-6" />
             <span className="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
@@ -1987,8 +2009,8 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
           if (mounted) fetchData();
           if (payload?.new?.sender === "customer") {
             try {
-              const audio = new Audio('/notif.mp3');
-              audio.play().catch(() => {});
+              const audio = new Audio('/notifikasi.mpeg');
+              audio.play().catch(() => new Audio('/notifikasi.mp3').play().catch(() => {}));
             } catch {}
           }
         }
@@ -2276,7 +2298,7 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
     if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
-    notifAudioRef.current = new Audio("/notif.mp3");
+    notifAudioRef.current = new Audio("/notifikasi.mpeg");
 
     supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply"]).then(({ data }) => {
       if (data) {
