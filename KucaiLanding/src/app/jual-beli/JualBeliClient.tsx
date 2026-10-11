@@ -35,9 +35,21 @@ export default function JualBeliPage() {
   const [showPaymentOptions, setShowPaymentOptions] = useState(false);
   const [savedPayouts, setSavedPayouts] = useState<SavedPayout[]>([]);
   const [mounted, setMounted] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
+
+  // Helper: show typing indicator, then execute callback
+  const withTypingDelay = (delayMs: number = 1500): Promise<void> => {
+    return new Promise((resolve) => {
+      setIsTyping(true);
+      setTimeout(() => {
+        setIsTyping(false);
+        resolve();
+      }, delayMs);
+    });
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -90,7 +102,7 @@ export default function JualBeliPage() {
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages, showOptions]);
+  }, [messages, showOptions, isTyping]);
 
   // On Mount: Load saved session
   useEffect(() => {
@@ -225,6 +237,8 @@ export default function JualBeliPage() {
       ? "Toko close , nanti di infokan lagi di saluran wa ya"
       : (mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]");
 
+    await withTypingDelay(1800);
+
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })
       .select("*").single();
@@ -233,6 +247,7 @@ export default function JualBeliPage() {
       setMessages(prev => [...prev, replyMsg]);
 
       if (mode === "buy" && !isStoreClose) {
+        await withTypingDelay(1200);
         const { data: qrisMsg } = await supabase.from("chat_messages")
           .insert({ session_id: sid, sender: "admin", message: "[QRIS_IMAGE]" })
           .select("*").single();
@@ -333,6 +348,8 @@ export default function JualBeliPage() {
       ? "Terima kasih! 🙏 Mimin cek transferan kamu dulu ya 🥰"
       : "pembayaran sedang di proses \nmohon menunggu 1-10 menit yaa\nThankyou sudah menunggu 🥰✌️";
 
+    await withTypingDelay(1500);
+
     const { data: reply1 } = await supabase.from("chat_messages").insert({
       session_id: sessionId,
       sender: "admin",
@@ -341,6 +358,7 @@ export default function JualBeliPage() {
     if (reply1) setMessages(prev => [...prev, reply1]);
 
     if (trxMode === "buy") {
+      await withTypingDelay(1800);
       const { data: reply2 } = await supabase.from("chat_messages").insert({
         session_id: sessionId,
         sender: "admin",
@@ -562,6 +580,19 @@ export default function JualBeliPage() {
               </div>
             </div>
           ))}
+
+          {/* Typing Indicator */}
+          {isTyping && (
+            <div className="relative z-10 flex justify-start">
+              <div className="bg-[#1f2c34] border border-white/5 rounded-[20px] rounded-bl-sm px-5 py-4 shadow-sm">
+                <div className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '0ms', animationDuration: '1.2s' }} />
+                  <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '200ms', animationDuration: '1.2s' }} />
+                  <span className="w-2 h-2 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: '400ms', animationDuration: '1.2s' }} />
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Inline Buttons moved to bottom keyboard */}
 
