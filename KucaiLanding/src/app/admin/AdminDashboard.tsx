@@ -46,7 +46,7 @@ export function AdminDashboard() {
   const orderAudioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    orderAudioRef.current = new Audio('/notifikasi.mpeg');
+    orderAudioRef.current = new Audio('/notipp.mpeg');
     const unlock = () => {
       if (orderAudioRef.current) {
         orderAudioRef.current.play().then(() => {
@@ -128,11 +128,11 @@ export function AdminDashboard() {
             if (orderAudioRef.current) {
               orderAudioRef.current.currentTime = 0;
               orderAudioRef.current.play().catch(() => {
-                const fallback = new Audio('/notifikasi.mpeg');
+                const fallback = new Audio('/notipp.mpeg');
                 fallback.play().catch(() => {});
               });
             } else {
-              const fallback = new Audio('/notifikasi.mpeg');
+              const fallback = new Audio('/notipp.mpeg');
               fallback.play().catch(() => {});
             }
           } catch {}
@@ -178,8 +178,8 @@ export function AdminDashboard() {
           <button 
             type="button" 
             onClick={() => {
-              const a = new Audio('/notifikasi.mpeg');
-              a.play().catch(() => new Audio('/notifikasi.mp3').play().catch(() => {}));
+              const a = new Audio('/notipp.mpeg');
+              a.play().catch(() => new Audio('/notipp.mp3').play().catch(() => {}));
             }} 
             className="flex items-center gap-1.5 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-xl text-xs font-bold transition-all shadow-sm active:scale-95"
             title="Tes Suara Notifikasi & Aktifkan Izin Audio Browser"
@@ -2006,8 +2006,8 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
           if (mounted) fetchData();
           if (payload?.new?.sender === "customer") {
             try {
-              const audio = new Audio('/notifikasi.mpeg');
-              audio.play().catch(() => new Audio('/notifikasi.mp3').play().catch(() => {}));
+              const audio = new Audio('/notipp.mpeg');
+              audio.play().catch(() => new Audio('/notipp.mp3').play().catch(() => {}));
             } catch {}
           }
         }
@@ -2301,7 +2301,7 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
     if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "default") {
       Notification.requestPermission();
     }
-    notifAudioRef.current = new Audio("/notifikasi.mpeg");
+    notifAudioRef.current = new Audio("/notipp.mpeg");
 
     supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply"]).then(({ data }) => {
       if (data) {
