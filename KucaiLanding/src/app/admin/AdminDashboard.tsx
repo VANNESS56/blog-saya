@@ -43,6 +43,17 @@ export function AdminDashboard() {
     sell: 0,
     chats: 0
   });
+  const orderAudioRef = useRef<HTMLAudioElement | null>(null);
+
+  useEffect(() => {
+    orderAudioRef.current = new Audio('/notif.mp3');
+    const unlock = () => {
+      if (orderAudioRef.current) orderAudioRef.current.load();
+      window.removeEventListener('click', unlock);
+    };
+    window.addEventListener('click', unlock, { once: true });
+    return () => window.removeEventListener('click', unlock);
+  }, []);
 
   const fetchUnreadCounts = useCallback(async () => {
     try {
@@ -104,8 +115,26 @@ export function AdminDashboard() {
     fetchUnreadCounts();
 
     const ch = supabase.channel("admin-sidebar-unread")
-      .on("postgres_changes", { event: "*", schema: "public", table: "chat_messages" }, () => {
+      .on("postgres_changes", { event: "INSERT", schema: "public", table: "chat_messages" }, (payload: any) => {
         fetchUnreadCounts();
+        const msg = payload.new;
+        if (msg && msg.sender === "customer") {
+          try {
+            if (orderAudioRef.current) {
+              orderAudioRef.current.currentTime = 0;
+              orderAudioRef.current.play().catch(() => {});
+            }
+          } catch {}
+          if (typeof window !== "undefined" && "Notification" in window && Notification.permission === "granted") {
+            const isBuy = msg.message?.includes("beli DL") || msg.message?.includes("World:");
+            const isSell = msg.message?.includes("jual DL") || msg.message?.includes("No Rek/Wallet:");
+            const notifTitle = isBuy ? "🛒 Pesanan BUY Masuk!" : isSell ? "💰 Pesanan SELL Masuk!" : "💬 Pesanan / Chat Masuk!";
+            new Notification(notifTitle, {
+              body: msg.message || "Pelanggan mengirim bukti transfer / foto",
+              icon: "/icon.png"
+            });
+          }
+        }
       })
       .on("postgres_changes", { event: "*", schema: "public", table: "chat_sessions" }, () => {
         fetchUnreadCounts();
@@ -1954,8 +1983,14 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'chat_messages' },
-        () => {
+        (payload: any) => {
           if (mounted) fetchData();
+          if (payload?.new?.sender === "customer") {
+            try {
+              const audio = new Audio('/notif.mp3');
+              audio.play().catch(() => {});
+            } catch {}
+          }
         }
       )
       .on(
