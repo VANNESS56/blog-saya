@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { verifySessionToken } from "@/lib/adminAuth";
 import { supabaseAdmin } from "@/lib/supabaseAdmin";
+import { cleanupOldKucaiData } from "@/lib/cleanupOldData";
 
 async function verifyAdmin(): Promise<boolean> {
   const cookieStore = await cookies();
@@ -51,23 +52,8 @@ export async function POST(req: NextRequest) {
           }
         }
 
-        // Cleanup old chats (> 7 days) to save database space
-        try {
-          const sevenDaysAgo = new Date();
-          sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-          const { data: oldSessions } = await supabaseAdmin
-            .from("chat_sessions")
-            .select("id")
-            .lt("created_at", sevenDaysAgo.toISOString());
-            
-          if (oldSessions && oldSessions.length > 0) {
-            const oldIds = oldSessions.map((s: any) => s.id);
-            await supabaseAdmin.from("chat_messages").delete().in("session_id", oldIds);
-            await supabaseAdmin.from("chat_sessions").delete().in("id", oldIds);
-          }
-        } catch (e) {
-          console.error("Failed to cleanup old chats:", e);
-        }
+        // Automatic cleanup of old chats (> 24 hours) once a day
+        await cleanupOldKucaiData();
 
         return NextResponse.json({
           accounts: accounts.count || 0,
@@ -393,6 +379,11 @@ export async function POST(req: NextRequest) {
           await supabaseAdmin.from("site_settings").upsert(upserts);
         }
         return NextResponse.json({ success: true });
+      }
+
+      case "cleanupOldChats": {
+        const result = await cleanupOldKucaiData();
+        return NextResponse.json(result);
       }
 
       default:

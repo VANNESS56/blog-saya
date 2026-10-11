@@ -1802,13 +1802,19 @@ type ChatFilter = "livechat" | "kucaidl_buy" | "kucaidl_sell" | "kucaidl_chats";
 function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" }) {
   const [items, setItems] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [cleaning, setCleaning] = useState(false);
 
   const fetchData = useCallback(async () => {
-    // 1. Fetch sessions
+    // 1. Trigger background cleanup of data older than 24h
+    adminApi("cleanupOldChats").catch(() => {});
+
+    // Only fetch sessions from the last 24 hours to keep the grid fast
+    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
     const { data: sessionsData } = await supabase
       .from("chat_sessions")
       .select("*")
       .ilike("customer_name", "Customer_%")
+      .gte("created_at", oneDayAgo)
       .order("created_at", { ascending: false });
       
     if (!sessionsData || sessionsData.length === 0) {
@@ -1891,6 +1897,26 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
     });
   };
 
+  const handleManualCleanup = async () => {
+    setCleaning(true);
+    try {
+      const res = await adminApi("cleanupOldChats");
+      await fetchData();
+      Swal.fire({
+        title: "Selesai!",
+        text: `Data riwayat lama berhasil dibersihkan (${res?.count || 0} sesi terhapus).`,
+        icon: "success",
+        toast: true,
+        position: 'top-end',
+        showConfirmButton: false,
+        timer: 3000
+      });
+    } catch (e: any) {
+      Swal.fire("Gagal", e.message || "Gagal membersihkan data", "error");
+    }
+    setCleaning(false);
+  };
+
   useEffect(() => {
     let mounted = true;
     fetchData();
@@ -1928,9 +1954,21 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
 
   return (
     <div className="p-6">
-      <h2 className="text-xl font-bold text-white mb-6">
-        Data {filter === "kucaidl_buy" ? "Pembelian" : "Penjualan"}
-      </h2>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-white">
+            Data {filter === "kucaidl_buy" ? "Pembelian" : "Penjualan"}
+          </h2>
+          <p className="text-xs text-white/50 mt-1">Otomatis dibersihkan setiap 1 hari sekali agar sistem tetap ringan.</p>
+        </div>
+        <button
+          onClick={handleManualCleanup}
+          disabled={cleaning}
+          className="self-start sm:self-auto text-xs bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 px-3 py-2 rounded-xl transition-all flex items-center gap-2 font-medium disabled:opacity-50"
+        >
+          🧹 {cleaning ? "Membersihkan..." : "Bersihkan Riwayat (> 1 Hari)"}
+        </button>
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
         {items.length === 0 ? (
            <p className="text-white/50 col-span-full">Belum ada data bukti yang dikirimkan.</p>
