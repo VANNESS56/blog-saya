@@ -113,6 +113,19 @@ function LiveChatInner() {
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
   const dragStart = useRef({ x: 0, y: 0 });
+  const [storeStatus, setStoreStatus] = useState<"open" | "close">("open");
+
+  // Fetch store status
+  useEffect(() => {
+    supabase.from("site_settings").select("value").eq("key", "store_status").single().then(({ data }) => {
+      if (data) setStoreStatus(data.value === "close" ? "close" : "open");
+    });
+    const ch = supabase.channel("livechat_store_status")
+      .on("postgres_changes", { event: "*", schema: "public", table: "site_settings", filter: "key=eq.store_status" }, (payload: any) => {
+        if (payload?.new?.value) setStoreStatus(payload.new.value === "close" ? "close" : "open");
+      }).subscribe();
+    return () => { supabase.removeChannel(ch); };
+  }, []);
 
   // Listen for custom event to open chat
   useEffect(() => {
@@ -302,6 +315,17 @@ function LiveChatInner() {
       });
       await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
       setNewMessage("");
+
+      // Auto-reply if store is closed
+      if (storeStatus === "close") {
+        setTimeout(async () => {
+          await supabase.from("chat_messages").insert({
+            session_id: sessionId,
+            sender: "admin",
+            message: "Toko close , nanti di infokan lagi di saluran wa ya",
+          });
+        }, 1200);
+      }
     }
 
     setSending(false);
@@ -380,8 +404,10 @@ function LiveChatInner() {
                   Kucai Account
                 </p>
                 <div className="flex items-center gap-1.5">
-                  <div className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                  <span className="text-white/70 text-[10px]">Online</span>
+                  <div className={`w-1.5 h-1.5 rounded-full ${storeStatus === "close" ? "bg-red-400" : "bg-green-400 animate-pulse"}`} />
+                  <span className={`text-[10px] ${storeStatus === "close" ? "text-red-400" : "text-white/70"}`}>
+                    {storeStatus === "close" ? "Toko Tutup" : "Online"}
+                  </span>
                 </div>
               </div>
             </div>
@@ -436,6 +462,14 @@ function LiveChatInner() {
             /* Chat Messages Area */
             <>
               <div className="flex-1 overflow-y-auto p-4 space-y-3 scrollbar-thin">
+                <a
+                  href="/jual-beli"
+                  className="block p-2.5 bg-gradient-to-r from-amber-600/20 to-orange-600/20 hover:from-amber-600/30 hover:to-orange-600/30 border border-amber-500/30 rounded-xl text-center transition-all group shadow-sm mb-2"
+                >
+                  <span className="text-[11px] font-bold text-amber-400 group-hover:text-amber-300 flex items-center justify-center gap-1.5">
+                    🛒 Mau Jual / Beli DL &amp; BGL? Klik di sini →
+                  </span>
+                </a>
                 {messages.map((msg) => (
                   <div
                     key={msg.id}

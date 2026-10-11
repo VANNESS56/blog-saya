@@ -21,6 +21,7 @@ export default function JualBeliPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [showOptions, setShowOptions] = useState(true);
+  const [storeStatus, setStoreStatus] = useState<"open" | "close">("open");
   const [jualBeliReply, setJualBeliReply] = useState<string | null>(null);
   const [sellReply, setSellReply] = useState<string | null>(null);
   const [paymentMethodList, setPaymentMethodList] = useState<string[]>(["Gopay", "Dana", "OVO", "BCA", "Mandiri"]);
@@ -71,9 +72,10 @@ export default function JualBeliPage() {
 
   useEffect(() => {
     // Fetch initial values
-    supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply", "payment_methods"]).then(({ data }) => {
+    supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply", "payment_methods", "store_status"]).then(({ data }) => {
       if (data) {
         data.forEach(item => {
+          if (item.key === "store_status") setStoreStatus(item.value === "close" ? "close" : "open");
           if (item.key === "jual_beli_reply") setJualBeliReply(item.value);
           if (item.key === "sell_reply") setSellReply(item.value);
           if (item.key === "payment_methods" && item.value) {
@@ -87,6 +89,13 @@ export default function JualBeliPage() {
     const settingsChannel = supabase.channel('public:site_settings')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'site_settings' }, (payload: any) => {
         const { key, value } = payload.new;
+        if (key === "store_status") {
+          const newStatus = value === "close" ? "close" : "open";
+          setStoreStatus(newStatus);
+          if (newStatus === "open") {
+            setShowOptions(true);
+          }
+        }
         if (key === "jual_beli_reply") setJualBeliReply(value);
         if (key === "sell_reply") setSellReply(value);
         if (key === "payment_methods" && value) {
@@ -109,7 +118,7 @@ export default function JualBeliPage() {
     const saved = localStorage.getItem("kucaidl_session");
     if (saved) {
       setSessionId(saved);
-      setShowOptions(localStorage.getItem("kucaidl_options") === "true");
+      setShowOptions(localStorage.getItem("kucaidl_options") !== "false");
       setIsFreeChat(localStorage.getItem("kucaidl_free") === "true");
       const savedMode = localStorage.getItem("kucaidl_trxMode");
       if (savedMode === "sell" || savedMode === "buy") setTrxMode(savedMode);
@@ -118,6 +127,12 @@ export default function JualBeliPage() {
         .then(({ data }) => {
            if (data && data.length > 0) {
              setMessages([{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }, ...data]);
+             const hasClosedMsg = data.some(m => m.message?.includes("Toko close"));
+             const lastMsg = data[data.length - 1];
+             if (hasClosedMsg || lastMsg?.message?.includes("Udah Di Drop") || lastMsg?.message?.includes("Udah Di tranfer")) {
+               setShowOptions(true);
+               setIsFreeChat(false);
+             }
            }
         });
     }
@@ -193,10 +208,6 @@ export default function JualBeliPage() {
   }, [sessionId]);
 
   const handleSelectMode = async (mode: "buy" | "sell") => {
-    setShowOptions(false);
-    setIsFreeChat(false);
-    setTrxMode(mode);
-
     let sid = sessionId;
     if (!sid) {
       const { data: sessionData } = await supabase
@@ -230,12 +241,27 @@ export default function JualBeliPage() {
       setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
     }
 
+    // Check store status
     const { data: ssData } = await supabase.from("site_settings").select("value").eq("key", "store_status").single();
-    const isStoreClose = ssData && ssData.value === "close";
+    const isStoreClose = (ssData && ssData.value === "close") || storeStatus === "close";
 
-    const adminReply = isStoreClose 
-      ? "Toko close , nanti di infokan lagi di saluran wa ya"
-      : (mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]");
+    if (isStoreClose) {
+      setShowOptions(true);
+      setIsFreeChat(false);
+
+      await withTypingDelay(1800);
+      const { data: replyMsg } = await supabase.from("chat_messages")
+        .insert({ session_id: sid, sender: "admin", message: "Toko close , nanti di infokan lagi di saluran wa ya" })
+        .select("*").single();
+      if (replyMsg) setMessages(prev => [...prev, replyMsg]);
+      return;
+    }
+
+    setShowOptions(false);
+    setIsFreeChat(false);
+    setTrxMode(mode);
+
+    const adminReply = mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]";
 
     await withTypingDelay(1800);
 
@@ -246,7 +272,7 @@ export default function JualBeliPage() {
     if (replyMsg) {
       setMessages(prev => [...prev, replyMsg]);
 
-      if (mode === "buy" && !isStoreClose) {
+      if (mode === "buy") {
         await withTypingDelay(1200);
         const { data: qrisMsg } = await supabase.from("chat_messages")
           .insert({ session_id: sid, sender: "admin", message: "[QRIS_IMAGE]" })
@@ -258,15 +284,41 @@ export default function JualBeliPage() {
 
   const handleSend = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || !sessionId || sending) return;
+    if (!input.trim() || sending) return;
+
+    let sid = sessionId;
+    if (!sid) {
+      const { data: sessionData } = await supabase
+        .from("chat_sessions")
+        .insert({ customer_name: `Customer_${Math.floor(Math.random() * 10000)}` })
+        .select("id").single();
+      if (!sessionData) return;
+      sid = sessionData.id;
+      setSessionId(sid);
+    }
+
     setSending(true);
+    const sentText = input.trim();
+    setInput("");
+
     const { data: msg } = await supabase.from("chat_messages")
-      .insert({ session_id: sessionId, sender: "customer", message: input.trim() })
+      .insert({ session_id: sid, sender: "customer", message: sentText })
       .select("*").single();
     if (msg) setMessages(prev => [...prev, msg]);
-    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
-    setInput("");
+    await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sid);
     setSending(false);
+
+    // If store is closed, auto-reply to customer's text
+    const { data: ssData } = await supabase.from("site_settings").select("value").eq("key", "store_status").single();
+    const isStoreClose = (ssData && ssData.value === "close") || storeStatus === "close";
+
+    if (isStoreClose) {
+      await withTypingDelay(1500);
+      const { data: autoReply } = await supabase.from("chat_messages")
+        .insert({ session_id: sid, sender: "admin", message: "Toko close , nanti di infokan lagi di saluran wa ya" })
+        .select("*").single();
+      if (autoReply) setMessages(prev => [...prev, autoReply]);
+    }
   };
 
   const handleSelectProof = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -531,8 +583,8 @@ export default function JualBeliPage() {
             </div>
             <div>
               <h1 className="text-white font-bold text-[15px] leading-tight">Kucai DL</h1>
-              <p className="text-blue-400 text-xs flex items-center gap-1.5 mt-0.5">
-                <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse shadow-[0_0_8px_rgba(245,158,11,0.8)]" /> Online
+              <p className={storeStatus === "close" ? "text-red-400 text-xs flex items-center gap-1.5 mt-0.5" : "text-emerald-400 text-xs flex items-center gap-1.5 mt-0.5"}>
+                <span className={`w-1.5 h-1.5 rounded-full ${storeStatus === "close" ? "bg-red-400" : "bg-emerald-400 animate-pulse shadow-[0_0_8px_rgba(52,211,153,0.8)]"}`} /> {storeStatus === "close" ? "Toko Tutup" : "Online"}
               </p>
             </div>
           </div>
@@ -544,9 +596,11 @@ export default function JualBeliPage() {
                <div className="w-2.5 h-2.5 rounded-full bg-[#202c33] border border-white/5 -ml-3"></div>
             </div>
             
-            <div className="bg-[#202c33] border border-white/5 rounded-full px-4 py-2 inline-flex items-center gap-2.5 relative shadow-lg ml-2">
-              <div className="w-3 h-3 rounded-full bg-emerald-400 shrink-0 shadow-[0_0_8px_rgba(52,211,153,0.6)]" />
-              <span className="text-white/90 text-[11px] font-bold tracking-wide uppercase">UPDATE / INFO DI SALURAN WA YA 🥰</span>
+            <div className={`border rounded-full px-4 py-2 inline-flex items-center gap-2.5 relative shadow-lg ml-2 ${storeStatus === "close" ? "bg-[#202c33] border-red-500/20" : "bg-[#202c33] border-white/5"}`}>
+              <div className={`w-3 h-3 rounded-full shrink-0 ${storeStatus === "close" ? "bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]" : "bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.6)]"}`} />
+              <span className={`text-[11px] font-bold tracking-wide uppercase ${storeStatus === "close" ? "text-red-400" : "text-white/90"}`}>
+                {storeStatus === "close" ? "TOKO SEDANG TUTUP / CLOSE 🔴" : "UPDATE / INFO DI SALURAN WA YA 🥰"}
+              </span>
             </div>
           </div>
         </div>
@@ -721,23 +775,33 @@ export default function JualBeliPage() {
               )}
             </div>
           ) : (
-            <form onSubmit={handleSend} className="flex items-end gap-3 max-w-4xl mx-auto relative">
-              <input
-                type="text"
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                disabled={!sessionId}
-                placeholder="Ketik pesan..."
-                className="flex-1 bg-[#1f2c34] border border-white/5 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-[#0ea5e9] focus:bg-[#2a3942] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
-              />
-              <button
-                type="submit"
-                disabled={!input.trim() || sending || !sessionId}
-                className="w-12 h-12 shrink-0 bg-[#0ea5e9] hover:bg-[#0284c7] disabled:bg-[#1f2c34] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
-              >
-                <Send className="w-5 h-5 ml-1" />
-              </button>
-            </form>
+            <div className="flex flex-col gap-1.5 max-w-4xl mx-auto">
+              <div className="flex justify-start px-1">
+                <button
+                  type="button"
+                  onClick={() => { setShowOptions(true); setIsFreeChat(false); }}
+                  className="text-[11px] text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1 transition-colors"
+                >
+                  🛒 Menu Jual/Beli
+                </button>
+              </div>
+              <form onSubmit={handleSend} className="flex items-end gap-3 relative">
+                <input
+                  type="text"
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder="Ketik pesan..."
+                  className="flex-1 bg-[#1f2c34] border border-white/5 rounded-[20px] px-5 py-3.5 text-white text-sm placeholder-gray-500 outline-none focus:border-[#0ea5e9] focus:bg-[#2a3942] transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-inner"
+                />
+                <button
+                  type="submit"
+                  disabled={!input.trim() || sending}
+                  className="w-12 h-12 shrink-0 bg-[#0ea5e9] hover:bg-[#0284c7] disabled:bg-[#1f2c34] disabled:text-gray-500 rounded-[20px] flex items-center justify-center text-white transition-all shadow-lg disabled:shadow-none mb-[1px]"
+                >
+                  <Send className="w-5 h-5 ml-1" />
+                </button>
+              </form>
+            </div>
           )}
         </div>
 
