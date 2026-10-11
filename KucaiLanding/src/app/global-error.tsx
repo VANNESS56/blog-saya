@@ -14,9 +14,10 @@ export default function GlobalError({
       error.message?.includes("Loading chunk") ||
       error.message?.includes("Failed to fetch") ||
       error.message?.includes("Unexpected token") ||
+      error.message?.includes("is not defined") ||
       error.name === "ChunkLoadError")
   ) {
-    window.location.reload();
+    window.location.href = "/";
     return null;
   }
 

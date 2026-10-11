@@ -634,9 +634,13 @@ export default function JualBeliPage({ initialMode }: { initialMode?: string }) 
         {/* Header with WhatsApp-style Notes */}
         <div className="flex flex-col sticky top-0 z-50 border-b border-white/5 bg-[#0b141a]/95 backdrop-blur-md">
           <div className="flex items-center gap-4 px-5 pt-4 pb-2 relative">
-            <button onClick={() => router.push("/")} className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-blue-900/20 -ml-2">
+            <a 
+              href="/" 
+              className="text-white/50 hover:text-white transition-colors p-1.5 rounded-full hover:bg-blue-900/20 -ml-2 flex items-center justify-center cursor-pointer"
+              title="Kembali ke Beranda"
+            >
               <ArrowLeft className="w-5 h-5" />
-            </button>
+            </a>
             <div className="w-10 h-10 rounded-full overflow-hidden shrink-0 shadow-lg border-2 border-blue-500 relative z-10">
               <img src="/kucaidl-profile.jpg" className="w-full h-full object-cover" alt="Kucai DL" />
             </div>
