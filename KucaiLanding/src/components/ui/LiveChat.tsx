@@ -15,6 +15,17 @@ interface ChatMessage {
   created_at: string;
 }
 
+const ACCOUNT_AUTO_REPLY = `*kalau jual akun , silahkan kirim ss spek akunnya :*
+- backpack
+- playtime hour
+- supporter / ssupporter
+- title ( kalau ada )
+- roles kalau level 5 keatas
+
+kalau beli akun , silahkan klik beli dari website ya 🥰
+
+-nanti admin mimin bales secepatnya ditunggu ya 🤗`;
+
 const compressImage = (file: File): Promise<File> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
@@ -255,7 +266,7 @@ function LiveChatInner() {
     await supabase.from("chat_messages").insert({
       session_id: sid,
       sender: "admin",
-      message: `Halo! 👋 Selamat datang di Kucai Account. Ada yang bisa kami bantu?`,
+      message: ACCOUNT_AUTO_REPLY,
     });
   };
 
@@ -302,6 +313,28 @@ function LiveChatInner() {
         await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
         setNewMessage("");
         setSelectedFiles([]);
+
+        // Auto-reply for photos
+        if (storeStatus === "close") {
+          setTimeout(async () => {
+            await supabase.from("chat_messages").insert({
+              session_id: sessionId,
+              sender: "admin",
+              message: "Toko close , nanti di infokan lagi di saluran wa ya",
+            });
+          }, 1200);
+        } else {
+          const hasAutoReply = messages.some(m => m.sender === "admin" && m.message.includes("kalau jual akun"));
+          if (!hasAutoReply) {
+            setTimeout(async () => {
+              await supabase.from("chat_messages").insert({
+                session_id: sessionId,
+                sender: "admin",
+                message: ACCOUNT_AUTO_REPLY,
+              });
+            }, 1000);
+          }
+        }
       } catch (err: any) {
         alert(`Terjadi kesalahan: ${err.message}`);
       }
@@ -316,7 +349,7 @@ function LiveChatInner() {
       await supabase.from("chat_sessions").update({ last_message_at: new Date().toISOString() }).eq("id", sessionId);
       setNewMessage("");
 
-      // Auto-reply if store is closed
+      // Auto-reply if store is closed or auto-reply instruction
       if (storeStatus === "close") {
         setTimeout(async () => {
           await supabase.from("chat_messages").insert({
@@ -325,6 +358,17 @@ function LiveChatInner() {
             message: "Toko close , nanti di infokan lagi di saluran wa ya",
           });
         }, 1200);
+      } else {
+        const hasAutoReply = messages.some(m => m.sender === "admin" && m.message.includes("kalau jual akun"));
+        if (!hasAutoReply) {
+          setTimeout(async () => {
+            await supabase.from("chat_messages").insert({
+              session_id: sessionId,
+              sender: "admin",
+              message: ACCOUNT_AUTO_REPLY,
+            });
+          }, 1000);
+        }
       }
     }
 
@@ -389,7 +433,7 @@ function LiveChatInner() {
         >
           {/* Header */}
           <div 
-            className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-blue-600 to-blue-500 shrink-0 select-none cursor-grab active:cursor-grabbing"
+            className="flex items-center justify-between px-4 py-3 bg-gradient-to-r from-amber-600 to-orange-600 shrink-0 select-none cursor-grab active:cursor-grabbing"
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -430,7 +474,7 @@ function LiveChatInner() {
           {!nameSubmitted ? (
             /* Name Input Form */
             <div className="flex-1 flex flex-col items-center justify-center p-6">
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-blue-600/20 flex items-center justify-center mb-4">
+              <div className="w-14 h-14 rounded-full overflow-hidden bg-amber-600/20 flex items-center justify-center mb-4">
                 <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Kucai" width={56} height={56} className="object-cover w-full h-full" />
               </div>
               <h3 className="text-white font-bold text-lg mb-1">
@@ -445,14 +489,14 @@ function LiveChatInner() {
                   value={customerName}
                   onChange={(e) => setCustomerName(e.target.value)}
                   placeholder="Nama Anda..."
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
+                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
                   autoFocus
                   maxLength={50}
                 />
                 <button
                   type="submit"
                   disabled={!customerName.trim()}
-                  className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
+                  className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
                 >
                   Mulai Chat
                 </button>
@@ -482,7 +526,7 @@ function LiveChatInner() {
                     <div
                       className={`max-w-[80%] px-3.5 py-2.5 rounded-2xl text-sm leading-relaxed ${
                         msg.sender === "customer"
-                          ? "bg-blue-600 text-white rounded-br-md"
+                          ? "bg-amber-600 text-white rounded-br-md"
                           : "bg-white/10 text-gray-200 rounded-bl-md"
                       }`}
                     >
@@ -493,7 +537,7 @@ function LiveChatInner() {
                       <div
                         className={`text-[10px] mt-1 ${
                           msg.sender === "customer"
-                            ? "text-blue-200"
+                            ? "text-amber-200"
                             : "text-gray-500"
                         }`}
                       >
@@ -546,14 +590,14 @@ function LiveChatInner() {
                       value={newMessage}
                       onChange={(e) => setNewMessage(e.target.value)}
                       placeholder={uploading ? "Mengunggah..." : (selectedFiles.length > 0 ? "Tambahkan keterangan..." : "Ketik pesan...")}
-                      className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-blue-500 transition-colors"
+                      className="flex-1 bg-white/10 border border-white/10 rounded-xl px-4 py-2.5 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
                       maxLength={500}
                       disabled={uploading}
                     />
                     <button
                       type="submit"
                       disabled={(!newMessage.trim() && selectedFiles.length === 0) || sending || uploading}
-                      className="w-10 h-10 shrink-0 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
+                      className="w-10 h-10 shrink-0 bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 rounded-xl flex items-center justify-center text-white transition-colors"
                     >
                       <Send className="w-4 h-4" />
                     </button>
@@ -589,7 +633,7 @@ function LiveChatInner() {
           <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex items-center justify-center">
             <button
               onClick={() => setPreviewImage(null)}
-              className="absolute top-4 right-4 text-white hover:text-blue-500 bg-black/50 w-10 h-10 flex items-center justify-center rounded-full transition-colors z-10 text-xl font-bold"
+              className="absolute top-4 right-4 text-white hover:text-amber-500 bg-black/50 w-10 h-10 flex items-center justify-center rounded-full transition-colors z-10 text-xl font-bold"
             >
               ✕
             </button>
