@@ -469,7 +469,7 @@ export default function JualBeliPage() {
             ‼️ <strong>QRIS untuk tf dari bank yg ga bisa tf ke e-wallet</strong><br/>
             ‼️ <strong>QRIS untuk tf dari Ewallet yg belum premium</strong>
             <br/><br/>
-            <span className="text-blue-400">✔</span> Pembelian di bawah 100k gratis tax .<br/>
+            <span className="text-blue-400">✔</span> Pembelian di bawah 500k gratis tax .<br/>
             <span className="text-blue-400">✔</span> Biaya 1% jika pembelian di atas 500k .
           </div>
           
