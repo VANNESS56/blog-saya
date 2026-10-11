@@ -38,12 +38,12 @@ export function Hero() {
     
     setTimeout(() => {
       if (url.startsWith("/")) {
-        router.push(url);
+        window.location.href = url;
       } else {
         window.open(url, '_blank', 'noopener,noreferrer');
       }
       setPunches(prev => prev.filter(p => p.id !== id));
-    }, 300);
+    }, 250);
   };
 
   useEffect(() => {

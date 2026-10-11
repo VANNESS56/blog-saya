@@ -98,9 +98,21 @@ export function RateCard() {
                         Jual <strong className="text-white text-[15px] ml-0.5">{formatPrice(rate.sell_price)}</strong>
                       </span>
                     </div>
+                    <div className="flex items-center gap-2 mt-3 pt-3 border-t border-white/10">
+                      <a
+                        href="/jual-beli?mode=buy"
+                        className="flex-1 py-1.5 px-3 rounded-lg bg-gradient-to-r from-[#ffd000] to-[#f59e0b] text-black font-black text-xs text-center hover:scale-105 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-1"
+                      >
+                        🛒 Beli {rate.item}
+                      </a>
+                      <a
+                        href="/jual-beli?mode=sell"
+                        className="flex-1 py-1.5 px-3 rounded-lg bg-gradient-to-r from-[#f97316] to-[#ea580c] text-white font-black text-xs text-center hover:scale-105 transition-all shadow-sm active:scale-95 flex items-center justify-center gap-1"
+                      >
+                        💰 Jual {rate.item}
+                      </a>
+                    </div>
                   </div>
-
-
                 </div>
               );
             })}
