@@ -42,7 +42,7 @@ export default function JualBeliPage() {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   // Helper: show typing indicator, then execute callback
-  const withTypingDelay = (delayMs: number = 1500): Promise<void> => {
+  const withTypingDelay = (delayMs: number = 1000): Promise<void> => {
     return new Promise((resolve) => {
       setIsTyping(true);
       setTimeout(() => {
@@ -249,7 +249,7 @@ export default function JualBeliPage() {
       setShowOptions(true);
       setIsFreeChat(false);
 
-      await withTypingDelay(1800);
+      await withTypingDelay(1000);
       const { data: replyMsg } = await supabase.from("chat_messages")
         .insert({ session_id: sid, sender: "admin", message: "Toko close , nanti di infokan lagi di saluran wa ya" })
         .select("*").single();
@@ -263,7 +263,7 @@ export default function JualBeliPage() {
 
     const adminReply = mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]";
 
-    await withTypingDelay(1800);
+    await withTypingDelay(1000);
 
     const { data: replyMsg } = await supabase.from("chat_messages")
       .insert({ session_id: sid, sender: "admin", message: adminReply })
@@ -273,7 +273,7 @@ export default function JualBeliPage() {
       setMessages(prev => [...prev, replyMsg]);
 
       if (mode === "buy") {
-        await withTypingDelay(1200);
+        await withTypingDelay(1000);
         const { data: qrisMsg } = await supabase.from("chat_messages")
           .insert({ session_id: sid, sender: "admin", message: "[QRIS_IMAGE]" })
           .select("*").single();
@@ -313,7 +313,7 @@ export default function JualBeliPage() {
     const isStoreClose = (ssData && ssData.value === "close") || storeStatus === "close";
 
     if (isStoreClose) {
-      await withTypingDelay(1500);
+      await withTypingDelay(1000);
       const { data: autoReply } = await supabase.from("chat_messages")
         .insert({ session_id: sid, sender: "admin", message: "Toko close , nanti di infokan lagi di saluran wa ya" })
         .select("*").single();
@@ -400,7 +400,7 @@ export default function JualBeliPage() {
       ? "Terima kasih! 🙏 Mimin cek transferan kamu dulu ya 🥰"
       : "pembayaran sedang di proses \nmohon menunggu 1-10 menit yaa\nThankyou sudah menunggu 🥰✌️";
 
-    await withTypingDelay(1500);
+    await withTypingDelay(1000);
 
     const { data: reply1 } = await supabase.from("chat_messages").insert({
       session_id: sessionId,
@@ -410,7 +410,7 @@ export default function JualBeliPage() {
     if (reply1) setMessages(prev => [...prev, reply1]);
 
     if (trxMode === "buy") {
-      await withTypingDelay(1800);
+      await withTypingDelay(1000);
       const { data: reply2 } = await supabase.from("chat_messages").insert({
         session_id: sessionId,
         sender: "admin",
