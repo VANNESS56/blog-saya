@@ -21,6 +21,7 @@ export default function JualBeliPage() {
   const [input, setInput] = useState("");
   const [sending, setSending] = useState(false);
   const [showOptions, setShowOptions] = useState(true);
+  const [selectingMode, setSelectingMode] = useState(false);
   const [storeStatus, setStoreStatus] = useState<"open" | "close">("open");
   const [jualBeliReply, setJualBeliReply] = useState<string | null>(null);
   const [sellReply, setSellReply] = useState<string | null>(null);
@@ -181,6 +182,7 @@ export default function JualBeliPage() {
           if (payload.new.message.includes("Udah Di Drop ya Cai") || payload.new.message.includes("Udah Di tranfer ya Cai") || payload.new.message.trim() === ".") {
             setIsFreeChat(false);
             setShowOptions(true);
+            setSelectingMode(false);
             if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
               document.activeElement.blur();
             }
@@ -208,77 +210,89 @@ export default function JualBeliPage() {
   }, [sessionId]);
 
   const handleSelectMode = async (mode: "buy" | "sell") => {
-    let sid = sessionId;
-    if (!sid) {
-      const { data: sessionData } = await supabase
-        .from("chat_sessions")
-        .insert({ customer_name: `Customer_${Math.floor(Math.random() * 10000)}` })
-        .select("id").single();
-      if (!sessionData) return;
-      sid = sessionData.id;
-      setSessionId(sid);
-      
-      const { data: initMsg } = await supabase.from("chat_messages").insert([
-        { session_id: sid, sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" },
-      ]).select("*").single();
-      
-      if (initMsg) {
-        setMessages([initMsg]);
+    if (selectingMode) return;
+    setSelectingMode(true);
+    setShowOptions(false); // Langsung 1x klik sembunyikan tombol agar tidak bisa dispam
+
+    try {
+      let sid = sessionId;
+      if (!sid) {
+        const { data: sessionData } = await supabase
+          .from("chat_sessions")
+          .insert({ customer_name: `Customer_${Math.floor(Math.random() * 10000)}` })
+          .select("id").single();
+        if (!sessionData) {
+          setShowOptions(true);
+          setSelectingMode(false);
+          return;
+        }
+        sid = sessionData.id;
+        setSessionId(sid);
+        
+        const { data: initMsg } = await supabase.from("chat_messages").insert([
+          { session_id: sid, sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" },
+        ]).select("*").single();
+        
+        if (initMsg) {
+          setMessages([initMsg]);
+        }
+      } else {
+        await supabase.from("chat_sessions").update({ status: 'active', last_message_at: new Date().toISOString() }).eq("id", sid);
       }
-    } else {
-      await supabase.from("chat_sessions").update({ status: 'active', last_message_at: new Date().toISOString() }).eq("id", sid);
-    }
 
-    const customerText = mode === "buy" ? "Bang, saya mau beli DL 🙏" : "Bang, saya mau jual DL 🙏";
+      const customerText = mode === "buy" ? "Bang, saya mau beli DL 🙏" : "Bang, saya mau jual DL 🙏";
 
-    const { data: msgCst } = await supabase.from("chat_messages").insert([
-      { session_id: sid, sender: "customer", message: customerText }
-    ]).select("*").single();
+      const { data: msgCst } = await supabase.from("chat_messages").insert([
+        { session_id: sid, sender: "customer", message: customerText }
+      ]).select("*").single();
 
-    if (msgCst) {
-      setMessages(prev => [...prev, msgCst]);
-    } else {
-      setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
-    }
+      if (msgCst) {
+        setMessages(prev => [...prev, msgCst]);
+      } else {
+        setMessages(prev => [...prev, { id: Date.now().toString(), sender: "customer", message: customerText }]);
+      }
 
-    // Check store status
-    const { data: ssData } = await supabase.from("site_settings").select("value").eq("key", "store_status").single();
-    const isStoreClose = (ssData && ssData.value === "close") || storeStatus === "close";
+      // Check store status
+      const { data: ssData } = await supabase.from("site_settings").select("value").eq("key", "store_status").single();
+      const isStoreClose = (ssData && ssData.value === "close") || storeStatus === "close";
 
-    if (isStoreClose) {
-      setShowOptions(true);
+      if (isStoreClose) {
+        setShowOptions(true);
+        setIsFreeChat(false);
+        setSelectingMode(false);
+
+        await withTypingDelay(1000);
+        const { data: replyMsg } = await supabase.from("chat_messages")
+          .insert({ session_id: sid, sender: "admin", message: "Toko close , nanti di infokan lagi di saluran wa ya" })
+          .select("*").single();
+        if (replyMsg) setMessages(prev => [...prev, replyMsg]);
+        return;
+      }
+
       setIsFreeChat(false);
+      setTrxMode(mode);
+
+      const adminReply = mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]";
 
       await withTypingDelay(1000);
+
       const { data: replyMsg } = await supabase.from("chat_messages")
-        .insert({ session_id: sid, sender: "admin", message: "Toko close , nanti di infokan lagi di saluran wa ya" })
+        .insert({ session_id: sid, sender: "admin", message: adminReply })
         .select("*").single();
-      if (replyMsg) setMessages(prev => [...prev, replyMsg]);
-      return;
-    }
 
-    setShowOptions(false);
-    setIsFreeChat(false);
-    setTrxMode(mode);
+      if (replyMsg) {
+        setMessages(prev => [...prev, replyMsg]);
 
-    const adminReply = mode === "buy" ? "[PROMO_BELI]" : "[PROMO_JUAL]";
-
-    await withTypingDelay(1000);
-
-    const { data: replyMsg } = await supabase.from("chat_messages")
-      .insert({ session_id: sid, sender: "admin", message: adminReply })
-      .select("*").single();
-
-    if (replyMsg) {
-      setMessages(prev => [...prev, replyMsg]);
-
-      if (mode === "buy") {
-        await withTypingDelay(1000);
-        const { data: qrisMsg } = await supabase.from("chat_messages")
-          .insert({ session_id: sid, sender: "admin", message: "[QRIS_IMAGE]" })
-          .select("*").single();
-        if (qrisMsg) setMessages(prev => [...prev, qrisMsg]);
+        if (mode === "buy") {
+          await withTypingDelay(1000);
+          const { data: qrisMsg } = await supabase.from("chat_messages")
+            .insert({ session_id: sid, sender: "admin", message: "[QRIS_IMAGE]" })
+            .select("*").single();
+          if (qrisMsg) setMessages(prev => [...prev, qrisMsg]);
+        }
       }
+    } finally {
+      setSelectingMode(false);
     }
   };
 
@@ -657,10 +671,10 @@ export default function JualBeliPage() {
         <div className="p-4 bg-[#0b141a] border-t border-white/5 sticky bottom-0 z-10">
           {showOptions ? (
             <div className="flex gap-2 w-full max-w-4xl mx-auto">
-              <button onClick={() => handleSelectMode("buy")} className="flex-1 py-4 bg-[#202c33] hover:bg-blue-900/30 border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button disabled={selectingMode} onClick={() => handleSelectMode("buy")} className="flex-1 py-4 bg-[#202c33] hover:bg-blue-900/30 disabled:opacity-50 disabled:pointer-events-none border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
                 🛒 Beli DL/BGL
               </button>
-              <button onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#202c33] hover:bg-blue-900/30 border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
+              <button disabled={selectingMode} onClick={() => handleSelectMode("sell")} className="flex-1 py-4 bg-[#202c33] hover:bg-blue-900/30 disabled:opacity-50 disabled:pointer-events-none border border-white/5 rounded-2xl text-white text-sm font-semibold transition-colors shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]">
                 💰 Jual DL/BGL
               </button>
             </div>
