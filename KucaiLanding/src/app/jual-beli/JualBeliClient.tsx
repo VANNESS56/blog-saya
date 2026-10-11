@@ -38,6 +38,7 @@ export default function JualBeliPage() {
   const [savedPayouts, setSavedPayouts] = useState<SavedPayout[]>([]);
   const [mounted, setMounted] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -462,7 +463,7 @@ export default function JualBeliPage() {
     if (msg.image_url) {
       return (
         <div className="flex flex-col space-y-2">
-          <img src={msg.image_url} alt="Proof" className="w-full h-auto max-w-[200px] rounded-lg border border-white/10" />
+          <img src={msg.image_url} alt="Proof" className="w-full h-auto max-w-[200px] rounded-lg border border-white/10 cursor-pointer hover:opacity-90 transition-opacity" onClick={() => setPreviewImage(msg.image_url || null)} />
           {displayMessage && <p className="whitespace-pre-wrap leading-relaxed text-[13px]">{displayMessage}</p>}
         </div>
       );
@@ -487,8 +488,11 @@ export default function JualBeliPage() {
             <span className="text-blue-400">✔</span> Biaya 1% jika pembelian di atas 500k .
           </div>
           
-          <div className="bg-white rounded-xl p-2 pb-0 w-[160px]">
+          <div onClick={() => setPreviewImage("/qris.jpg")} className="bg-white rounded-xl p-2 pb-1.5 w-[160px] cursor-pointer hover:scale-[1.03] transition-all shadow-md group" title="Klik untuk memperbesar gambar QRIS">
             <img src="/qris.jpg" alt="QRIS Kucai DL" className="w-full h-auto rounded-lg border border-gray-100" />
+            <p className="text-[10px] text-center text-gray-600 font-semibold mt-1 flex items-center justify-center gap-1 group-hover:text-blue-600">
+              🔍 Klik untuk perbesar
+            </p>
           </div>
 
           <button onClick={handleDownload} className="w-full py-2 bg-transparent hover:bg-white/5 border border-white/10 rounded-lg text-white text-[13px] font-semibold transition-colors flex items-center justify-center gap-2 shadow-sm">
@@ -819,6 +823,46 @@ export default function JualBeliPage() {
           )}
         </div>
 
+        {/* Image Preview Modal */}
+        {previewImage && (
+          <div 
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-4 backdrop-blur-sm"
+            onClick={() => setPreviewImage(null)}
+          >
+            <div className="relative max-w-4xl max-h-[90vh] w-full h-full flex flex-col items-center justify-center">
+              <button
+                type="button"
+                onClick={() => setPreviewImage(null)}
+                className="absolute top-4 right-4 text-white hover:text-amber-400 bg-black/60 hover:bg-black/80 w-10 h-10 flex items-center justify-center rounded-full transition-colors z-10 text-xl font-bold border border-white/20"
+              >
+                ✕
+              </button>
+              <img 
+                src={previewImage} 
+                alt="Preview" 
+                className="max-w-full max-h-[80vh] object-contain rounded-2xl shadow-2xl bg-white/5 p-1" 
+                onClick={(e) => e.stopPropagation()} 
+              />
+              {previewImage === "/qris.jpg" && (
+                <div className="mt-4 flex gap-3" onClick={(e) => e.stopPropagation()}>
+                  <button 
+                    onClick={() => {
+                      const link = document.createElement("a");
+                      link.href = "/qris.jpg";
+                      link.download = "QRIS_KucaiDL.jpg";
+                      document.body.appendChild(link);
+                      link.click();
+                      document.body.removeChild(link);
+                    }}
+                    className="px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl transition-colors shadow-lg"
+                  >
+                    💾 Simpan Gambar QR
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
