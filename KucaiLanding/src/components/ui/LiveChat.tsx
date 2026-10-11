@@ -109,7 +109,6 @@ function LiveChatInner() {
   const [isOpen, setIsOpen] = useState(false);
   const [customerName, setCustomerName] = useState("");
   const [sessionId, setSessionId] = useState<string | null>(null);
-  const [nameSubmitted, setNameSubmitted] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [sending, setSending] = useState(false);
@@ -230,22 +229,13 @@ function LiveChatInner() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Focus input when chat opens
-  useEffect(() => {
-    if (isOpen && nameSubmitted) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-    }
-  }, [isOpen, nameSubmitted]);
+  const initSession = async () => {
+    const randomName = `Customer_${Math.floor(1000 + Math.random() * 9000)}`;
+    setCustomerName(randomName);
 
-  const handleNameSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = customerName.trim();
-    if (!trimmed) return;
-
-    // Create chat session in Supabase
     const { data, error } = await supabase
       .from("chat_sessions")
-      .insert({ customer_name: trimmed })
+      .insert({ customer_name: randomName })
       .select("id")
       .single();
 
@@ -256,19 +246,36 @@ function LiveChatInner() {
 
     const sid = data.id;
     setSessionId(sid);
-    setNameSubmitted(true);
     localStorage.setItem(
       "kucaidl_chat",
-      JSON.stringify({ sessionId: sid, customerName: trimmed })
+      JSON.stringify({ sessionId: sid, customerName: randomName })
     );
 
     // Send auto-greeting
-    await supabase.from("chat_messages").insert({
+    const { data: greetingMsg } = await supabase.from("chat_messages").insert({
       session_id: sid,
       sender: "admin",
       message: ACCOUNT_AUTO_REPLY,
-    });
+    }).select("*").single();
+
+    if (greetingMsg) {
+      setMessages([greetingMsg]);
+    }
   };
+
+  // Auto initialize session when chat opens
+  useEffect(() => {
+    if (isOpen && !sessionId) {
+      initSession();
+    }
+  }, [isOpen, sessionId]);
+
+  // Focus input when chat opens
+  useEffect(() => {
+    if (isOpen && sessionId) {
+      setTimeout(() => inputRef.current?.focus(), 100);
+    }
+  }, [isOpen, sessionId]);
 
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -471,36 +478,10 @@ function LiveChatInner() {
             </div>
           </div>
 
-          {!nameSubmitted ? (
-            /* Name Input Form */
-            <div className="flex-1 flex flex-col items-center justify-center p-6">
-              <div className="w-14 h-14 rounded-full overflow-hidden bg-amber-600/20 flex items-center justify-center mb-4">
-                <img src="https://i.ibb.co.com/VW6XwHZv/kucaiaccount.jpg" alt="Kucai" width={56} height={56} className="object-cover w-full h-full" />
-              </div>
-              <h3 className="text-white font-bold text-lg mb-1">
-                Halo! 👋
-              </h3>
-              <p className="text-gray-400 text-sm text-center mb-6">
-                Masukkan nama Anda untuk memulai percakapan dengan tim kami.
-              </p>
-              <form onSubmit={handleNameSubmit} className="w-full space-y-3">
-                <input
-                  type="text"
-                  value={customerName}
-                  onChange={(e) => setCustomerName(e.target.value)}
-                  placeholder="Nama Anda..."
-                  className="w-full bg-white/10 border border-white/10 rounded-xl px-4 py-3 text-white text-sm placeholder-gray-500 outline-none focus:border-amber-500 transition-colors"
-                  autoFocus
-                  maxLength={50}
-                />
-                <button
-                  type="submit"
-                  disabled={!customerName.trim()}
-                  className="w-full bg-amber-600 hover:bg-amber-700 disabled:bg-gray-700 disabled:text-gray-500 text-white font-semibold py-3 rounded-xl transition-colors text-sm"
-                >
-                  Mulai Chat
-                </button>
-              </form>
+          {!sessionId ? (
+            <div className="flex-1 flex flex-col items-center justify-center p-6 text-center">
+              <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin mb-3" />
+              <p className="text-gray-400 text-xs">Menghubungkan ke admin...</p>
             </div>
           ) : (
             /* Chat Messages Area */
