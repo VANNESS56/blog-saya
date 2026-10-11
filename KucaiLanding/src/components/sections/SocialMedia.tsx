@@ -34,7 +34,7 @@ export function SocialMedia() {
         <div className="flex flex-col md:flex-row gap-4 relative z-10">
           
           {/* Instagram */}
-          <a href="https://instagram.com/kucaidlofficial" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-between p-4 md:p-5 rounded-[16px] bg-[#151515] border border-amber-500/20 hover:border-amber-500/50 hover:bg-[#1a1a1a] transition-all group shadow-[0_0_15px_rgba(245,158,11,0.05)]">
+          <a href="https://instagram.com/kucaidl.real" target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-between p-4 md:p-5 rounded-[16px] bg-[#151515] border border-amber-500/20 hover:border-amber-500/50 hover:bg-[#1a1a1a] transition-all group shadow-[0_0_15px_rgba(245,158,11,0.05)]">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 md:w-14 md:h-14 rounded-[12px] bg-gradient-to-br from-[#833ab4] via-[#fd1d1d] to-[#fcb045] p-[2px]">
                 <div className="w-full h-full bg-[#151515] rounded-[10px] flex items-center justify-center overflow-hidden">
@@ -49,7 +49,7 @@ export function SocialMedia() {
                     <path fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" d="m7.5 12.5 3 3 6-7" />
                   </svg>
                 </div>
-                <span className="text-[12px] text-gray-400">@kucaidlofficial</span>
+                <span className="text-[12px] text-gray-400">@kucaidl.real</span>
               </div>
             </div>
             
