@@ -161,7 +161,7 @@ export function Hero() {
                         <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
                           <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU BELI</span>
                           <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
-                            {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlBuy : prices.bglBuy}`}
+                            {loadingPrices ? "..." : `Rp${(activeRate === "DL" ? prices.dlBuy : prices.bglBuy).toLocaleString("id-ID")}`}
                           </span>
                         </div>
 
@@ -169,7 +169,7 @@ export function Hero() {
                         <div className="flex-1 bg-[#151515] border border-amber-500 rounded-[12px] py-4 px-2 flex flex-col items-center justify-center text-center shadow-[0_0_15px_rgba(245,158,11,0.1)]">
                           <span className="text-[12px] text-gray-400 font-bold uppercase tracking-wider mb-1">KAMU JUAL</span>
                           <span className="text-amber-500 font-black text-[26px] md:text-[32px] tracking-tight">
-                            {loadingPrices ? "..." : `Rp${activeRate === "DL" ? prices.dlSell : prices.bglSell}`}
+                            {loadingPrices ? "..." : `Rp${(activeRate === "DL" ? prices.dlSell : prices.bglSell).toLocaleString("id-ID")}`}
                           </span>
                         </div>
                       </div>
