@@ -153,7 +153,6 @@ function LiveChatInner() {
         if (parsed.sessionId && parsed.customerName) {
           setSessionId(parsed.sessionId);
           setCustomerName(parsed.customerName);
-          setNameSubmitted(true);
         }
       } catch {}
     }
@@ -182,7 +181,6 @@ function LiveChatInner() {
         // Session not found in DB (maybe deleted by admin)
         localStorage.removeItem("kucaidl_chat");
         setSessionId(null);
-        setNameSubmitted(false);
         setMessages([]);
         return;
       }
