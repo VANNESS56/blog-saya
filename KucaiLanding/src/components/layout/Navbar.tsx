@@ -34,7 +34,6 @@ export function Navbar() {
           {[...Array(2)].map((_, i) => (
             <div key={i} className="flex gap-8 items-center">
               <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.1")}</span>
-              <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.2")}</span>
               <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.3")}</span>
               <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.4")}</span>
               <span className="flex items-center gap-2"><span className="w-1.5 h-1.5 rounded-full bg-amber-950"></span> {t("tick.5")}</span>
