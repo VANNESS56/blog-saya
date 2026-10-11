@@ -1897,6 +1897,31 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
     });
   };
 
+  const markAsTroll = async (sessionId: string) => {
+    // 1. Update session status to batal
+    await supabase.from("chat_sessions").update({ status: "batal" }).eq("id", sessionId);
+    
+    // 2. Insert auto reply "."
+    await supabase.from("chat_messages").insert({
+      session_id: sessionId,
+      sender: "admin",
+      message: "."
+    });
+    
+    // 3. Update local state
+    setItems(prev => prev.map(item => item.session.id === sessionId ? { ...item, session: { ...item.session, status: "batal" } } : item));
+    
+    Swal.fire({
+       title: "Batal / Troll!",
+       text: "Dibalas '.' dan ditandai batal.",
+       icon: "info",
+       toast: true,
+       position: 'top-end',
+       showConfirmButton: false,
+       timer: 3000
+    });
+  };
+
   const handleManualCleanup = async () => {
     setCleaning(true);
     try {
@@ -1987,20 +2012,33 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
               <div className="p-4 flex flex-col flex-1">
                 <div className="text-[10px] text-white/40 mb-2 uppercase tracking-wider">{item.time}</div>
                 <div className="text-sm text-white font-semibold whitespace-pre-wrap flex-1">{item.caption}</div>
-                <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between">
-                  <div className="text-xs text-emerald-400 font-medium">
+                <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between gap-1.5">
+                  <div className="text-xs text-emerald-400 font-medium truncate" title={item.session.customer_name}>
                     {item.session.customer_name}
                   </div>
-                  {item.session.status === "selesai" ? (
-                    <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Done</span>
-                  ) : (
-                    <button 
-                      onClick={() => markAsDone(item.session.id, filter === "kucaidl_buy")}
-                      className="text-[10px] bg-amber-500 text-white px-2 py-1 rounded hover:bg-amber-600 transition-colors font-bold uppercase tracking-wider"
-                    >
-                      Tandai Selesai
-                    </button>
-                  )}
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    {item.session.status === "selesai" ? (
+                      <span className="text-[10px] bg-green-500/20 text-green-400 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Done</span>
+                    ) : item.session.status === "batal" ? (
+                      <span className="text-[10px] bg-red-500/20 text-red-400 px-2 py-1 rounded-full font-bold uppercase tracking-wider">Batal</span>
+                    ) : (
+                      <>
+                        <button 
+                          onClick={() => markAsTroll(item.session.id)}
+                          className="text-[10px] bg-red-500/10 hover:bg-red-500 text-red-400 hover:text-white border border-red-500/30 px-2 py-1 rounded transition-colors font-bold uppercase tracking-wider"
+                          title="Orang gak jadi beli / troller (balas .)"
+                        >
+                          Troll / Batal
+                        </button>
+                        <button 
+                          onClick={() => markAsDone(item.session.id, filter === "kucaidl_buy")}
+                          className="text-[10px] bg-amber-500 hover:bg-amber-600 text-white px-2 py-1 rounded transition-colors font-bold uppercase tracking-wider"
+                        >
+                          Tandai Selesai
+                        </button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </div>
            </div>
