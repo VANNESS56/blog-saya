@@ -2,12 +2,14 @@
 
 import Image from "next/image";
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { useSettings } from "@/lib/settings/SettingsContext";
 import { MessageCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Hero() {
+  const router = useRouter();
   const { t } = useLanguage();
   const { waKucaidl } = useSettings();
 
@@ -35,9 +37,13 @@ export function Hero() {
     setPunches(prev => [...prev, { id, x, y }]);
     
     setTimeout(() => {
-      window.open(url, '_blank', 'noopener,noreferrer');
+      if (url.startsWith("/")) {
+        router.push(url);
+      } else {
+        window.open(url, '_blank', 'noopener,noreferrer');
+      }
       setPunches(prev => prev.filter(p => p.id !== id));
-    }, 400); // Wait for animation to almost finish before opening tab
+    }, 300);
   };
 
   useEffect(() => {
@@ -176,8 +182,8 @@ export function Hero() {
 
                       {/* Action Buttons */}
                       <div className="flex gap-4 w-full mt-2">
-                        <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`}
-                          onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Beli%20DL`)}
+                        <a href="/jual-beli?mode=buy"
+                          onClick={(e) => handlePunchAndNavigate(e, "/jual-beli?mode=buy")}
                           className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#ffd000] to-[#f59e0b] shadow-[inset_0_2px_2px_rgba(255,255,255,0.5),inset_0_-4px_4px_rgba(0,0,0,0.15),0_0_20px_rgba(245,158,11,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/20">
                           
                           {punches.map(p => (
@@ -190,15 +196,15 @@ export function Hero() {
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 0a2 2 0 100 4 2 2 0 000-4z" /></svg>
                           </div>
                           <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                            BELI DL
+                            BELI {activeRate}
                           </div>
                           <div className="text-black shrink-0 relative z-10">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>
                           </div>
                         </a>
 
-                        <a href={`https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`}
-                          onClick={(e) => handlePunchAndNavigate(e, `https://wa.me/${waKucaidl}?text=Halo%20Admin,%20saya%20mau%20Jual%20DL`)}
+                        <a href="/jual-beli?mode=sell"
+                          onClick={(e) => handlePunchAndNavigate(e, "/jual-beli?mode=sell")}
                           className="flex-1 relative overflow-hidden h-[54px] rounded-full bg-gradient-to-r from-[#f97316] to-[#ea580c] shadow-[inset_0_2px_2px_rgba(255,255,255,0.4),inset_0_-4px_4px_rgba(0,0,0,0.2),0_0_20px_rgba(234,88,12,0.3)] hover:scale-105 transition-all group flex items-center justify-between px-4 md:px-6 border border-white/10">
                           
                           {punches.map(p => (
@@ -211,7 +217,7 @@ export function Hero() {
                             <span className="font-black text-[16px]">$</span>
                           </div>
                           <div className="font-black text-[15px] md:text-[16px] text-black tracking-widest relative z-10">
-                            JUAL DL
+                            JUAL {activeRate}
                           </div>
                           <div className="text-black shrink-0 relative z-10">
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M14 5l7 7m0 0l-7 7m7-7H3" /></svg>

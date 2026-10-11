@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { supabase } from "@/lib/supabase";
 import { Send, ArrowLeft } from "lucide-react";
 
@@ -14,6 +14,10 @@ type SavedPayout = {
 
 export default function JualBeliPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const urlMode = searchParams.get("mode");
+  const autoModeTriggeredRef = useRef(false);
+
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<Msg[]>([
     { id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }
@@ -146,6 +150,15 @@ export default function JualBeliPage() {
         });
     }
   }, []);
+
+  // Handle direct navigation with ?mode=buy or ?mode=sell
+  useEffect(() => {
+    if (!mounted || autoModeTriggeredRef.current) return;
+    if (urlMode === "buy" || urlMode === "sell") {
+      autoModeTriggeredRef.current = true;
+      handleSelectMode(urlMode);
+    }
+  }, [mounted, urlMode]);
 
   // Save state on change
   useEffect(() => {
