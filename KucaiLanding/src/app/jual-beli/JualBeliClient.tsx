@@ -73,19 +73,25 @@ export default function JualBeliPage() {
   }, []);
 
   useEffect(() => {
-    // Fetch initial values
-    supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply", "payment_methods", "store_status"]).then(({ data }) => {
-      if (data) {
-        data.forEach(item => {
-          if (item.key === "store_status") setStoreStatus(item.value === "close" ? "close" : "open");
-          if (item.key === "jual_beli_reply") setJualBeliReply(item.value);
-          if (item.key === "sell_reply") setSellReply(item.value);
-          if (item.key === "payment_methods" && item.value) {
-            setPaymentMethodList(item.value.split(",").map((s: string) => s.trim()).filter(Boolean));
-          }
-        });
-      }
-    });
+    const fetchSettings = () => {
+      supabase.from("site_settings").select("key, value").in("key", ["jual_beli_reply", "sell_reply", "payment_methods", "store_status"]).then(({ data }) => {
+        if (data) {
+          data.forEach(item => {
+            if (item.key === "store_status") setStoreStatus(item.value === "close" ? "close" : "open");
+            if (item.key === "jual_beli_reply") setJualBeliReply(item.value);
+            if (item.key === "sell_reply") setSellReply(item.value);
+            if (item.key === "payment_methods" && item.value) {
+              setPaymentMethodList(item.value.split(",").map((s: string) => s.trim()).filter(Boolean));
+            }
+          });
+        }
+      });
+    };
+
+    fetchSettings();
+
+    // 3-second auto-poll interval for site settings (store status & rates)
+    const settingsInterval = setInterval(fetchSettings, 3000);
 
     // Subscribe to realtime changes
     const settingsChannel = supabase.channel('public:site_settings')
@@ -108,6 +114,7 @@ export default function JualBeliPage() {
 
     return () => {
       supabase.removeChannel(settingsChannel);
+      clearInterval(settingsInterval);
     };
   }, []);
 
@@ -191,15 +198,36 @@ export default function JualBeliPage() {
         }
       }).subscribe();
       
+    const fetchLatestMsgs = () => {
+      supabase.from("chat_messages").select("*").eq("session_id", sessionId).order("created_at", { ascending: true })
+        .then(({ data }) => {
+          if (data && data.length > 0) {
+            setMessages(prev => {
+              const prevLast = prev[prev.length - 1];
+              const newLast = data[data.length - 1];
+              if (prev.length !== data.length + 1 || prevLast?.id !== newLast?.id) {
+                return [{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }, ...data];
+              }
+              return prev;
+            });
+
+            const lastMsg = data[data.length - 1];
+            if (lastMsg?.message?.includes("Udah Di Drop ya Cai") || lastMsg?.message?.includes("Udah Di tranfer ya Cai") || lastMsg?.message?.trim() === ".") {
+              setIsFreeChat(false);
+              setShowOptions(true);
+              setSelectingMode(false);
+            }
+          }
+        });
+    };
+
+    // 2-second auto-poll interval for realtime chat sync
+    const pollInterval = setInterval(fetchLatestMsgs, 2000);
+      
     // Handle tab switching / screen wake up to refetch missing messages
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible") {
-        supabase.from("chat_messages").select("*").eq("session_id", sessionId).order("created_at", { ascending: true })
-          .then(({ data }) => {
-            if (data && data.length > 0) {
-              setMessages([{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }, ...data]);
-            }
-          });
+        fetchLatestMsgs();
       }
     };
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -207,6 +235,7 @@ export default function JualBeliPage() {
     return () => { 
       document.removeEventListener("visibilitychange", handleVisibilityChange);
       supabase.removeChannel(ch); 
+      clearInterval(pollInterval);
     }
   }, [sessionId]);
 

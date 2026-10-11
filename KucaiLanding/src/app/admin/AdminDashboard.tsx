@@ -1856,17 +1856,15 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
   const [cleaning, setCleaning] = useState(false);
 
   const fetchData = useCallback(async () => {
-    // 1. Trigger background cleanup of data older than 24h
+    // 1. Background cleanup of old data
     adminApi("cleanupOldChats").catch(() => {});
 
-    // Only fetch sessions from the last 24 hours to keep the grid fast
-    const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+    // Fetch the most recent active sessions sorted by last_message_at
     const { data: sessionsData } = await supabase
       .from("chat_sessions")
       .select("*")
-      .ilike("customer_name", "Customer_%")
-      .gte("created_at", oneDayAgo)
-      .order("created_at", { ascending: false });
+      .order("last_message_at", { ascending: false })
+      .limit(60);
       
     if (!sessionsData || sessionsData.length === 0) {
       setItems([]);
@@ -1898,17 +1896,16 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
          if (filter === "kucaidl_sell" && !isSell) continue;
          
          const proofs = sessionMsgs.filter((m: any) => m.image_url);
+         const captionMsg = sessionMsgs.find((m: any) => m.message?.includes("World:") || m.message?.includes("No Rek/Wallet:"));
          
-         if (proofs.length > 0) {
-           const recentProofs = proofs.slice(0, 2); // just take max 2 most recent
-           const captionMsg = sessionMsgs.find((m: any) => m.message?.includes("World:") || m.message?.includes("No Rek/Wallet:"));
-           
+         if (proofs.length > 0 || captionMsg) {
+           const recentProofs = proofs.slice(0, 2);
            gridItems.push({
              session: s,
              proofs: recentProofs,
-             caption: captionMsg ? captionMsg.message : "Data tidak tersedia",
-             time: recentProofs[0]?.created_at 
-               ? new Date(recentProofs[0].created_at).toLocaleString('id-ID')
+             caption: captionMsg ? captionMsg.message : (proofs.length > 0 ? "Foto bukti terkirim" : "Data pesanan masuk"),
+             time: (recentProofs[0]?.created_at || s.last_message_at || s.created_at)
+               ? new Date(recentProofs[0]?.created_at || s.last_message_at || s.created_at).toLocaleString('id-ID')
                : "Baru saja"
            });
          }
@@ -2024,9 +2021,15 @@ function ManageKucaiDLGrid({ filter }: { filter: "kucaidl_buy" | "kucaidl_sell" 
       )
       .subscribe();
 
+    // 2.5 second auto-poll interval to guarantee data updates in real time without manual refresh
+    const interval = setInterval(() => {
+      if (mounted) fetchData();
+    }, 2500);
+
     return () => {
       mounted = false;
       supabase.removeChannel(channel);
+      clearInterval(interval);
     };
   }, [fetchData, filter]);
 
@@ -2412,7 +2415,13 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
       })
       .subscribe();
 
-    return () => { supabase.removeChannel(ch); };
+    // 2.5 second auto-poll interval for sessions list
+    const sessionInterval = setInterval(fetchSessions, 2500);
+
+    return () => { 
+      supabase.removeChannel(ch); 
+      clearInterval(sessionInterval);
+    };
   }, [fetchSessions]);
 
   // Fetch messages for selected session
@@ -2428,7 +2437,13 @@ function ManageLiveChat({ filter = "livechat" }: { filter?: ChatFilter }) {
       if (data) setMessages(data);
     }
     fetchMsgs();
+
+    // 2 second auto-poll interval for open chat messages
+    const msgInterval = setInterval(fetchMsgs, 2000);
+
     setTimeout(() => replyInputRef.current?.focus(), 100);
+
+    return () => clearInterval(msgInterval);
   }, [activeSession]);
 
   // Auto-scroll
