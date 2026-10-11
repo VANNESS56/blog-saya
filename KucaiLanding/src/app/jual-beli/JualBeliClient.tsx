@@ -129,7 +129,7 @@ export default function JualBeliPage() {
              setMessages([{ id: "init", sender: "admin", message: "Halo! 👋 Selamat datang di Kucai DL. Mau jual atau beli?" }, ...data]);
              const hasClosedMsg = data.some(m => m.message?.includes("Toko close"));
              const lastMsg = data[data.length - 1];
-             if (hasClosedMsg || lastMsg?.message?.includes("Udah Di Drop") || lastMsg?.message?.includes("Udah Di tranfer")) {
+             if (hasClosedMsg || lastMsg?.message?.includes("Udah Di Drop") || lastMsg?.message?.includes("Udah Di tranfer") || lastMsg?.message?.trim() === ".") {
                setShowOptions(true);
                setIsFreeChat(false);
              }
@@ -178,7 +178,7 @@ export default function JualBeliPage() {
             });
           }
 
-          if (payload.new.message.includes("Udah Di Drop ya Cai") || payload.new.message.includes("Udah Di tranfer ya Cai")) {
+          if (payload.new.message.includes("Udah Di Drop ya Cai") || payload.new.message.includes("Udah Di tranfer ya Cai") || payload.new.message.trim() === ".") {
             setIsFreeChat(false);
             setShowOptions(true);
             if (typeof document !== "undefined" && document.activeElement instanceof HTMLElement) {
